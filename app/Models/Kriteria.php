@@ -2,10 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Mahasiswa\Nilai;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Kriteria extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id'];
+
+    public function nilai() {
+        return $this->hasMany(Nilai::class);
+    }
 }

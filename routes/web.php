@@ -47,7 +47,10 @@ use App\Http\Controllers\tables\Basic as TablesBasic;
 use App\Http\Controllers\MahasiswaController;
 
 // Main Page Route
-Route::get('/', [Analytics::class, 'index'])->name('dashboard-analytics');
+// Route::get('/', [Analytics::class, 'index'])->name('dashboard-analytics');
+Route::get('/', function () {
+    return view('content.homepage.index');
+});
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
