@@ -10,14 +10,12 @@ class Mahasiswa extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $guarded = ['NIM'];
 
 
     public function nilai()
     {
-        return $this->hasOne(Nilai::class, 'mahasiswa_id', 'id');
+        // return $this->hasOne(Nilai::class, 'mahasiswa_id', 'id');
+        return $this->hasMany(Nilai::class, 'nim', 'nim');
     }
-
-
-
 }

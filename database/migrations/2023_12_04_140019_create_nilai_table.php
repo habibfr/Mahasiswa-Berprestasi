@@ -12,12 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('nilais', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId("mahasiswa_id")->nullable()->index("fk_nilai_to_mahasiswa");
-            $table->double('IPK')->nullable();
-            $table->integer('SSKM')->nullable();
-            $table->integer('TOEFL')->nullable();
-            $table->integer('karya_tulis')->nullable();
+            // $table->id();
+            // $table->foreignId("mahasiswa_id")->nullable()->index("fk_nilai_to_mahasiswa");
+            // $table->double('IPK')->nullable();
+            // $table->integer('SSKM')->nullable();
+            // $table->integer('TOEFL')->nullable();
+            // $table->integer('karya_tulis')->nullable();
+            // $table->timestamps();
+
+            $table->string('nim', 11);
+            $table->foreign('nim', 'fk_nilai_to_mahasiswa')
+                ->references('nim')->on('mahasiswas')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('kriteria_id');
+            $table->float('nilai');
             $table->timestamps();
         });
     }

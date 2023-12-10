@@ -12,11 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('nilais', function (Blueprint $table) {
-            $table->foreign('mahasiswa_id', 'fk_nilai_to_mahasiswa')
-                ->references('id')
-                ->on('mahasiswas')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            // $table->foreign('mahasiswa_id', 'fk_nilai_to_mahasiswa')
+            //     ->references('id')
+            //     ->on('mahasiswas')
+            //     ->onUpdate('cascade')
+            //     ->onDelete('cascade');
               // You can adjust the onDelete behavior based on your requirements
         });
     }
@@ -26,7 +26,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('nilai', function (Blueprint $table) {
-            $table->dropForeign("fk_nilai_to_mahasiswa");
-        });    }
+        // Schema::table('nilai', function (Blueprint $table) {
+        //     $table->dropForeign("fk_nilai_to_mahasiswa");
+        // });    
+    }
 };

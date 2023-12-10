@@ -8,39 +8,26 @@
             <div class="col-3">
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-12">
-                                <h6>Peringkatan</h6>
-                            </div>
-                            <div class="col-12">
-                                <button class="btn btn-sm btn-secondary">Start</button>
-                            </div>
-                        </div>
+                        <h6 class="form-label">Peringkatan</h6>
+                        <button class="btn btn-secondary form-control" type="submit">Start</button>
                     </div>
                     <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-12">
-                                <h6>Sorting</h6>
-                            </div>
-                            <div class="col-12">
-                                <div class="dropdown">
-                                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                      10
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">10</a></li>
-                                        <li><a class="dropdown-item" href="#">20</a></li>
-                                        <li><a class="dropdown-item" href="#">30</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        <h6 class="form-label">Jumlah Sorting</h6>
+                        <select class="form-select form-control dropdown bg-secondary text-white" aria-label="Default select example" id="jumlah_sorting">
+                            <option value="1" selected>10</option>
+                            <option value="2">20</option>
+                            <option value="3">30</option>
+                        </select>
                     </div>
                 </div>
             </div>
-            <div class="col-2 offset-7 align-self-end">
-                <button class="btn btn-sm btn-secondary align-self-end">Export</button>
-                <button class="btn btn-sm btn-secondary align-self-end">Post</button>
+            <div class="col-4 offset-5 align-self-end">
+                <div class="row">
+                    <div class="col offset-4">
+                        <button class="btn btn-secondary align-self-end">Export</button>
+                        <button class="btn btn-secondary align-self-end">Post</button>
+                    </div>
+                </div>
             </div>
         </div>
 

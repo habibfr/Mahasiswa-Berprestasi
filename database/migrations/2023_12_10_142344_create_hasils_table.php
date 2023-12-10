@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mahasiswas', function (Blueprint $table) {
-            $table->string('nim', 11)->primary();
-            $table->string('nama', 50);
-            $table->year('angkatan');
-            $table->enum('status', ['Aktif', 'Tidak aktif']);
-            $table->string('jurusan', 50);
+        Schema::create('hasils', function (Blueprint $table) {
+            $table->string('nim', 11);
+            $table->foreign('nim', 'fk_hasil_to_mahasiswa')
+                ->references('nim')->on('mahasiswas')->onUpdate('cascade')->onDelete('cascade');
+            $table->integer('peringkat');
+            $table->float('poin');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mahasiswas');
+        Schema::dropIfExists('hasils');
     }
 };
