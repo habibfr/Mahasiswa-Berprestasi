@@ -52,6 +52,10 @@ Route::get('/', function () {
     return view('content.homepage.index');
 });
 
+Route::get('/login', function () {
+    return view('content.authentications.auth-login-basic');
+});
+
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
 Route::get('/layouts/without-navbar', [WithoutNavbar::class, 'index'])->name('layouts-without-navbar');
