@@ -59,7 +59,7 @@
             <div class="col">
                 <div class="float-end">
                     <div id="floatingInputHelp mb-2" class="form-text">Tambah kriteria</div>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
                         data-bs-target="#modalAddKriteria">Tambah</button>
                 </div>
             </div>
@@ -83,16 +83,12 @@
                             <label for="nameBasic" class="form-label">Name</label>
                             <input type="text" id="nameBasic" class="form-control" placeholder="Enter Name">
                         </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col mb-0">
-                            <label for="emailBasic" class="form-label">Email</label>
-                            <input type="email" id="emailBasic" class="form-control" placeholder="xxxx@xxx.xx">
-                        </div>
-                        <div class="col mb-0">
-                            <label for="dobBasic" class="form-label">DOB</label>
-                            <input type="date" id="dobBasic" class="form-control">
-                        </div>
+                    <div class="row">
+                         <div class="col mb-3">
+                           <label for="emailBasic" class="form-label">Email</label>
+                            <input type="number" step="0.1" max="1" min="0.1" id="emailBasic" class="form-control" placeholder="0.1">
+                            </div>
+                </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -208,18 +204,15 @@
                                     <label for="nameBasic" class="form-label">Name</label>
                                     <input type="text" id="nameBasic" class="form-control" placeholder="Enter Name">
                                 </div>
-                            </div>
-                            <div class="row g-2">
-                                <div class="col mb-0">
+                            
+                            <div class="row">
+                                <div class="col mb-3">
                                     <label for="emailBasic" class="form-label">Email</label>
-                                    <input type="email" id="emailBasic" class="form-control"
-                                        placeholder="xxxx@xxx.xx">
+                                    <input type="number" step="0.1" max="1" min="0.1" id="emailBasic" class="form-control"
+                                        placeholder="0.1">
                                 </div>
-                                <div class="col mb-0">
-                                    <label for="dobBasic" class="form-label">DOB</label>
-                                    <input type="date" id="dobBasic" class="form-control">
-                                </div>
-                            </div>
+                                
+                            
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-secondary"
