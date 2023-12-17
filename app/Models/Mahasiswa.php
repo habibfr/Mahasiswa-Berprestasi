@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Hasil;
-use App\Models\Mahasiswa\Nilai;
+use App\Models\Nilai;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
