@@ -16,33 +16,10 @@ class DatabaseSeeder extends Seeder
     {
         \App\Models\User::factory(30)->create();
 
-        Kriteria::create([
-            'nama_kriteria'=>'IPK',
-            'atribut'=>'benefit',
-            'bobot'=>0.4
+        $this->call([
+            KriteriaSeeder::class,
+            MahasiswaTableSeeder::class
         ]);
 
-        Kriteria::create([
-            'nama_kriteria'=>'TOEFL',
-            'atribut'=>'benefit',
-            'bobot'=>0.2
-        ]);
-        
-        Kriteria::create([
-            'nama_kriteria'=>'SSKM',
-            'atribut'=>'benefit',
-            'bobot'=>0.2
-        ]);
-
-        Kriteria::create([
-            'nama_kriteria'=>'Karya Tulis',
-            'atribut'=>'benefit',
-            'bobot'=>0.2
-        ]);
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
     }
 }

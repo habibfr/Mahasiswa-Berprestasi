@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Mahasisawa\Mahasiswa;
+use App\Models\Mahasiswa\Mahasiswa as Mahasiswa;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
