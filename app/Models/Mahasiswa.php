@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Mahasiswa;
+namespace App\Models;
 
 use App\Models\Hasil;
 use App\Models\Mahasiswa\Nilai;

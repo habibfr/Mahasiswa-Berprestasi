@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Mahasisawa\Mahasiswa;
+use App\Models\Mahasiswa;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MahasiswaTableSeeder extends Seeder
 {
@@ -13,43 +14,40 @@ class MahasiswaTableSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        // $mahasiswaData = [
-        //     [
-        //         'nim' => '21410100088',
-        //         'nama' => 'Budi Sudarjo',
-        //         'email'=> '21410100088@briliant.co',
-        //         'jurusan' => 'S1 Sistem Informasi',
-        //         'created_at' => now(),
-        //         'updated_at' => now(),
-        //     ],
-        //     [
-        //         'nim' => '21410100089',
-        //         'nama' => 'Ceci Indriani',
-        //         'email'=> '21410100089@briliant.co',
-        //         'jurusan' => 'S1 Sistem Informasi',
-        //         'created_at' => now(),
-        //         'updated_at' => now(),
-        //     ],
-        //     [
-        //         'nim' => '21410100090',
-        //         'nama' => 'Dedi Suhendar',
-        //         'email'=> '21410100090@briliant.co',
-        //         'jurusan' => 'S1 Sistem Informasi',
-        //         'created_at' => now(),
-        //         'updated_at' => now(),
-        //     ],
-        // ];
-        $mahasiswaData=array();
-        array_push($mahasiswaData, [
-            'nim'=>'21410100001',
-            'nama'=>fake()->name(),
-            'angkatan'=>'2021',
-            'status'=>'aktif',
-            'jurusan'=>'Sistem Informasi'
-        ]);
+     
+        $mahasiswaData = array();
+        for ($i = 1; $i < 101; $i++) {
+            if ($i < 10) {
+                $nim = '2141010000' . $i;
+            } else if ($i < 100) {
+                $nim = '214101000' . $i;
+            } else {
+                $nim = '21410100' . $i;
+            }
+
+            $nama = fake()->name();
+
+            $year = '2021';
+
+            $chance_status = random_int(0, 10);
+
+            $status = ($chance_status < 3) ? 'tidak aktif' : 'aktif';
+
+            $jurusan = 'S1 Sistem Informasi';
+
+            array_push($mahasiswaData, [
+                'nim' => $nim,
+                'nama' => $nama,
+                'angkatan' => $year,
+                'status' => $status,
+                'jurusan' => $jurusan,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         // Insert data dummy ke dalam tabel 'mahasiswa'
-        Mahasiswa::insert($mahasiswaData);
+        // Mahasiswa::create($mahasiswaData);
+        DB::table('mahasiswas')->insert($mahasiswaData);
     }
 }
