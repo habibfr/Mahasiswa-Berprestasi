@@ -45,6 +45,7 @@ use App\Http\Controllers\form_layouts\HorizontalForm;
 use App\Http\Controllers\tables\Basic as TablesBasic;
 
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\KriteriaController;
 
 // Main Page Route
 // Route::get('/', [Analytics::class, 'index'])->name('dashboard-analytics');
@@ -145,7 +146,4 @@ Route::get('/peringkat', function () {
         ->name('peringkat');
 
 // Route for Kriteria
-Route::get('/kriteria', function () {
-    return view('content.kriteria.index');
-})
-        ->name('kriteria');
+Route::get('/kriteria', [KriteriaController::class, "index"])->name('kriteria');

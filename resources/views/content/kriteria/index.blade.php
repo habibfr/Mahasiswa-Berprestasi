@@ -116,11 +116,14 @@
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
-                    <tr>
-                        <td>1</td>
-                        <td>K001</td>
-                        <td>IPK</td>
-                        <td>0.4</td>
+                    
+                        @isset($data)
+                        @foreach($data as $data)
+                        <tr>
+                        <td>{{ $loop->index + 1 }}</td>
+                        <td>{{$data->id}}</td>
+                        <td>{{$data->nama_kriteria}}</td>
+                        <td>{{$data->bobot}}</td>
                         <td>
                             <div class="inline">
                                 <span class="text-success" data-bs-toggle="modal" data-bs-target="#modalEditKriteria"><i
@@ -131,59 +134,9 @@
                                     </a>
                             </div>
                         </td>
-                    </tr>
-
-                    <tr>
-                        <td>2</td>
-                        <td>K002</td>
-                        <td>SSKM</td>
-                        <td>0.2</td>
-                        <td>
-                            <div class="inline">
-                                <span class="text-success" data-bs-toggle="modal" data-bs-target="#modalEditKriteria"><i
-                                        class="bx bx-edit-alt bx-sm me-2"></i>
-                                </span>
-                                <span class="text-danger" data-bs-toggle="modal" data-bs-target="#modalHapusKriteria"><i
-                                        class="bx bx-trash bx-sm me-2"></i>
-                                    </a>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>3</td>
-                        <td>K003</td>
-                        <td>TOEFL</td>
-                        <td>0.2</td>
-                        <td>
-                            <div class="inline">
-                                <span class="text-success" data-bs-toggle="modal" data-bs-target="#modalEditKriteria"><i
-                                        class="bx bx-edit-alt bx-sm me-2"></i>
-                                </span>
-                                <span class="text-danger" data-bs-toggle="modal" data-bs-target="#modalHapusKriteria"><i
-                                        class="bx bx-trash bx-sm me-2"></i>
-                                    </a>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>4</td>
-                        <td>K004</td>
-                        <td>Karya Tulis</td>
-                        <td>0.2</td>
-                        <td>
-                            <div class="inline">
-                                <span class="text-success" data-bs-toggle="modal" data-bs-target="#modalEditKriteria"><i
-                                        class="bx bx-edit-alt bx-sm me-2"></i>
-                                </span>
-                                <span class="text-danger" data-bs-toggle="modal" data-bs-target="#modalHapusKriteria"><i
-                                        class="bx bx-trash bx-sm me-2"></i>
-                                    </a>
-                            </div>
-                        </td>
-                    </tr>
-
+                        <tr>
+                        @endforeach
+                        @endisset
                 </tbody>
             </table>
 
