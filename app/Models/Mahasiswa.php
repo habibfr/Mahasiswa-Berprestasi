@@ -13,6 +13,7 @@ class Mahasiswa extends Model
 
     protected $guarded = ['NIM'];
 
+    protected $with = ['nilai', 'kriteria'];
 
     public function nilai()
     {

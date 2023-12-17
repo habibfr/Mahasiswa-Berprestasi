@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models\Mahasiswa;
+namespace App\Models;
 
 use App\Models\Kriteria;
-use App\Models\Mahasisawa\Mahasiswa;
+use App\Models\Mahasiswa;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,12 +13,11 @@ class Nilai extends Model
 
 
     // protected $guarded = ['id'];
-    // protected $fillable = [
-    //     'nim',
-    //     'IPK',
-    //     'SSKM',
-    //     'TOEFL',
-    // ];
+    protected $fillable = [
+        'nim',
+        'kriteria_id',
+        'nilai'
+    ];
 
 
     public function mahasiswa()
@@ -26,7 +25,8 @@ class Nilai extends Model
         return $this->belongsTo(Mahasiswa::class);
     }
 
-    public function kriteria() {
+    public function kriteria()
+    {
         return $this->belongsTo(Kriteria::class);
     }
 }

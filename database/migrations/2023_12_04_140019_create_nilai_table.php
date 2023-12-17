@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('nim', 11);
             $table->foreign('nim', 'fk_nilai_to_mahasiswa')
                 ->references('nim')->on('mahasiswas')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('kriteria_id');
+            $table->foreignUuid('kriteria_id');
             $table->float('nilai');
             $table->timestamps();
         });
