@@ -14,7 +14,9 @@ class KriteriaController extends Controller
     public function index()
     {
         //
+        //ngambil data
         $data = Kriteria::all();
+        //ngirim data
         return view('content.kriteria.index',['data' => $data]);
     }
 

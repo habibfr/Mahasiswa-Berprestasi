@@ -109,7 +109,6 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Id</th>
                         <th>Nama</th>
                         <th>Bobot</th>
                         <th>Actions</th>
@@ -121,7 +120,6 @@
                         @foreach($data as $data)
                         <tr>
                         <td>{{ $loop->index + 1 }}</td>
-                        <td>{{$data->id}}</td>
                         <td>{{$data->nama_kriteria}}</td>
                         <td>{{$data->bobot}}</td>
                         <td>
