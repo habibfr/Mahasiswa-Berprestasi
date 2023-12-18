@@ -34,29 +34,6 @@
     <div class="mb-2">
         <div class="row">
             <div class="col">
-                {{-- <div class="navbar-nav align-items-center"> --}}
-                <div class="">
-                    <div id="floatingInputHelp" class="form-text">Pencarian kriteria</div>
-
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <div class="card">
-                                <div class="align-items-center py-1">
-                                    <div class="mx-3 d-flex align-items-center ">
-                                        <i class="bx bx-search fs-4 lh-0"></i>
-                                        <input type="text" class="form-control border-0 shadow-none ps-1 ps-sm-2"
-                                            placeholder="Search..." aria-label="Search...">
-                                    </div>
-                                </div>
-
-                            </div>
-                            {{-- <button type="button" class="btn btn-danger">Danger</button> --}}
-                        </div>
-                    </div>
-                </div>
-                {{-- </div> --}}
-            </div>
-            <div class="col">
                 <div class="float-end">
                     <div id="floatingInputHelp mb-2" class="form-text">Tambah kriteria</div>
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
@@ -103,7 +80,6 @@
 
     <!-- Basic Bootstrap Table -->
     <div class="card">
-        <h5 class="card-header">Table Basic</h5>
         <div class="table-responsive text-nowrap">
             <table class="table">
                 <thead>
