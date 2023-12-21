@@ -36,6 +36,7 @@ class MahasiswaTableSeeder extends Seeder
             $jurusan = 'S1 Sistem Informasi';
 
             array_push($mahasiswaData, [
+                'id' => uuid_create(),
                 'nim' => $nim,
                 'nama' => $nama,
                 'angkatan' => $year,

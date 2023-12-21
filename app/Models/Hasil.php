@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Hasil extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    public function mahasiswa()
-    {
-        return $this->belongsTo(Mahasiswa::class, 'nim', 'nim');
-    }
+  protected $with = ['mahasiswa'];
+
+  public function mahasiswa()
+  {
+    return $this->belongsTo(Mahasiswa::class, 'nim', 'nim');
+  }
 }

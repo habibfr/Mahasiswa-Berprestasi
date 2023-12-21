@@ -46,16 +46,20 @@ use App\Http\Controllers\tables\Basic as TablesBasic;
 
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\KriteriaController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PeringkatController;
 
 // Main Page Route
 // Route::get('/', [Analytics::class, 'index'])->name('dashboard-analytics');
 Route::get('/', function () {
-    return view('content.homepage.index');
-});
+  return view('content.homepage.index');
+})->name('homepage');
 
 Route::get('/login', function () {
-    return view('content.authentications.auth-login-basic');
+  return view('content.authentications.auth-login-basic');
 });
+
+Route::post('/login', [LoginController::class, 'authenticate']);
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
@@ -65,11 +69,19 @@ Route::get('/layouts/container', [Container::class, 'index'])->name('layouts-con
 Route::get('/layouts/blank', [Blank::class, 'index'])->name('layouts-blank');
 
 // pages
-Route::get('/pages/account-settings-account', [AccountSettingsAccount::class, 'index'])->name('pages-account-settings-account');
-Route::get('/pages/account-settings-notifications', [AccountSettingsNotifications::class, 'index'])->name('pages-account-settings-notifications');
-Route::get('/pages/account-settings-connections', [AccountSettingsConnections::class, 'index'])->name('pages-account-settings-connections');
+Route::get('/pages/account-settings-account', [AccountSettingsAccount::class, 'index'])->name(
+  'pages-account-settings-account'
+);
+Route::get('/pages/account-settings-notifications', [AccountSettingsNotifications::class, 'index'])->name(
+  'pages-account-settings-notifications'
+);
+Route::get('/pages/account-settings-connections', [AccountSettingsConnections::class, 'index'])->name(
+  'pages-account-settings-connections'
+);
 Route::get('/pages/misc-error', [MiscError::class, 'index'])->name('pages-misc-error');
-Route::get('/pages/misc-under-maintenance', [MiscUnderMaintenance::class, 'index'])->name('pages-misc-under-maintenance');
+Route::get('/pages/misc-under-maintenance', [MiscUnderMaintenance::class, 'index'])->name(
+  'pages-misc-under-maintenance'
+);
 
 // authentication
 Route::get('/auth/login-basic', [LoginBasic::class, 'index'])->name('auth-login-basic');
@@ -118,8 +130,6 @@ Route::get('/form/layouts-horizontal', [HorizontalForm::class, 'index'])->name('
 // tables
 Route::get('/tables/basic', [TablesBasic::class, 'index'])->name('tables-basic');
 
-
-
 // Route for Mahasiswa
 Route::get('/mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa');
 
@@ -138,12 +148,9 @@ Route::post('/mahasiswa/update-mahasiswa/{id}', [MahasiswaController::class, 'up
 // hapus mahasiswa by id
 Route::post('/mahasiswa/delete/{id}', [MahasiswaController::class, 'destroy']);
 
-
 // Route for Peringkat
-Route::get('/peringkat', function () {
-    return view('content.peringkat.index');
-})
-        ->name('peringkat');
+Route::get('/peringkat', [PeringkatController::class, 'index'])->name('peringkat');
+// ->middleware('auth');
 
 // Route for Kriteria
-Route::get('/kriteria', [KriteriaController::class, "index"])->name('kriteria');
+Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria');

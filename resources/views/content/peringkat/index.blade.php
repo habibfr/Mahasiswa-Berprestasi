@@ -24,8 +24,10 @@
             <div class="col-4 offset-5 align-self-end">
                 <div class="row">
                     <div class="col offset-4">
-                        <button class="btn btn-secondary align-self-end">Export</button>
-                        <button class="btn btn-secondary align-self-end">Post</button>
+                        <div class="float-end">
+                            <button class="btn btn-secondary align-self-end">Export</button>
+                            <button class="btn btn-secondary align-self-end">Post</button>
+                        </div>
                     </div>
                 </div>
             </div>

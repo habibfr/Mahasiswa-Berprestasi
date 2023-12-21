@@ -4,25 +4,27 @@ namespace App\Models;
 
 use App\Models\Hasil;
 use App\Models\Nilai;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Mahasiswa extends Model
 {
-    use HasFactory;
+  use HasFactory, HasUuids;
 
-    protected $guarded = ['NIM'];
+  protected $guarded = ['NIM', 'id'];
 
-    protected $with = ['nilai', 'kriteria'];
+  // protected $with = ['nilai'];
 
-    public function nilai()
-    {
-        // return $this->hasOne(Nilai::class, 'mahasiswa_id', 'id');
-        return $this->hasMany(Nilai::class, 'nim', 'nim');
-    }
+  public function nilai()
+  {
+    // return $this->hasOne(Nilai::class, 'mahasiswa_id', 'id');
+    // return $this->hasMany(Nilai::class, 'mahasiswa_id', 'nim');
+    return $this->hasMany(Nilai::class, 'mahasiswa_id', 'id');
+  }
 
-    public function hasil()
-    {
-        return $this->hasMany(Hasil::class, 'nim', 'nim');
-    }
+  public function hasil()
+  {
+    return $this->hasMany(Hasil::class, 'mahasiswa_id', 'id');
+  }
 }

@@ -9,24 +9,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Nilai extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
+  // protected $guarded = ['id'];
+  protected $fillable = ['mahasiswa_id', 'kriteria_id', 'nilai'];
 
-    // protected $guarded = ['id'];
-    protected $fillable = [
-        'nim',
-        'kriteria_id',
-        'nilai'
-    ];
+  protected $with = ['mahasiswa', 'kriteria'];
 
+  public function mahasiswa()
+  {
+    return $this->belongsTo(Mahasiswa::class, 'mahasiswa_id', 'id');
+  }
 
-    public function mahasiswa()
-    {
-        return $this->belongsTo(Mahasiswa::class);
-    }
-
-    public function kriteria()
-    {
-        return $this->belongsTo(Kriteria::class);
-    }
+  public function kriteria()
+  {
+    return $this->belongsTo(Kriteria::class, 'kriteria_id', 'id');
+  }
 }
