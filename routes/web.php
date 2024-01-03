@@ -55,11 +55,9 @@ Route::get('/', function () {
   return view('content.homepage.index');
 })->name('homepage');
 
-Route::get('/login', function () {
-  return view('content.authentications.auth-login-basic');
-});
+Route::get('/login', [LoginController::class, 'index'])->name('login');
 
-Route::post('/login', [LoginController::class, 'authenticate']);
+Route::post('/login', [LoginController::class, 'authenticate'])->name('login_process');
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
@@ -149,8 +147,7 @@ Route::post('/mahasiswa/update-mahasiswa/{id}', [MahasiswaController::class, 'up
 Route::post('/mahasiswa/delete/{id}', [MahasiswaController::class, 'destroy']);
 
 // Route for Peringkat
-Route::get('/peringkat', [PeringkatController::class, 'index'])->name('peringkat');
-// ->middleware('auth');
+Route::get('/peringkat', [PeringkatController::class, 'index'])->name('peringkat')->middleware('auth');
 
 // Route for Kriteria
-Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria');
+Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria')->middleware('auth');

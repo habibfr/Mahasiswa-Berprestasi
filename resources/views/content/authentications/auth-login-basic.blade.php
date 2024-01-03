@@ -16,7 +16,8 @@
         <div class="card-body">
           <h4 class="mb-5 text-center fw-semibold">LOGIN</h4>
 
-          <form id="formAuthentication" class="mb-3" action="{{url('/kriteria')}}" method="get">
+          <form id="formAuthentication" class="mb-3" action="{{url('/login')}}" method="post">
+            @csrf
             <div class="mb-3">
               <label for="text" class="form-label">NIK</label>
               <input type="text" class="form-control" id="nik" name="nik" placeholder="Enter your NIK" autofocus>

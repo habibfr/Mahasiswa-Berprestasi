@@ -8,21 +8,26 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    //
-    public function authenticate(Request $request):RedirectResponse {
-        $credentials=$request->validate([
-            'nik'=>['required'],
-            'password'=>['required'],
+    public function index()
+    {
+        return view('content.authentications.auth-login-basic');
+    }
+
+    public function authenticate(Request $request): RedirectResponse
+    {
+        $credentials = $request->validate([
+            'nik' => ['required'],
+            'password' => ['required'],
         ]);
 
-        if(Auth::attempt($credentials)){
-            $request->session->regenerate();
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
 
-            return redirect()->intended('kriteria');
+            return redirect()->intended('peringkat')->with('login_success', 'Login successful!');
         }
 
         return back()->withErrors([
-            'nik'=>'The provided credentials do not match our records.'
+            'nik' => 'The provided credentials do not match our records.'
         ]);
     }
 }
