@@ -13,6 +13,20 @@
             </a>
         </div>
         @auth
+        <div class="col-md-2 text-start">
+            <li class="nav dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Hello, {{auth()->user()->name}}
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/mahasiswa">Mahasiswa</a></li>
+                  <li><a class="dropdown-item" href="/kriteria">Kriteria</a></li>
+                  <li><a class="dropdown-item" href="peringkat">Peringkat</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="#">Logout</a></li>
+                </ul>
+            </li>
+        </div>
         @else
         <div class="col-md-2 text-end"><a href="/login" class="btn btn-danger fw-bold">LOGIN</a></div>
         @endauth
