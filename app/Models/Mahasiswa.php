@@ -12,7 +12,7 @@ class Mahasiswa extends Model
 {
   use HasFactory, HasUuids;
 
-  protected $guarded = ['NIM', 'id'];
+  protected $guarded = ['id'];
 
   // protected $with = ['nilai'];
 
@@ -25,6 +25,6 @@ class Mahasiswa extends Model
 
   public function hasil()
   {
-    return $this->hasMany(Hasil::class, 'mahasiswa_id', 'id');
+    return $this->hasMany(Hasil::class);
   }
 }

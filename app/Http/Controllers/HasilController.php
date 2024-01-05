@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Hasil;
 use App\Http\Requests\StoreHasilRequest;
 use App\Http\Requests\UpdateHasilRequest;
+use App\Models\Mahasiswa;
 
 class HasilController extends Controller
 {
@@ -13,7 +14,12 @@ class HasilController extends Controller
      */
     public function index()
     {
-        //
+        $hasil = Mahasiswa::join('hasils', 'mahasiswas.id', '=', 'hasils.mahasiswa_id')
+            ->where('hasils.status', 'aktif')
+            ->orderBy('hasils.peringkat', 'asc')
+            ->get();
+
+        return view('content.homepage.index', ['data' => $hasil]);
     }
 
     /**

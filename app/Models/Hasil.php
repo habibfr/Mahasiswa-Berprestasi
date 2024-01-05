@@ -10,10 +10,10 @@ class Hasil extends Model
 {
   use HasFactory;
 
-  protected $with = ['mahasiswa'];
+  protected $with = ['mahasiswas'];
 
   public function mahasiswa()
   {
-    return $this->belongsTo(Mahasiswa::class, 'nim', 'nim');
+    return $this->belongsTo(Mahasiswa::class);
   }
 }

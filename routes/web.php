@@ -42,6 +42,7 @@ use App\Http\Controllers\form_elements\BasicInput;
 use App\Http\Controllers\form_elements\InputGroups;
 use App\Http\Controllers\form_layouts\VerticalForm;
 use App\Http\Controllers\form_layouts\HorizontalForm;
+use App\Http\Controllers\HasilController;
 use App\Http\Controllers\tables\Basic as TablesBasic;
 
 use App\Http\Controllers\MahasiswaController;
@@ -51,9 +52,7 @@ use App\Http\Controllers\PeringkatController;
 
 // Main Page Route
 // Route::get('/', [Analytics::class, 'index'])->name('dashboard-analytics');
-Route::get('/', function () {
-  return view('content.homepage.index');
-})->name('homepage');
+Route::get('/', [HasilController::class, 'index'])->name('homepage');
 
 // route untuk view/tampilan login
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
