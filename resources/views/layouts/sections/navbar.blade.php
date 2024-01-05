@@ -6,7 +6,8 @@
                     KRILIN
                 </a>
                 <div class="position-absolute" style="top: 0; right: 0;">
-                    <form action="/" method="get">
+                    <form action="{{'logout'}}" method="post">
+                        @csrf
                         <button class="btn btn-outline-danger">Logout</button>
                     </form>
                 </div>

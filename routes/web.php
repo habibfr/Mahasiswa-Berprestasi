@@ -59,6 +59,8 @@ Route::get('/login', [LoginController::class, 'index'])->name('login')->middlewa
 
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login_process')->middleware('guest');
 
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
+
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
 Route::get('/layouts/without-navbar', [WithoutNavbar::class, 'index'])->name('layouts-without-navbar');
