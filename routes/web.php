@@ -55,10 +55,13 @@ Route::get('/', function () {
   return view('content.homepage.index');
 })->name('homepage');
 
+// route untuk view/tampilan login
 Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
 
+// route untuk process login
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login_process')->middleware('guest');
 
+// route untuk process logout
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
 // layout

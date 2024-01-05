@@ -16,6 +16,7 @@ return new class extends Migration
             $table->float('bobot');
             $table->enum('atribut', ['Benefit', 'Cost']);
             $table->string('nama_kriteria', 50);
+            $table->year('periode');
             $table->timestamps();
         });
     }

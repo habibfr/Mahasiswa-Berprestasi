@@ -16,27 +16,31 @@ class KriteriaSeeder extends Seeder
         //
 
         Kriteria::create([
-            'nama_kriteria'=>'IPK',
-            'atribut'=>'benefit',
-            'bobot'=>0.4
+            'nama_kriteria' => 'IPK',
+            'atribut' => 'benefit',
+            'bobot' => 0.4,
+            'periode' => '2023'
         ]);
 
         Kriteria::create([
-            'nama_kriteria'=>'TOEFL',
-            'atribut'=>'benefit',
-            'bobot'=>0.2
-        ]);
-        
-        Kriteria::create([
-            'nama_kriteria'=>'SSKM',
-            'atribut'=>'benefit',
-            'bobot'=>0.2
+            'nama_kriteria' => 'TOEFL',
+            'atribut' => 'benefit',
+            'bobot' => 0.2,
+            'periode' => '2023'
         ]);
 
         Kriteria::create([
-            'nama_kriteria'=>'Karya Tulis',
-            'atribut'=>'benefit',
-            'bobot'=>0.2
+            'nama_kriteria' => 'SSKM',
+            'atribut' => 'benefit',
+            'bobot' => 0.2,
+            'periode' => '2023'
+        ]);
+
+        Kriteria::create([
+            'nama_kriteria' => 'Karya Tulis',
+            'atribut' => 'benefit',
+            'bobot' => 0.2,
+            'periode' => '2023'
         ]);
     }
 }
