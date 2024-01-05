@@ -5,12 +5,21 @@
 @section('content')
 <div class="container my-3">
     <div class="row justify-content-between align-items-start">
-        <div class="col-md-2 text-start"><h1 class="fw-bold">KRILIN</h1></div>
+        <div class="col-md-2 text-start">
+            <a href="/" style="text-decoration: none;">
+                <h1 class="fw-bold" style="color: black">
+                    KRILIN
+                </h1>
+            </a>
+        </div>
+        @auth
+        @else
         <div class="col-md-2 text-end"><a href="/login" class="btn btn-danger fw-bold">LOGIN</a></div>
+        @endauth
     </div>
 
     <div class="container mx-3">
-        <div class="row text-center mb-3"><h1 class="fw-bold">Mahasiswa Berprestasi</h1></div>
+        <div class="row text-center mb-3"><h1 class="fw-bold" style="color: black">Mahasiswa Berprestasi</h1></div>
         <div class="row text-end mb-3"><div class="col"><button class="btn btn-secondary">Unduh</button></div></div>
         <div class="row">
             <div class="card">

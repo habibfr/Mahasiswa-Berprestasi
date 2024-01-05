@@ -55,9 +55,9 @@ Route::get('/', function () {
   return view('content.homepage.index');
 })->name('homepage');
 
-Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
 
-Route::post('/login', [LoginController::class, 'authenticate'])->name('login_process');
+Route::post('/login', [LoginController::class, 'authenticate'])->name('login_process')->middleware('guest');
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
