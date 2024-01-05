@@ -26,8 +26,6 @@ class LoginController extends Controller
             return redirect()->intended('peringkat')->with('login_success', 'Login successful!');
         }
 
-        return back()->withErrors([
-            'nik' => 'The provided credentials do not match our records.'
-        ]);
+        return back()->with('loginError', 'Login gagal!');
     }
 }

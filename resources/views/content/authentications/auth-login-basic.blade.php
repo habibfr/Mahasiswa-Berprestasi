@@ -16,6 +16,14 @@
         <div class="card-body">
           <h4 class="mb-5 text-center fw-semibold">LOGIN</h4>
 
+          {{-- Flash Login Error --}}
+          @if (session()->has('loginError'))
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{session('loginError')}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+          @endif
+                
           <form id="formAuthentication" class="mb-3" action="{{url('/login')}}" method="post">
             @csrf
             <div class="mb-3">
