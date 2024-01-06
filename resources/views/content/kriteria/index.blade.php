@@ -25,7 +25,7 @@
         </div>
         <div class="col">
             <div class="float-end">
-                <div id="floatingInputHelp mb-2" class="form-text">Tambah kriteria</div>
+                <div id="floatingInputHelp mb-2" class="form-text"></div>
                 <button type="button" class="btn btn-danger">Tambah</button>
             </div>
         </div>
@@ -35,7 +35,6 @@
         <div class="row">
             <div class="col">
                 <div class="float-end">
-                    <div id="floatingInputHelp mb-2" class="form-text">Tambah kriteria</div>
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
                         data-bs-target="#modalAddKriteria">Tambah</button>
                 </div>
@@ -51,28 +50,35 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel1">Edit Kriteria</h5>
+                    <h5 class="modal-title" id="exampleModalLabel1">Tambah Kriteria</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col mb-3">
-                            <label for="nameBasic" class="form-label">Name</label>
+                            <label for="nameBasic" class="form-label">Name Kriteria</label>
                             <input type="text" id="nameBasic" class="form-control" placeholder="Enter Name">
                         </div>
                     <div class="row">
                          <div class="col mb-3">
-                           <label for="emailBasic" class="form-label">Email</label>
-                            <input type="number" step="0.1" max="1" min="0.1" id="emailBasic" class="form-control" placeholder="0.1">
+                           <label for="bobot1Basic" class="form-label">Bobot</label>
+                            <input type="number" step="0.1" max="1" min="0.1" id="bobot1Basic" class="form-control" placeholder="0.1">
                             </div>
                 </div>
+                    <!-- <div class="row">
+                         <div class="col mb-3">
+                           <label for="periode1Basic" class="form-label">Periode</label>
+                            <input type="number" id="periode1Basic" class="form-control">
+                            </div>
+                </div> -->
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger">Save changes</button>
+                    <button type="button" class="btn btn-danger" type="submit">Save changes</button>
                 </div>
             </div>
+            
         </div>
     </div>
 
@@ -128,16 +134,31 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col mb-3">
-                                    <label for="nameBasic" class="form-label">Name</label>
+                                    <label for="nameBasic" class="form-label">Nama Kriteria</label>
                                     <input type="text" id="nameBasic" class="form-control" placeholder="Enter Name">
                                 </div>
                             
                             <div class="row">
                                 <div class="col mb-3">
-                                    <label for="emailBasic" class="form-label">Email</label>
-                                    <input type="number" step="0.1" max="1" min="0.1" id="emailBasic" class="form-control"
+                                    <label for="bobotBasic" class="form-label">Bobot</label>
+                                    <input type="number" step="0.1" max="1" min="0.1" id="bobotBasic" class="form-control"
                                         placeholder="0.1">
                                 </div>
+
+                            <div class="row">
+                                <div class="col mb-3">
+                                    <label for="tipeBasic" class="form-label">Tipe</label>
+                                    <input type="radio" id="benefitBasic" class="form-control" value="Benefit"
+                                        placeholder="Benefit">
+                                    <input type="radio" id="costBasic" class="form-control" value="Cost"
+                                        placeholder="Cost">
+                                </div>
+
+                            <!-- <div class="row">
+                                <div class="col mb-3">
+                                    <label for="periodeBasic" class="form-label">Periode</label>
+                                    <input type="number" id="periodeBasic" class="form-control">
+                                </div> -->
                                 
                             
                         </div>

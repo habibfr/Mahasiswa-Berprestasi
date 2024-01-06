@@ -156,3 +156,4 @@ Route::get('/peringkat', [PeringkatController::class, 'index'])->name('peringkat
 
 // Route for Kriteria
 Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria')->middleware('auth');
+

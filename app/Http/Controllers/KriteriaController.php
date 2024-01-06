@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kriteria;
 use App\Http\Requests\StoreKriteriaRequest;
 use App\Http\Requests\UpdateKriteriaRequest;
+use GuzzleHttp\Psr7\Request;
 
 class KriteriaController extends Controller
 {
@@ -26,6 +27,7 @@ class KriteriaController extends Controller
   public function create()
   {
     //
+    
   }
 
   /**
@@ -34,6 +36,7 @@ class KriteriaController extends Controller
   public function store(StoreKriteriaRequest $request)
   {
     //
+
   }
 
   /**
