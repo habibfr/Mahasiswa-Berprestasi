@@ -12,29 +12,42 @@
         @endif --}}
         @include('layouts.sections.flash')
 
+        @isset($kriterias)
+            @dd($kriterias)
+        @endisset
+
         <div class="row mb-3">
             <div class="col-3">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6 class="form-label">Peringkatan</h6>
-                        <button class="btn btn-secondary form-control" type="submit">Start</button>
+                <form action="/peringkat" method="post">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-6">
+                                <h6 class="form-label">Peringkatan</h6>
+                                <button class="btn btn-secondary form-control" type="submit">Start</button>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="form-label">Jumlah Sorting</h6>
+                            <select name="jumlah_sorting" class="form-select form-control dropdown bg-secondary text-white" aria-label="Default select example" id="jumlah_sorting">
+                                <option value="1" selected>10</option>
+                                <option value="2">20</option>
+                                <option value="3">30</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <h6 class="form-label">Jumlah Sorting</h6>
-                        <select class="form-select form-control dropdown bg-secondary text-white" aria-label="Default select example" id="jumlah_sorting">
-                            <option value="1" selected>10</option>
-                            <option value="2">20</option>
-                            <option value="3">30</option>
-                        </select>
-                    </div>
-                </div>
+                </form>
             </div>
             <div class="col-4 offset-5 align-self-end">
                 <div class="row">
                     <div class="col offset-4">
                         <div class="float-end">
-                            <button class="btn btn-secondary align-self-end">Export</button>
-                            <button class="btn btn-secondary align-self-end">Post</button>
+                            <form action="#" method="post">
+                                @csrf
+                                <button class="btn btn-secondary align-self-end">Export</button>
+                            </form>
+                            <form action="#" method="post">
+                                @csrf
+                                <button type="submit" class="btn btn-secondary align-self-end">Post</button>
+                            </form>
                         </div>
                     </div>
                 </div>
