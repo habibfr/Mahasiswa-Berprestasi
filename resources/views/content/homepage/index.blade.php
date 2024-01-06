@@ -4,6 +4,7 @@
 
 @section('content')
 <div class="container my-3">
+    @include('layouts.sections.flash')
     <div class="row justify-content-between align-items-start">
         <div class="col-md-2 text-start">
             <a href="/" style="text-decoration: none;">
