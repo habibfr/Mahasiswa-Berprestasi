@@ -16,25 +16,36 @@
         @auth
         <div class="col-md-2 text-start">
             <li class="nav dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 20vw;">
                   Hello, {{auth()->user()->name}}
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="/mahasiswa">Mahasiswa</a></li>
-                  <li><a class="dropdown-item" href="/kriteria">Kriteria</a></li>
-                  <li><a class="dropdown-item" href="peringkat">Peringkat</a></li>
+                  <li><a class="dropdown-item" href="/mahasiswa">
+                    <i class='bx bxs-group me-2'></i>Mahasiswa</a></li>
+                  <li><a class="dropdown-item" href="/kriteria">
+                    <i class='bx bx-target-lock me-2'></i>Kriteria</a></li>
+                  <li><a class="dropdown-item" href="peringkat">
+                    <i class='bx bx-trophy me-2'></i>Peringkat</a></li>
                   <li><hr class="dropdown-divider"></li>
                   <li>
                     <form action="{{'logout'}}" method="post">
                         @csrf
-                        <i class="bi bi-box-arrow-right"></i><button type="submit" class="dropdown-item">Logout</button>
+                        <button type="submit" class="dropdown-item">
+                            <i class='bx bx-log-out me-2'></i>
+                            Logout
+                        </button>
                     </form>
                   </li>
                 </ul>
             </li>
         </div>
         @else
-        <div class="col-md-2 text-end"><a href="/login" class="btn btn-danger fw-bold">LOGIN</a></div>
+        <div class="col-md-2 text-end">
+            <a href="/login" class="btn btn-danger fw-bold d-flex align-items-center">
+                <i class='bx bx-log-in me-2'></i>
+                <span>LOGIN</span>
+            </a>
+        </div>
         @endauth
     </div>
 

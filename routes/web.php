@@ -48,6 +48,7 @@ use App\Http\Controllers\tables\Basic as TablesBasic;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\PeringkatController;
 
 // Main Page Route
@@ -61,7 +62,7 @@ Route::get('/login', [LoginController::class, 'index'])->name('login')->middlewa
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login_process')->middleware('guest');
 
 // route untuk process logout
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
+Route::post('/logout', [LogoutController::class, 'logout'])->name('logout')->middleware('auth');
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
@@ -152,6 +153,12 @@ Route::post('/mahasiswa/delete/{id}', [MahasiswaController::class, 'destroy']);
 
 // Route for Peringkat
 Route::get('/peringkat', [PeringkatController::class, 'index'])->name('peringkat')->middleware('auth');
+
+// route for normalize
+Route::post('/peringkat', [PeringkatController::class, 'result_alternative'])->name('normalize')->middleware('auth');
+
+// route untuk publish mahasiswa berprestasi
+Route::post('/peringkat/publish', [PeringkatController::class, 'publish'])->name('publish')->middleware('auth');
 
 // Route for Kriteria
 Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria')->middleware('auth');
