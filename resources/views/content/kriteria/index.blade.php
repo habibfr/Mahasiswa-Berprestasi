@@ -64,13 +64,35 @@
                            <label for="bobot1Basic" class="form-label">Bobot</label>
                             <input type="number" step="0.1" max="1" min="0.1" id="bobot1Basic" class="form-control" placeholder="0.1">
                             </div>
-                </div>
-                    <!-- <div class="row">
+                    </div>
+                    <div class="row">
+                                <div class="col mb-3">
+                                    <label for="tipeBasic" class="form-label">Tipe</label>
+                                </div>
+                            <div class="row">
+                                <div class="col mb-3">
+                                <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="benefit" checked>
+                                        <label class="form-check-label" for="exampleRadios1">
+                                            Benefit
+                                        </label>
+                                        </div>
+                                        <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="cost">
+                                        <label class="form-check-label" for="exampleRadios2">
+                                            Cost
+                                        </label>
+                                        </div>
+                                    </div>
+                                </div>
+                    </div>
+
+                    <div class="row">
                          <div class="col mb-3">
                            <label for="periode1Basic" class="form-label">Periode</label>
-                            <input type="number" id="periode1Basic" class="form-control">
+                            <input type="number" id="periode1Basic" class="form-control" min="2000">
                             </div>
-                </div> -->
+                </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -93,6 +115,7 @@
                         <th>No</th>
                         <th>Nama</th>
                         <th>Bobot</th>
+                        <th>Periode</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -104,6 +127,7 @@
                         <td>{{ $loop->index + 1 }}</td>
                         <td>{{$data->nama_kriteria}}</td>
                         <td>{{$data->bobot}}</td>
+                        <td>{{$data->periode}}</td>
                         <td>
                             <div class="inline">
                                 <span class="text-success" data-bs-toggle="modal" data-bs-target="#modalEditKriteria"><i
@@ -137,28 +161,41 @@
                                     <label for="nameBasic" class="form-label">Nama Kriteria</label>
                                     <input type="text" id="nameBasic" class="form-control" placeholder="Enter Name">
                                 </div>
-                            
+                            </div>
                             <div class="row">
                                 <div class="col mb-3">
                                     <label for="bobotBasic" class="form-label">Bobot</label>
                                     <input type="number" step="0.1" max="1" min="0.1" id="bobotBasic" class="form-control"
                                         placeholder="0.1">
                                 </div>
+                            </div>
 
                             <div class="row">
                                 <div class="col mb-3">
                                     <label for="tipeBasic" class="form-label">Tipe</label>
-                                    <input type="radio" id="benefitBasic" class="form-control" value="Benefit"
-                                        placeholder="Benefit">
-                                    <input type="radio" id="costBasic" class="form-control" value="Cost"
-                                        placeholder="Cost">
+                                </div>
+                            <div class="row">
+                                <div class="col mb-3">
+                                <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="benefit" checked>
+                                        <label class="form-check-label" for="exampleRadios1">
+                                            Benefit
+                                        </label>
+                                        </div>
+                                        <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="cost">
+                                        <label class="form-check-label" for="exampleRadios2">
+                                            Cost
+                                        </label>
+                                        </div>
+                                    </div>
                                 </div>
 
-                            <!-- <div class="row">
+                            <div class="row">
                                 <div class="col mb-3">
                                     <label for="periodeBasic" class="form-label">Periode</label>
-                                    <input type="number" id="periodeBasic" class="form-control">
-                                </div> -->
+                                    <input type="number" id="periodeBasic" class="form-control" min="2000">
+                                </div>
                                 
                             
                         </div>

@@ -4,12 +4,13 @@
 
 @section('content')
     <div class="container">
-        @if (session()->has('login_success'))
+        {{-- @if (session()->has('login_success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('login_success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        @endif
+        @endif --}}
+        @include('layouts.sections.flash')
 
         <div class="row mb-3">
             <div class="col-3">

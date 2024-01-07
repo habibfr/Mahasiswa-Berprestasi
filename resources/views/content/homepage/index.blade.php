@@ -4,6 +4,7 @@
 
 @section('content')
 <div class="container my-3">
+    @include('layouts.sections.flash')
     <div class="row justify-content-between align-items-start">
         <div class="col-md-2 text-start">
             <a href="/" style="text-decoration: none;">
@@ -53,36 +54,16 @@
                     </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                    <tr>
-                        <td>1</td>
-                        <td>XXXXXXXXXXX</td>
-                        <td>Muhammad Haris</td>
-                        <td>100</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>XXXXXXXXXXX</td>
-                        <td>Muhammad Maulana</td>
-                        <td>95</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>XXXXXXXXXXX</td>
-                        <td>Muhammad Kholiq</td>
-                        <td>93</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>XXXXXXXXXXX</td>
-                        <td>Muhammad Abi</td>
-                        <td>90</td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>XXXXXXXXXXX</td>
-                        <td>Muhammad Ansyah</td>
-                        <td>89</td>
-                    </tr>
+                    @isset($data) 
+                        @foreach ($data as $item)
+                        <tr>
+                            <td>{{$item->peringkat}}</td>
+                            <td>{{$item->nim}}</td>
+                            <td>{{$item->nama}}</td>
+                            <td>{{$item->poin}}</td>
+                        </tr>
+                        @endforeach
+                    @endisset
                     </tbody>
                 </table>
                 </div>
