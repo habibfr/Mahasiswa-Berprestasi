@@ -19,7 +19,7 @@ return new class extends Migration
       $table->integer('peringkat');
       $table->float('poin');
       $table->enum('status', ['aktif', 'tidak aktif']);
-      // $table->year('periode');
+      $table->year('periode');
       $table->timestamps();
     });
   }

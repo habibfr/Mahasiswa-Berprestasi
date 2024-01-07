@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hasil;
 use App\Models\Kriteria;
 use App\Models\Mahasiswa;
 use App\Models\Nilai;
 use Illuminate\Http\Request;
 
+use function PHPSTORM_META\map;
+use function PHPUnit\Framework\isNull;
+
 class PeringkatController extends Controller
 {
+  private $totalscoresmahasiswa;
+  private $kriterias;
   public function index()
   {
     $kriterias = Kriteria::where('periode', '2023')->get();
@@ -52,10 +58,11 @@ class PeringkatController extends Controller
     return $array_of_normalized;
   }
 
-  public function result_alternative(Request $request)
+  private function get_result_alternative($jumlah_sorting)
   {
     // $kriterias = Kriteria::where('periode', date('Y'))->get();
     $kriterias = Kriteria::where('periode', '2023');
+    $this->kriterias = $kriterias->get();
 
     $normalized_matrixes = [];
 
@@ -97,7 +104,7 @@ class PeringkatController extends Controller
 
     arsort($totalScoresByMahasiswa);
 
-    $totalScoresByMahasiswa = array_slice($totalScoresByMahasiswa, 0, $request->jumlah_sorting, true);
+    $totalScoresByMahasiswa = array_slice($totalScoresByMahasiswa, 0, $jumlah_sorting, true);
 
     $mahasiswas = $mahasiswas->join('nilais', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
       ->join('kriterias', 'kriterias.id', '=', 'nilais.kriteria_id')
@@ -106,8 +113,9 @@ class PeringkatController extends Controller
 
     foreach ($mahasiswas as $mahasiswa) {
       $mahasiswaId = $mahasiswa->mahasiswa_id;
-      
+
       if (isset($totalScoresByMahasiswa[$mahasiswaId])) {
+        $totalScoresByMahasiswa[$mahasiswaId]->id = $mahasiswa->mahasiswa_id;
         $totalScoresByMahasiswa[$mahasiswaId]->nim = $mahasiswa->nim;
         $totalScoresByMahasiswa[$mahasiswaId]->nama = $mahasiswa->nama;
         foreach ($kriterias->get() as $kriteria) {
@@ -118,6 +126,49 @@ class PeringkatController extends Controller
       }
     }
 
-    return view('content.peringkat.index', ['judul' => 'Peringkat', 'matrix' => $totalScoresByMahasiswa, 'kriterias' => $kriterias->get()]);
+    $this->totalscoresmahasiswa = $totalScoresByMahasiswa;
+  }
+  public function result_alternative(Request $request)
+  {
+    $this->get_result_alternative($request->jumlah_sorting);
+
+    return view('content.peringkat.index', [
+      'judul' => 'Peringkat',
+      'matrix' => $this->totalscoresmahasiswa,
+      'kriterias' => $this->kriterias,
+      'jumlah_sorting' => $request->jumlah_sorting
+    ]);
+  }
+
+  public function publish(Request $request)
+  {
+    $this->get_result_alternative($request->jumlah_sorting);
+
+    Hasil::where('status', 'aktif')->update(['status' => 'tidak aktif']);
+
+    $array_of_hasil = [];
+    $peringkat = 1;
+
+    array_map(function ($scoresmahasiswa) use (&$array_of_hasil, &$peringkat) {
+      array_push($array_of_hasil, [
+        'mahasiswa_id' => $scoresmahasiswa->id,
+        'peringkat' => $peringkat,
+        'poin' => $scoresmahasiswa->poin,
+        'periode' => date('Y'),
+        'status' => 'aktif',
+        'created_at' => now(),
+        'updated_at' => now(),
+      ]);
+      $peringkat++;
+    }, $this->totalscoresmahasiswa);
+
+    // var_dump($array_of_hasil);
+    Hasil::insert($array_of_hasil);
+
+    return back()->with('publised', 'Berhasil dipublish');
+    // return view('content.peringkat.index', [
+    //   'judul' => 'Peringkat',
+    //   'hasil' => $this->totalscoresmahasiswa
+    // ]);
   }
 }

@@ -8,7 +8,9 @@
                 <div class="position-absolute" style="top: 0; right: 0;">
                     <form action="{{'logout'}}" method="post">
                         @csrf
-                        <button class="btn btn-outline-danger">Logout</button>
+                        <button class="btn btn-outline-danger">
+                        <i class='bx bx-log-out me-2'></i>
+                            Logout</button>
                     </form>
                 </div>
             </h1>

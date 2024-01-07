@@ -5,7 +5,9 @@
 @section('content')
     <div class="container">
         @include('layouts.sections.flash')
-
+        @isset($hasil)
+        @dd($hasil)
+        @endisset
         <div class="row mb-3">
             <div class="col-3">
                 <form action="/peringkat" method="post">
@@ -13,14 +15,14 @@
                     <div class="row">
                         <div class="col-md-6">
                                 <h6 class="form-label">Peringkatan</h6>
-                                <button class="btn btn-secondary form-control" type="submit">Start</button>
+                                <button class="btn btn-secondary form-control" type="submit"><i class='bx bxs-flag-checkered me-2'></i>Start</button>
                         </div>
                         <div class="col-md-6">
                             <h6 class="form-label">Jumlah Sorting</h6>
                             <select name="jumlah_sorting" class="form-select form-control dropdown bg-secondary text-white" aria-label="Default select example" id="jumlah_sorting">
-                                <option value="10" selected>10</option>
-                                <option value="20">20</option>
-                                <option value="30">30</option>
+                                <option value="10" {{isset($jumlah_sorting)&&$jumlah_sorting==10?'selected':''}}>10</option>
+                                <option value="20" {{isset($jumlah_sorting)&&$jumlah_sorting==20?'selected':''}}>20</option>
+                                <option value="30" {{isset($jumlah_sorting)&&$jumlah_sorting==30?'selected':''}}>30</option>
                             </select>
                         </div>
                     </div>
@@ -28,17 +30,21 @@
             </div>
             <div class="col-4 offset-5 align-self-end">
                 <div class="row">
-                    <div class="col offset-4">
+                    <div class="col offset-2">
                         <div class="float-end">
                             <!-- Tombol "Export" -->
                             <form action="#" method="post" class="d-inline-block">
                                 @csrf
-                                <button class="btn btn-secondary align-self-end">Export</button>
+                                <button class="btn btn-secondary align-self-end">
+                                    <i class='bx bx-download me-2'></i>Export</button>
                             </form>
                             <!-- Tombol "Post" dengan margin kiri -->
                             <form action="peringkat/publish" method="post" class="d-inline-block ml-2">
                                 @csrf
-                                <button type="submit" class="btn btn-secondary align-self-end">Post</button>
+                                <input type="hidden" name="jumlah_sorting" value="{{ $jumlah_sorting ?? 10 }}"> <!-- Ganti 10 dengan nilai default yang diinginkan -->
+
+                                <button type="submit" class="btn btn-secondary align-self-end">
+                                    <i class='bx bx-upload me-2'></i>Post</button>
                             </form>
                         </div>
                     </div>

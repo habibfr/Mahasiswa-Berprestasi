@@ -24,7 +24,7 @@ class HasilSeeder extends Seeder
                 'peringkat' => $peringkat,
                 'poin' => $poin,
                 'status' => $peringkat < 11 ? 'aktif' : 'tidak aktif',
-                // 'periode' => '2023',
+                'periode' => '2023',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

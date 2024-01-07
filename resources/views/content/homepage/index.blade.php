@@ -3,7 +3,7 @@
 @section('title', 'Homepage')
 
 @section('content')
-<div class="container my-3">
+<div class="container mt-3 mb-5">
     @include('layouts.sections.flash')
     <div class="row justify-content-between align-items-start">
         <div class="col-md-2 text-start">

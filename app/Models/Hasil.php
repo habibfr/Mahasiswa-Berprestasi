@@ -12,6 +12,15 @@ class Hasil extends Model
 
   protected $with = ['mahasiswas'];
 
+  protected $fillable = [
+    'mahasiswa_id',
+    'peringkat',
+    'poin',
+    'status',
+    'updated_at',
+    'created_at'
+  ];
+
   public function mahasiswa()
   {
     return $this->belongsTo(Mahasiswa::class);
