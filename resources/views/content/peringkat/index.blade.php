@@ -6,10 +6,6 @@
     <div class="container">
         @include('layouts.sections.flash')
 
-        @isset($matrix)
-            @dd($matrix)
-        @endisset
-
         <div class="row mb-3">
             <div class="col-3">
                 <form action="/peringkat" method="post">
@@ -22,9 +18,9 @@
                         <div class="col-md-6">
                             <h6 class="form-label">Jumlah Sorting</h6>
                             <select name="jumlah_sorting" class="form-select form-control dropdown bg-secondary text-white" aria-label="Default select example" id="jumlah_sorting">
-                                <option value="1" selected>10</option>
-                                <option value="2">20</option>
-                                <option value="3">30</option>
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
                             </select>
                         </div>
                     </div>
@@ -34,11 +30,13 @@
                 <div class="row">
                     <div class="col offset-4">
                         <div class="float-end">
-                            <form action="#" method="post">
+                            <!-- Tombol "Export" -->
+                            <form action="#" method="post" class="d-inline-block">
                                 @csrf
                                 <button class="btn btn-secondary align-self-end">Export</button>
                             </form>
-                            <form action="../publish" method="post">
+                            <!-- Tombol "Post" dengan margin kiri -->
+                            <form action="peringkat/publish" method="post" class="d-inline-block ml-2">
                                 @csrf
                                 <button type="submit" class="btn btn-secondary align-self-end">Post</button>
                             </form>
@@ -50,7 +48,7 @@
 
         {{-- Table Peringkat --}}
         <!-- Basic Bootstrap Table -->
-        <div class="card">
+        <div class="card mb-5">
             <div class="table-responsive text-nowrap">
             <table class="table">
                 <thead>
@@ -58,52 +56,34 @@
                     <th>No</th>
                     <th>NIM</th>
                     <th>Nama</th>
-                    <th>IPK</th>
-                    <th>SSKM</th>
-                    <th>TOEFL</th>
+                    @isset($kriterias)
+                        @foreach ($kriterias as $item)
+                        <th>{{$item->nama_kriteria}}</th>
+                        @endforeach
+                    @endisset
+                    <th>Poin</th>
                 </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
-                <tr>
-                    <td>1</td>
-                    <td>XXXXXXXXXXX</td>
-                    <td>Muhammad Haris</td>
-                    <td>4.0</td>
-                    <td>200</td>
-                    <td>500</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>XXXXXXXXXXX</td>
-                    <td>Muhammad Maulana</td>
-                    <td>3.9</td>
-                    <td>200</td>
-                    <td>510</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>XXXXXXXXXXX</td>
-                    <td>Muhammad Kholiq</td>
-                    <td>3.87</td>
-                    <td>220</td>
-                    <td>500</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>XXXXXXXXXXX</td>
-                    <td>Muhammad Abi</td>
-                    <td>3.85</td>
-                    <td>200</td>
-                    <td>500</td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>XXXXXXXXXXX</td>
-                    <td>Muhammad Ansyah</td>
-                    <td>3.8</td>
-                    <td>200</td>
-                    <td>505</td>
-                </tr>
+                    @isset($matrix)
+                    @foreach ($matrix as $index => $item)
+                    <tr>
+                        <td>{{$loop->iteration}}</td>
+                        <td>{{$item->nim}}</td>
+                        <td>{{$item->nama}}</td>
+                        @foreach ($kriterias as $kriteria)
+                            <td>{{$item->{$kriteria->nama_kriteria} ?? '-' }}</td>
+                        @endforeach
+                        <td>{{$item->poin}}</td>
+                    </tr>
+                    @endforeach
+                    @else
+                    <tr>
+                        <td class="text-center">
+                            Tidak ada data
+                        </td>
+                    </tr>
+                    @endisset
                 </tbody>
             </table>
             </div>

@@ -157,5 +157,8 @@ Route::get('/peringkat', [PeringkatController::class, 'index'])->name('peringkat
 // route for normalize
 Route::post('/peringkat', [PeringkatController::class, 'result_alternative'])->name('normalize')->middleware('auth');
 
+// route untuk publish mahasiswa berprestasi
+Route::post('/peringkat/publish', [PeringkatController::class, 'publish'])->name('publish')->middleware('auth');
+
 // Route for Kriteria
 Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria')->middleware('auth');
