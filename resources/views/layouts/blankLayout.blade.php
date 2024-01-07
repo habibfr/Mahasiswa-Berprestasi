@@ -1,7 +1,7 @@
 @extends('layouts/commonMaster')
 
 @section('layoutContent')
-    @include('layouts.sections.navbar')
+@include('layouts.sections.navbar')
 
     <div class="container">
         <!-- Content -->

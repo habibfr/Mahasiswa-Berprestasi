@@ -4,16 +4,10 @@
 
 @section('content')
     <div class="container">
-        {{-- @if (session()->has('login_success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('login_success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        @endif --}}
         @include('layouts.sections.flash')
 
-        @isset($kriterias)
-            @dd($kriterias)
+        @isset($matrix)
+            @dd($matrix)
         @endisset
 
         <div class="row mb-3">
@@ -44,7 +38,7 @@
                                 @csrf
                                 <button class="btn btn-secondary align-self-end">Export</button>
                             </form>
-                            <form action="#" method="post">
+                            <form action="../publish" method="post">
                                 @csrf
                                 <button type="submit" class="btn btn-secondary align-self-end">Post</button>
                             </form>
