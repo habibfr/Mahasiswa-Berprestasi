@@ -5,28 +5,25 @@
 @section('content')
     <div class="container">
         @include('layouts.sections.flash')
-        @isset($hasil)
-        @dd($hasil)
-        @endisset
         <div class="row mb-3">
             <div class="col-3">
-                <form action="/peringkat" method="post">
+                <form action="/peringkat" method="post" id="sortingForm">
                     @csrf
                     <div class="row">
-                        <div class="col-md-6">
-                                <h6 class="form-label">Peringkatan</h6>
-                                <button class="btn btn-secondary form-control" type="submit"><i class='bx bxs-flag-checkered me-2'></i>Start</button>
-                        </div>
-                        <div class="col-md-6">
-                            <h6 class="form-label">Jumlah Sorting</h6>
-                            <select name="jumlah_sorting" class="form-select form-control dropdown bg-secondary text-white" aria-label="Default select example" id="jumlah_sorting">
-                                <option value="10" {{isset($jumlah_sorting)&&$jumlah_sorting==10?'selected':''}}>10</option>
-                                <option value="20" {{isset($jumlah_sorting)&&$jumlah_sorting==20?'selected':''}}>20</option>
-                                <option value="30" {{isset($jumlah_sorting)&&$jumlah_sorting==30?'selected':''}}>30</option>
-                            </select>
+                        <div class="col-md-8">
+                            <h6 class="form-label">Jumlah Mahasiswa</h6>
+                            <div class="input-group">
+                                <input name="jumlah_sorting" class="form-control" placeholder="Masukkan jumlah" type="number" list="sorting" id="jumlah_sorting" onchange="document.getElementById('sortingForm').submit();">
+                                <datalist id="sorting">
+                                    <option value="5" {{isset($jumlah_sorting)&&$jumlah_sorting==5?'selected':''}}>5</option>
+                                    <option value="10" {{isset($jumlah_sorting)&&$jumlah_sorting==10?'selected':''}}>10</option>
+                                    <option value="20" {{isset($jumlah_sorting)&&$jumlah_sorting==20?'selected':''}}>20</option>
+                                    <option value="30" {{isset($jumlah_sorting)&&$jumlah_sorting==30?'selected':''}}>30</option>
+                                </datalist>
+                            </div>
                         </div>
                     </div>
-                </form>
+                </form>                
             </div>
             <div class="col-4 offset-5 align-self-end">
                 <div class="row">
@@ -55,6 +52,11 @@
         {{-- Table Peringkat --}}
         <!-- Basic Bootstrap Table -->
         <div class="card mb-5">
+            @isset($data_sebelumnya)
+            <div class="card-header">
+                <h5>Peringkat Mahasiswa Sebelumnya</h5>
+            </div>
+            @endisset
             <div class="table-responsive text-nowrap">
             <table class="table">
                 <thead>

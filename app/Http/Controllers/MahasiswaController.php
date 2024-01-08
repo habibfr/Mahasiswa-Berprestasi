@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kriteria;
 use Illuminate\Http\Request;
 use App\Models\Mahasiswa\Nilai;
 use App\Models\Mahasiswa;
@@ -16,11 +17,44 @@ class MahasiswaController extends Controller
 {
   public function index()
   {
-    $data = Mahasiswa::all();
+    // $data = Mahasiswa::
+    //   leftJoin('nilais', 'nilais.mahasiswa_id', '=', 'mahasiswas.id');
+    $kriterias = Kriteria::where('periode', '2023')->get();
 
-    // dd($data);
+    $hasil = [];
 
-    return view('content.mahasiswa.index', ['data' => $data, 'judul' => 'Mahasiswa']);
+    $mahasiswas = Mahasiswa::leftJoin('nilais', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
+      ->leftJoin('kriterias', 'kriterias.id', '=', 'nilais.kriteria_id')
+      ->select(
+        'mahasiswas.id as mahasiswa_id',
+        'mahasiswas.nim',
+        'mahasiswas.nama',
+        'nilais.nilai',
+        'kriterias.nama_kriteria'
+      )
+      ->get();
+
+    foreach ($mahasiswas as $mahasiswa) {
+      $mahasiswaId = $mahasiswa->mahasiswa_id;
+
+      if (!isset($hasil[$mahasiswaId])) {
+        $hasil[$mahasiswaId] = (object) [
+          'id' => $mahasiswaId,
+          'nim' => $mahasiswa->nim,
+          'nama' => $mahasiswa->nama,
+        ];
+      }
+
+      if (!empty($mahasiswa->nama_kriteria)) {
+        $hasil[$mahasiswaId]->{$mahasiswa->nama_kriteria} = $mahasiswa->nilai;
+      }
+
+      $hasil[$mahasiswaId]->poin = $mahasiswa->poin;
+    }
+
+    // dd($hasil);
+
+    return view('content.mahasiswa.index', ['kriterias' => $kriterias, 'data' => $hasil, 'judul' => 'Mahasiswa']);
   }
 
   function importData(Request $request)

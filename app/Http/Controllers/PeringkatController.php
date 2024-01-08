@@ -19,7 +19,47 @@ class PeringkatController extends Controller
   {
     $kriterias = Kriteria::where('periode', '2023')->get();
 
-    return view('content.peringkat.index', ['judul' => 'Peringkat', 'kriterias' => $kriterias]);
+    $hasil = [];
+
+    $mahasiswas = Mahasiswa::leftJoin('nilais', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
+      ->leftJoin('hasils', 'hasils.mahasiswa_id', '=', 'mahasiswas.id')
+      ->leftJoin('kriterias', 'kriterias.id', '=', 'nilais.kriteria_id')
+      ->select(
+        'mahasiswas.id as mahasiswa_id',
+        'mahasiswas.nim',
+        'mahasiswas.nama',
+        'nilais.nilai',
+        'kriterias.nama_kriteria',
+        'hasils.poin'
+      )
+      ->where('hasils.status', 'aktif')
+      ->orderBy('hasils.peringkat', 'asc')
+      ->get();
+
+    foreach ($mahasiswas as $mahasiswa) {
+      $mahasiswaId = $mahasiswa->mahasiswa_id;
+
+      if (!isset($hasil[$mahasiswaId])) {
+        $hasil[$mahasiswaId] = (object) [
+          'id' => $mahasiswaId,
+          'nim' => $mahasiswa->nim,
+          'nama' => $mahasiswa->nama,
+        ];
+      }
+
+      if (!empty($mahasiswa->nama_kriteria)) {
+        $hasil[$mahasiswaId]->{$mahasiswa->nama_kriteria} = $mahasiswa->nilai;
+      }
+
+      $hasil[$mahasiswaId]->poin = $mahasiswa->poin;
+    }
+
+    return view('content.peringkat.index', [
+      'judul' => 'Peringkat',
+      'kriterias' => $kriterias,
+      'matrix' => $hasil,
+      'data_sebelumnya' => true,
+    ]);
   }
 
   public function normalization_per_kriteria(Kriteria $kriteria)
@@ -38,20 +78,26 @@ class PeringkatController extends Controller
 
       foreach ($nilais->cursor() as $nilai) {
         $ratio = $nilai->nilai / $maxnilais;
-        array_push($array_of_normalized, (object) [
-          'id_mahasiswa' => $nilai->mahasiswa_id,
-          'ratio' => $ratio,
-        ]);
+        array_push(
+          $array_of_normalized,
+          (object) [
+            'id_mahasiswa' => $nilai->mahasiswa_id,
+            'ratio' => $ratio,
+          ]
+        );
       }
-    } else if (strcasecmp($kriteria->atribut, 'Cost') == 0) {
+    } elseif (strcasecmp($kriteria->atribut, 'Cost') == 0) {
       $minnilais = $nilais->min('nilai');
 
       foreach ($nilais->cursor() as $nilai) {
         $ratio = $minnilais / $nilai;
-        array_push($array_of_normalized, (object) [
-          'id_mahasiswa' => $nilai->mahasiswa_id,
-          'ratio' => $ratio,
-        ]);
+        array_push(
+          $array_of_normalized,
+          (object) [
+            'id_mahasiswa' => $nilai->mahasiswa_id,
+            'ratio' => $ratio,
+          ]
+        );
       }
     }
 
@@ -68,20 +114,23 @@ class PeringkatController extends Controller
 
     foreach ($kriterias->cursor() as $kriteria) {
       $nama_kriteria = $kriteria->nama_kriteria;
-      array_push($normalized_matrixes, (object) [
-        'id' => $kriteria->id,
-        'nama_kriteria' => $nama_kriteria,
-        'bobot' => $kriteria->bobot,
-        'ratios' => $this->normalization_per_kriteria($kriteria),
-      ]);
+      array_push(
+        $normalized_matrixes,
+        (object) [
+          'id' => $kriteria->id,
+          'nama_kriteria' => $nama_kriteria,
+          'bobot' => $kriteria->bobot,
+          'ratios' => $this->normalization_per_kriteria($kriteria),
+        ]
+      );
     }
 
     $mahasiswas = Mahasiswa::where('status', 'aktif');
 
-    $collections_of_calc = (object)[];
+    $collections_of_calc = (object) [];
 
     foreach ($normalized_matrixes as $ratio_and_kriteria) {
-      $array_of_ratio = (object)[];
+      $array_of_ratio = (object) [];
       foreach ($ratio_and_kriteria->ratios as $ratio) {
         $array_of_ratio->{$ratio->id_mahasiswa} = $ratio->ratio * $ratio_and_kriteria->bobot;
       }
@@ -99,14 +148,15 @@ class PeringkatController extends Controller
         }
       }
 
-      $totalScoresByMahasiswa[$mahasiswa->id] = (object)['poin' => $totalScore];
+      $totalScoresByMahasiswa[$mahasiswa->id] = (object) ['poin' => $totalScore];
     }
 
     arsort($totalScoresByMahasiswa);
 
     $totalScoresByMahasiswa = array_slice($totalScoresByMahasiswa, 0, $jumlah_sorting, true);
 
-    $mahasiswas = $mahasiswas->join('nilais', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
+    $mahasiswas = $mahasiswas
+      ->join('nilais', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
       ->join('kriterias', 'kriterias.id', '=', 'nilais.kriteria_id')
       ->whereIn('mahasiswas.id', array_keys($totalScoresByMahasiswa))
       ->get();
@@ -130,19 +180,19 @@ class PeringkatController extends Controller
   }
   public function result_alternative(Request $request)
   {
-    $this->get_result_alternative($request->jumlah_sorting);
+    $this->get_result_alternative($request->jumlah_sorting ?? 10);
 
     return view('content.peringkat.index', [
       'judul' => 'Peringkat',
       'matrix' => $this->totalscoresmahasiswa,
       'kriterias' => $this->kriterias,
-      'jumlah_sorting' => $request->jumlah_sorting
+      'jumlah_sorting' => $request->jumlah_sorting,
     ]);
   }
 
   public function publish(Request $request)
   {
-    $this->get_result_alternative($request->jumlah_sorting);
+    $this->get_result_alternative($request->jumlah_sorting ?? 10);
 
     Hasil::where('status', 'aktif')->update(['status' => 'tidak aktif']);
 
@@ -162,13 +212,8 @@ class PeringkatController extends Controller
       $peringkat++;
     }, $this->totalscoresmahasiswa);
 
-    // var_dump($array_of_hasil);
     Hasil::insert($array_of_hasil);
 
-    return back()->with('publised', 'Berhasil dipublish');
-    // return view('content.peringkat.index', [
-    //   'judul' => 'Peringkat',
-    //   'hasil' => $this->totalscoresmahasiswa
-    // ]);
+    return back()->with('published', 'Berhasil dipublish');
   }
 }

@@ -129,27 +129,25 @@
                         </th>
                         <th class="sorting" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
                             aria-label="Office: activate to sort column ascending" style="width: 66px;">Nama</th>
-                        <th class="sorting" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
-                            aria-label="Age: activate to sort column ascending" style="width: 26px;">IPK</th>
-                        <th class="sorting" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
-                            aria-label="Start date: activate to sort column ascending" style="width: 53px;">SSKM
-                        </th>
-                        <th class="sorting" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
-                            aria-label="Salary: activate to sort column ascending" style="width: 55px;">TOEFL</th>
+                        @isset($kriterias)
+                            @foreach ($kriterias as $item)
+                            <th class="sorting" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
+                                aria-label="Age: activate to sort column ascending" style="width: 26px;">{{$item->nama_kriteria}}</th>
+                            @endforeach
+                        @endisset
                         <th class="sorting" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
                             aria-label="Salary: activate to sort column ascending" style="width: 55px;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($data as $key => $mahasiswa)
-                        {{-- @dd($mahasiswa->nilai->IPK) --}}
                         <tr>
-                            <td>{{ ++$key }}</td>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $mahasiswa->nim }}</td>
                             <td>{{ $mahasiswa->nama }}</td>
-                            <td>{{ $mahasiswa->nilai->IPK }}</td>
-                            <td>{{ $mahasiswa->nilai->SSKM }}</td>
-                            <td>{{ $mahasiswa->nilai->TOEFL }}</td>
+                            @foreach ($kriterias as $kriteria)
+                                <td>{{$mahasiswa->{$kriteria->nama_kriteria} ?? '-' }}</td>
+                            @endforeach
                             <td>
                                 <div class="inline">
                                     <span data-id="{{ $mahasiswa->id }}" class="text-success btnEdit"
