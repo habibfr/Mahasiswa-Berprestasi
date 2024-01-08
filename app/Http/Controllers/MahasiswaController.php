@@ -17,8 +17,9 @@ class MahasiswaController extends Controller
 {
   public function index()
   {
-    // $data = Mahasiswa::
-    //   leftJoin('nilais', 'nilais.mahasiswa_id', '=', 'mahasiswas.id');
+    $jurusan = Mahasiswa::distinct()
+      ->pluck('jurusan');
+
     $kriterias = Kriteria::where('periode', '2023')->get();
 
     $hasil = [];
@@ -54,7 +55,12 @@ class MahasiswaController extends Controller
 
     // dd($hasil);
 
-    return view('content.mahasiswa.index', ['kriterias' => $kriterias, 'data' => $hasil, 'judul' => 'Mahasiswa']);
+    return view('content.mahasiswa.index', [
+      'jurusan' => $jurusan,
+      'kriterias' => $kriterias,
+      'data' => $hasil,
+      'judul' => 'Mahasiswa',
+    ]);
   }
 
   function importData(Request $request)

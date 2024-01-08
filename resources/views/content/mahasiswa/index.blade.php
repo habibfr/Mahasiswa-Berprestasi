@@ -64,17 +64,19 @@
                 <form action="{{ route('mahasiswa.filter') }}" method="GET">
                     @csrf
                     <div class="btn-group">
-                        <select id="defaultSelect" class="form-select btn-outline-secondary" name="jurusan">
-                            <option value="0">Pilih Jurusan</option>
-                            <option value="1">Sistem Infromasi</option>
+                        <select id="jurusan_filter" multiple data-search-live="true" class="form-select btn-outline-secondary" name="jurusan_filter">
+                            <option value="0" selected>Pilih Jurusan</option>
+                            @foreach ($jurusan as $item)
+                                <option value="{{$item}}">{{$item}}</option>
+                            @endforeach
+                            {{-- <option value="1">Sistem Infromasi</option>
                             <option value="2">S1 Desain Komunikasi Visual</option>
-                            <option value="3">S1 Teknik Komputer</option>
+                            <option value="3">S1 Teknik Komputer</option> --}}
                         </select>
 
 
                         <input class="form-control mx-2 btn-outline-secondary w-50" autocomplete="off" name="angkatan"
-                            min="2015" max="2023" id="year-filter">
-
+                            min="2015" max="{{now()->format('Y')}}" id="year-filter">
 
                     </div>
                     <button type="submit" class="btn btn-secondary">Filter</button>
@@ -82,6 +84,9 @@
 
             </div>
 
+            <script>
+                document.getElementById('jurusan_filter').selectpicker()
+            </script>
         </div>
         <div class="col">
             <div class="float-end">
