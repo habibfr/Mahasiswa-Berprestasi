@@ -53,16 +53,18 @@
                     <h5 class="modal-title" id="exampleModalLabel1">Tambah Kriteria</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+                <form action="/inkriteria" method="post">
+                @csrf
                 <div class="modal-body">
                     <div class="row">
                         <div class="col mb-3">
-                            <label for="nameBasic" class="form-label">Name Kriteria</label>
-                            <input type="text" id="nameBasic" class="form-control" placeholder="Enter Name">
+                            <label for="nameBasic" class="form-label">Nama Kriteria</label>
+                            <input type="text" id="name1Basic" class="form-control" name="nama_kriteria" placeholder="Enter Name">
                         </div>
                     <div class="row">
                          <div class="col mb-3">
                            <label for="bobot1Basic" class="form-label">Bobot</label>
-                            <input type="number" step="0.1" max="1" min="0.1" id="bobot1Basic" class="form-control" placeholder="0.1">
+                            <input type="number" step="0.1" max="1" min="0.1" id="bobot1Basic" name="bobot" class="form-control" placeholder="0.1">
                             </div>
                     </div>
                     <div class="row">
@@ -72,35 +74,36 @@
                             <div class="row">
                                 <div class="col mb-3">
                                 <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="benefit" checked>
+                                        <input class="form-check-input" type="radio" name="atribut" id="exampleRadios1" name="benefit" value="benefit" checked>
                                         <label class="form-check-label" for="exampleRadios1">
                                             Benefit
                                         </label>
                                         </div>
                                         <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="cost">
+                                        <input class="form-check-input" type="radio" name="atribut" id="exampleRadios2" value="cost" name="cost">
                                         <label class="form-check-label" for="exampleRadios2">
                                             Cost
                                         </label>
                                         </div>
                                     </div>
                                 </div>
+                                
                     </div>
 
                     <div class="row">
                          <div class="col mb-3">
                            <label for="periode1Basic" class="form-label">Periode</label>
-                            <input type="number" id="periode1Basic" class="form-control" min="2000">
+                            <input name="periode" type="number" id="periode1Basic" class="form-control" min="2000">
                             </div>
                 </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger" type="submit">Save changes</button>
+                    <button class="btn btn-danger" type="submit">Save changes</button>
                 </div>
             </div>
-            
+            </form>
         </div>
     </div>
 
@@ -113,6 +116,7 @@
                 <thead>
                     <tr>
                         <th>No</th>
+                        <th style="display: none;">Id</th>
                         <th>Nama</th>
                         <th>Bobot</th>
                         <th>Periode</th>
@@ -125,15 +129,16 @@
                         @foreach($data as $data)
                         <tr>
                         <td>{{ $loop->index + 1 }}</td>
+                        <td style="display:none">{{$data->id}}</td>
                         <td>{{$data->nama_kriteria}}</td>
                         <td>{{$data->bobot}}</td>
                         <td>{{$data->periode}}</td>
                         <td>
                             <div class="inline">
-                                <span class="text-success" data-bs-toggle="modal" data-bs-target="#modalEditKriteria"><i
+                                <span class="text-success" id="update_btn" data-bs-toggle="modal" data-bs-target="#modalEditKriteria"><i
                                         class="bx bx-edit-alt bx-sm me-2"></i>
                                 </span>
-                                <span class="text-danger" data-bs-toggle="modal" data-bs-target="#modalHapusKriteria"><i
+                                <span class="text-danger" id="delete_btn" data-bs-toggle="modal" data-bs-target="#modalHapusKriteria"><i
                                         class="bx bx-trash bx-sm me-2"></i>
                                     </a>
                             </div>
@@ -155,64 +160,69 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col mb-3">
-                                    <label for="nameBasic" class="form-label">Nama Kriteria</label>
-                                    <input type="text" id="nameBasic" class="form-control" placeholder="Enter Name">
-                                </div>
+                        <form action="/upkriteria" method="post">
+                @csrf
+                <div class="modal-body">
+                <div class="row">
+                        <div class="col mb-3" style="display: none;">
+                            <input type="text" id="id" class="form-control" name="id" placeholder="Enter Name">
+                        </div>
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="nameBasic" class="form-label">Nama Kriteria</label>
+                            <input type="text" id="nameBasic" class="form-control" name="nama_kriteria" placeholder="Enter Name">
+                        </div>
+                    <div class="row">
+                         <div class="col mb-3">
+                           <label for="bobot1Basic" class="form-label">Bobot</label>
+                            <input type="number" step="0.1" max="1" min="0.1" id="bobotBasic" name="bobot" class="form-control" placeholder="0.1">
                             </div>
-                            <div class="row">
-                                <div class="col mb-3">
-                                    <label for="bobotBasic" class="form-label">Bobot</label>
-                                    <input type="number" step="0.1" max="1" min="0.1" id="bobotBasic" class="form-control"
-                                        placeholder="0.1">
-                                </div>
-                            </div>
-
-                            <div class="row">
+                    </div>
+                    <div class="row">
                                 <div class="col mb-3">
                                     <label for="tipeBasic" class="form-label">Tipe</label>
                                 </div>
                             <div class="row">
                                 <div class="col mb-3">
                                 <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="benefit" checked>
+                                        <input class="form-check-input" type="radio" name="atribut" id="exampleRadios1" name="Benefit" value="benefit" checked>
                                         <label class="form-check-label" for="exampleRadios1">
                                             Benefit
                                         </label>
                                         </div>
                                         <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="cost">
+                                        <input class="form-check-input" type="radio" name="atribut" id="exampleRadios2" value="Cost" name="cost">
                                         <label class="form-check-label" for="exampleRadios2">
                                             Cost
                                         </label>
                                         </div>
                                     </div>
                                 </div>
-
-                            <div class="row">
-                                <div class="col mb-3">
-                                    <label for="periodeBasic" class="form-label">Periode</label>
-                                    <input type="number" id="periodeBasic" class="form-control" min="2000">
-                                </div>
                                 
-                            
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-danger">Save changes</button>
-                        </div>
+                    </div>
+
+                    <div class="row">
+                         <div class="col mb-3">
+                           <label for="periode1Basic" class="form-label">Periode</label>
+                            <input name="periode" type="number" id="periodeBasic" class="form-control" min="2000">
+                            </div>
+                </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-danger" type="submit">Save changes</button>
+                </div>
             </div>
+            </form>
+        </div>
+    </div>
 
             {{-- modal confirm delete --}}
             <div class="modal fade" id="modalHapusKriteria" data-bs-backdrop="static" tabindex="-1"
                 style="display: none;" aria-hidden="true">
                 <div class="modal-dialog">
-                    <form class="modal-content">
+                    <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="backDropModalTitle">Hapus Kriteria</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -226,13 +236,34 @@
                                 data-bs-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-danger">Iya</button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
 
         </div>
     </div>
-
+    
+<script>
+    // button update
+    document.querySelectorAll('#update_btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        // Ambil data dan set ke variabel
+        var row = this.closest('tr'),
+            kolom1 = row.querySelector('td:nth-child(2)')
+            kolom2 = row.querySelector('td:nth-child(3)')
+            kolom3 = row.querySelector('td:nth-child(4)')
+            kolom4 = row.querySelector('td:nth-child(5)')
+        // Dan set ke form update
+        // Contoh: set value
+        document.getElementById('id').value = kolom1.textContent;
+        document.getElementById('nameBasic').value = kolom2.textContent;
+        document.getElementById('bobotBasic').value = kolom3.textContent;
+        document.getElementById('periodeBasic').value = kolom4.textContent;
+        // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
+    });
+  });
+    
+</script>
 
 
 @endsection

@@ -62,11 +62,11 @@ class NilaiTableSeeder extends Seeder
       $sskm = Kriteria::where('nama_kriteria', 'SSKM')->value('id');
 
       $chance_ipk = rand(0, 10);
-      if ($chance_ipk >= 7) {
+      if ($chance_ipk >= 6) {
         $nilai_ipk = rand(35, 40) / 10;
       } elseif ($chance_ipk >= 2) {
         $nilai_ipk = rand(25, 34) / 10;
-      } elseif ($chance_ipk > 1) {
+      } elseif ($chance_ipk > 0) {
         $nilai_ipk = rand(19, 23) / 10;
       } else {
         $nilai_ipk = rand(0, 18) / 10;

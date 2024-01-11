@@ -146,7 +146,9 @@ Route::get('/mahasiswa/filter', [MahasiswaController::class, 'filter'])->name('m
 Route::get('/mahasiswa/get-mahasiswa/{id}', [MahasiswaController::class, 'getMahasiswaById']);
 
 // update mahasiswa by id
-Route::post('/mahasiswa/update-mahasiswa/{id}', [MahasiswaController::class, 'updateMahasiswa']);
+Route::patch('/mahasiswa/update-mahasiswa/{id}', [MahasiswaController::class, 'updateMahasiswa'])
+  ->name('mahasiswa.update')
+  ->middleware('auth');
 
 // hapus mahasiswa by id
 Route::post('/mahasiswa/delete/{id}', [MahasiswaController::class, 'destroy']);

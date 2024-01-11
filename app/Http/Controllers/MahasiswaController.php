@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kriteria;
 use Illuminate\Http\Request;
-use App\Models\Mahasiswa\Nilai;
+use App\Models\Nilai;
 use App\Models\Mahasiswa;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
@@ -15,12 +15,24 @@ use Illuminate\Support\Facades\DB;
 
 class MahasiswaController extends Controller
 {
+  private function get_jurusan()
+  {
+    return Mahasiswa::distinct()
+      ->pluck('jurusan');
+  }
+  private function get_kriteria()
+  {
+    return Kriteria::where('periode', '2023')->get();
+  }
   public function index()
   {
-    $jurusan = Mahasiswa::distinct()
-      ->pluck('jurusan');
+    // $jurusan = Mahasiswa::distinct()
+    //   ->pluck('jurusan');
 
-    $kriterias = Kriteria::where('periode', '2023')->get();
+    // $kriterias = Kriteria::where('periode', '2023')->get();
+
+    $jurusan = $this->get_jurusan();
+    $kriterias = $this->get_kriteria();
 
     $hasil = [];
 
@@ -30,6 +42,8 @@ class MahasiswaController extends Controller
         'mahasiswas.id as mahasiswa_id',
         'mahasiswas.nim',
         'mahasiswas.nama',
+        'mahasiswas.status',
+        'mahasiswas.jurusan',
         'nilais.nilai',
         'kriterias.nama_kriteria'
       )
@@ -43,6 +57,8 @@ class MahasiswaController extends Controller
           'id' => $mahasiswaId,
           'nim' => $mahasiswa->nim,
           'nama' => $mahasiswa->nama,
+          'status' => $mahasiswa->status,
+          'jurusan' => $mahasiswa->jurusan,
         ];
       }
 
@@ -50,10 +66,8 @@ class MahasiswaController extends Controller
         $hasil[$mahasiswaId]->{$mahasiswa->nama_kriteria} = $mahasiswa->nilai;
       }
 
-      $hasil[$mahasiswaId]->poin = $mahasiswa->poin;
+      // $hasil[$mahasiswaId]->poin = $mahasiswa->poin;
     }
-
-    // dd($hasil);
 
     return view('content.mahasiswa.index', [
       'jurusan' => $jurusan,
@@ -137,96 +151,189 @@ class MahasiswaController extends Controller
 
   public function filter(Request $request)
   {
-    if ($request->jurusan == 0 && $request->angkatan == null) {
-      $data = Mahasiswa::all();
+    $jurusan = $request->jurusan;
+    $angkatan = $request->angkatan;
+    $kriterias = $this->get_kriteria();
+    $jurusans = $this->get_jurusan();
 
-      return view('content.mahasiswa.index', compact('data'))->with('kosong', 'Data jangan kosong');
-    } else {
-      $this->validate($request, [
-        'jurusan' => 'nullable|numeric|max:3',
-        'angkatan' => 'nullable|numeric|min:2015|max:2023',
-      ]);
+    $min_year = Mahasiswa::min('angkatan');
+    $max_year = Mahasiswa::max('angkatan');
+    $this->validate($request, [
+      'jurusan' => 'nullable|array',
+      'angkatan' => 'nullable|numeric|between:' . $min_year . ',' . $max_year,
+    ]);
+
+    $dataJurusan = [];
+    foreach ($this->get_jurusan() as $value) {
+      array_push($dataJurusan, $value);
     }
 
-    $dataJurusan = ['S1 Sistem Informasi', 'S1 Desain Komunikasi Visual', 'S1 Teknik Komputer'];
+    $persamaan = array_intersect($jurusan, $dataJurusan);
 
-    if ($request->jurusan != 0) {
-      $jurusan = $dataJurusan[$request->jurusan - 1];
+    // Filter Jurusan
+    $data = Mahasiswa::query();
+
+    if (!empty($jurusan) && $jurusan[0] != 0) {
+      $data->whereIn('jurusan', $jurusan);
     }
 
-    $angkatan = substr($request->angkatan, 2, 3);
-
-    if ($request->jurusan == 0) {
-      $data = Mahasiswa::where('nim', 'like', $angkatan . '%')->get();
-      return view('content.mahasiswa.index', compact('data'));
+    // Filter Angkatan
+    if (!is_null($angkatan)) {
+      $data->where('angkatan', $angkatan);
     }
 
-    if ($request->angkatan == null) {
-      $data = Mahasiswa::where('jurusan', 'like', $jurusan)->get();
-      return view('content.mahasiswa.index', compact('data'));
-    }
-
-    $data = Mahasiswa::where('jurusan', 'like', $jurusan)
-      ->where('nim', 'like', $angkatan . '%')
+    $mahasiswas = $data->leftJoin('nilais', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
+      ->leftJoin('kriterias', 'kriterias.id', '=', 'nilais.kriteria_id')
+      ->select(
+        'mahasiswas.id as mahasiswa_id',
+        'mahasiswas.nim',
+        'mahasiswas.nama',
+        'mahasiswas.status',
+        'mahasiswas.jurusan',
+        'nilais.nilai',
+        'kriterias.nama_kriteria'
+      )
       ->get();
-    return view('content.mahasiswa.index', compact('data'));
+
+    foreach ($mahasiswas as $mahasiswa) {
+      $mahasiswaId = $mahasiswa->mahasiswa_id;
+
+      if (!isset($hasil[$mahasiswaId])) {
+        $hasil[$mahasiswaId] = (object) [
+          'id' => $mahasiswaId,
+          'nim' => $mahasiswa->nim,
+          'nama' => $mahasiswa->nama,
+          'status' => $mahasiswa->status,
+          'jurusan' => $mahasiswa->jurusan,
+        ];
+      }
+
+      if (!empty($mahasiswa->nama_kriteria)) {
+        $hasil[$mahasiswaId]->{$mahasiswa->nama_kriteria} = $mahasiswa->nilai;
+      }
+    }
+
+    return view('content.mahasiswa.index', ['kriterias' => $kriterias, 'data' => $hasil, 'jurusan' => $jurusans]);
   }
 
   public function getMahasiswaById($id)
   {
-    // $data = Mahasiswa::find($id);
-    $nilaiMahasiswa = Nilai::join('mahasiswas', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
-      ->select('nilais.*', 'mahasiswas.*')
-      ->where('mahasiswas.id', $id)
-      ->get();
+    $kriterias = $this->get_kriteria();
 
-    return response()->json($nilaiMahasiswa);
+    // $nilaiMahasiswa = Nilai::join('mahasiswas', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
+    //   ->select('nilais.*', 'mahasiswas.*')
+    //   ->where('mahasiswas.id', $id)
+    //   ->get();
+
+    // $mahasiswas = Mahasiswa::leftJoin('nilais', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
+    //   ->leftJoin('kriterias', 'kriterias.id', '=', 'nilais.kriteria_id')
+    //   ->select(
+    //     'mahasiswas.id as mahasiswa_id',
+    //     'mahasiswas.nim',
+    //     'mahasiswas.nama',
+    //     'mahasiswas.status',
+    //     'mahasiswas.jurusan',
+    //     'nilais.nilai',
+    //     'kriterias.nama_kriteria'
+    //   )
+    //   ->where('mahasiswas.id', $id)
+    //   ->get();
+
+    // foreach ($mahasiswas as $mahasiswa) {
+    //   $mahasiswaId = $mahasiswa->mahasiswa_id;
+
+    //   if (!isset($hasil[$mahasiswaId])) {
+    //     $hasil[$mahasiswaId] = (object) [
+    //       'id' => $mahasiswaId,
+    //       'nim' => $mahasiswa->nim,
+    //       'nama' => $mahasiswa->nama,
+    //       'status' => $mahasiswa->status,
+    //       'jurusan' => $mahasiswa->jurusan,
+    //     ];
+    //   }
+
+    //   if (!empty($mahasiswa->nama_kriteria)) {
+    //     $hasil[$mahasiswaId]->{$mahasiswa->nama_kriteria} = $mahasiswa->nilai;
+    //   }
+    // }
+    // var_dump($hasil);
+    // return response()->json($hasil);
   }
 
   // MahasiswaController.php
 
   public function updateMahasiswa(Request $request, $id)
   {
-    $request->validate([
-      'nim' => 'required|string|max:15',
-      'nama' => 'required|string|max:255',
-      'email' => 'required|email|max:255',
-      'jurusan' => 'required',
-      'ipk' => 'nullable|numeric',
-      'sskm' => 'nullable|numeric',
-      'toefl' => 'nullable|numeric',
-      'karya_tulis' => 'nullable|numeric',
-    ]);
+    $kriterias = $this->get_kriteria();
+
+    $request_validate = [
+      // 'nim_mhs' => 'required|string|max:15',
+      // 'nama_mhs' => 'required|string|max:255',
+      // 'jurusan_mhs' => 'required',
+    ];
+
+    foreach ($kriterias as $kriteria) {
+      $request_validate[str_replace(' ', '_', strtolower($kriteria->nama_kriteria)) . '_' . $id] = 'nullable|numeric';
+    }
+
+    // var_dump($request_validate);
+    // var_dump($request->input());
+
+    $request->validate($request_validate);
 
     // Ambil data mahasiswa dari database berdasarkan ID
     $mahasiswa = Mahasiswa::find($id);
 
     if (!$mahasiswa) {
-      return response()->json(['message' => 'Mahasiswa not found'], 404);
+      return back()->with('message', 'Mahasiswa not found');
     }
 
     // Perbarui data mahasiswa
-    $mahasiswa->nim = $request->input('nim');
-    $mahasiswa->nama = $request->input('nama');
-    $mahasiswa->email = $request->input('email');
-    $mahasiswa->jurusan = $request->input('jurusan');
+    // $mahasiswa->nim = $request->input('nim');
+    // $mahasiswa->nama = $request->input('nama');
+    // $mahasiswa->jurusan = $request->input('jurusan');
 
-    $nilai = Nilai::where('mahasiswa_id', $id)->first();
+    $datas_nilai = [];
+    foreach ($kriterias as $kriteria) {
+      $id_input = str_replace(' ', '_', strtolower($kriteria->nama_kriteria)) . '_' . $id;
 
-    // if ($nilai) {
-    // Perbarui nilai atribut sesuai dengan data yang diterima melalui $request
-    $nilai->ipk = $request->input('ipk');
-    $nilai->toefl = $request->input('toefl');
-    $nilai->karya_tulis = $request->input('karya_tulis');
-    $nilai->sskm = $request->input('sskm');
-    // Perbarui kolom lainnya sesuai kebutuhan
+      if (!key_exists($id_input, $request->input())) {
+        break;
+      }
 
-    // Simpan perubahan nilai ke database
-    $nilai->save();
-    $mahasiswa->save();
+      // array_push($datas_nilai, $kriteria);
+
+      $nilai = Nilai::leftJoin('kriterias', 'kriterias.id', '=', 'nilais.kriteria_id')
+        ->where('nilais.mahasiswa_id', $id)
+        ->where('kriterias.nama_kriteria', $kriteria->nama_kriteria)
+        ->first();
+
+      // if ($nilai) {
+      // Perbarui nilai atribut sesuai dengan data yang diterima melalui $request
+      $data_nilai = [
+        'mahasiswa_id' => $id,
+        'kriteria_id' => $kriteria->id,
+        'nilai' => $request->input($id_input),
+        'created_at' => now(),
+        'updated_at' => now(),
+      ];
+      // $nilai->ipk = $request->input('ipk');
+      // $nilai->toefl = $request->input('toefl');
+      // $nilai->karya_tulis = $request->input('karya_tulis');
+      // $nilai->sskm = $request->input('sskm');
+      // Perbarui kolom lainnya sesuai kebutuhan
+
+      // Simpan perubahan nilai ke database
+      // $nilai->save();
+      // $mahasiswa->save();
+      array_push($datas_nilai, $data_nilai);
+    }
+
+    // var_dump($datas_nilai);
+    Nilai::insert($datas_nilai);
     // }
 
-    return response()->json(['message' => 'Data mahasiswa berhasil diperbarui']);
+    return back()->with('message', 'Data mahasiswa berhasil diperbarui');
   }
 
   public function destroy($id)

@@ -14,41 +14,42 @@ class MahasiswaTableSeeder extends Seeder
      */
     public function run(): void
     {
-     
-        $mahasiswaData = array();
-        for ($i = 1; $i < 101; $i++) {
-            if ($i < 10) {
-                $nim = '2141010000' . $i;
-            } else if ($i < 100) {
-                $nim = '214101000' . $i;
-            } else {
-                $nim = '21410100' . $i;
+        $arr_of_year = [2020, 2021, 2022, 2023];
+        $arr_of_jurusan = [
+            ['kode' => '39010', 'label' => 'D3 Sistem Informasi'],
+            ['kode' => '41010', 'label' => 'S1 Sistem Informasi'],
+        ];
+        for ($j = 0; $j < count($arr_of_year); $j++) {
+            $mahasiswaData = array();
+            $year = $arr_of_year[$j];
+            $year_of_nim = substr($year, 2, 2);
+            for ($k = 0; $k < count($arr_of_jurusan); $k++) {
+                $jurusan = $arr_of_jurusan[$k];
+                for ($i = 1; $i < rand(80, 101); $i++) {
+                    $nim = $year_of_nim . $jurusan['kode'] . str_pad($i, 4, 0, STR_PAD_LEFT);
+
+                    $nama = fake()->name();
+
+                    $chance_status = random_int(0, 10);
+
+                    $status = ($chance_status < 2) ? 'tidak aktif' : 'aktif';
+
+                    array_push($mahasiswaData, [
+                        'id' => uuid_create(),
+                        'nim' => $nim,
+                        'nama' => $nama,
+                        'angkatan' => $year,
+                        'status' => $status,
+                        'jurusan' => $jurusan['label'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+
+                // Insert data dummy ke dalam tabel 'mahasiswa'
+                // Mahasiswa::create($mahasiswaData);
+                DB::table('mahasiswas')->insert($mahasiswaData);
             }
-
-            $nama = fake()->name();
-
-            $year = '2021';
-
-            $chance_status = random_int(0, 10);
-
-            $status = ($chance_status < 3) ? 'tidak aktif' : 'aktif';
-
-            $jurusan = 'S1 Sistem Informasi';
-
-            array_push($mahasiswaData, [
-                'id' => uuid_create(),
-                'nim' => $nim,
-                'nama' => $nama,
-                'angkatan' => $year,
-                'status' => $status,
-                'jurusan' => $jurusan,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
         }
-
-        // Insert data dummy ke dalam tabel 'mahasiswa'
-        // Mahasiswa::create($mahasiswaData);
-        DB::table('mahasiswas')->insert($mahasiswaData);
     }
 }

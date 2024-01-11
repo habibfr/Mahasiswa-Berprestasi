@@ -14,7 +14,7 @@ class Kriteria extends Model
 
   protected $guarded = ['id'];
 
-  protected $fillable = ['bobot', 'atribut', 'nama_kriteria'];
+  protected $fillable = ['bobot', 'atribut', 'nama_kriteria','periode'];
 
   public function nilai()
   {
