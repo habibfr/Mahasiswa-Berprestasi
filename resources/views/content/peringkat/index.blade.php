@@ -12,7 +12,7 @@
                     <div class="row">
                         <div class="col-md-8">
                             <h6 class="form-label">Jumlah Mahasiswa</h6>
-                            <div class="input-group">
+                            <div class="input-group vw-50">
                                 <input name="jumlah_sorting" class="form-control" placeholder="Masukkan jumlah" type="number" list="sorting" id="jumlah_sorting" onchange="document.getElementById('sortingForm').submit();">
                                 <datalist id="sorting">
                                     <option value="5" {{isset($jumlah_sorting)&&$jumlah_sorting==5?'selected':''}}>5</option>
@@ -53,8 +53,8 @@
         <!-- Basic Bootstrap Table -->
         <div class="card mb-5">
             @isset($data_sebelumnya)
-            <div class="card-header">
-                <h5>Peringkat Mahasiswa Sebelumnya</h5>
+            <div class="card-header align-items-center text-center">
+                <h3 class="fw-bold">Peringkat Mahasiswa Sebelumnya</h3>
             </div>
             @endisset
             <div class="table-responsive text-nowrap">

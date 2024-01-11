@@ -16,9 +16,12 @@
             </h1>
         </div>
         <div class="row justify-content-center">
-            <h3 class="col-md-2 text-center fw-medium {{$judul=='Mahasiswa'?'navbar-active':''}}"><a href="{{ route('mahasiswa') }}" style="color: black">Mahasiswa</a></h3>
+            {{-- <h3 class="col-md-2 text-center fw-medium {{$judul=='Mahasiswa'?'navbar-active':''}}"><a href="{{ route('mahasiswa') }}" style="color: black">Mahasiswa</a></h3>
             <h3 class="col-md-2 text-center fw-medium {{$judul=='Kriteria'?'navbar-active':''}}"><a href="{{ route('kriteria') }}" style="color: black">Kriteria</a></h3>
-            <h3 class="col-md-2 text-center fw-medium {{$judul=='Peringkat'?'navbar-active':''}}"><a href="{{ route('peringkat') }}" style="color: black">Peringkat</a></h3>
+            <h3 class="col-md-2 text-center fw-medium {{$judul=='Peringkat'?'navbar-active':''}}"><a href="{{ route('peringkat') }}" style="color: black">Peringkat</a></h3> --}}
+            <h3 class="col-md-2 text-center fw-medium {{explode('/',ucwords(request()->path()))[0]=='Mahasiswa'?'navbar-active':''}}"><a href="{{ route('mahasiswa') }}" style="color: black">Mahasiswa</a></h3>
+            <h3 class="col-md-2 text-center fw-medium {{explode('/',ucwords(request()->path()))[0]=='Kriteria'?'navbar-active':''}}"><a href="{{ route('kriteria') }}" style="color: black">Kriteria</a></h3>
+            <h3 class="col-md-2 text-center fw-medium {{explode('/',ucwords(request()->path()))[0]=='Peringkat'?'navbar-active':''}}"><a href="{{ route('peringkat') }}" style="color: black">Peringkat</a></h3>
         </div>
     </div>
 </nav>
