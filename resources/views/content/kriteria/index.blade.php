@@ -149,7 +149,34 @@
                 </tbody>
             </table>
 
-
+            {{-- modal confirm delete --}}
+            <div class="modal fade" id="modalHapusKriteria" data-bs-backdrop="static" tabindex="-1"
+                style="display: none;" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="/deskriteria" method="post">
+                            @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="backDropModalTitle">Hapus Kriteria</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="col mb-3" style="display: none;" >
+                                    <input type="text" id="id" class="form-control" name="id" placeholder="Enter Name">
+                                </div>
+                        <div class="modal-body">
+                            <p>Are you sure to delete this??</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-danger">Iya</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
             {{-- modal edit kriteria --}}
             <div class="modal fade" id="modalEditKriteria" data-bs-backdrop="static" tabindex="-1"
                 style="display: none;" aria-hidden="true">
@@ -161,89 +188,82 @@
                                 aria-label="Close"></button>
                         </div>
                         <form action="/upkriteria" method="post">
-                @csrf
-                <div class="modal-body">
-                <div class="row">
-                        <div class="col mb-3" style="display: none;">
-                            <input type="text" id="id" class="form-control" name="id" placeholder="Enter Name">
-                        </div>
-                    <div class="row">
-                        <div class="col mb-3">
-                            <label for="nameBasic" class="form-label">Nama Kriteria</label>
-                            <input type="text" id="nameBasic" class="form-control" name="nama_kriteria" placeholder="Enter Name">
-                        </div>
-                    <div class="row">
-                         <div class="col mb-3">
-                           <label for="bobot1Basic" class="form-label">Bobot</label>
-                            <input type="number" step="0.1" max="1" min="0.1" id="bobotBasic" name="bobot" class="form-control" placeholder="0.1">
-                            </div>
-                    </div>
-                    <div class="row">
-                                <div class="col mb-3">
-                                    <label for="tipeBasic" class="form-label">Tipe</label>
+                        @csrf
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col mb-3" style="display: none;">
+                                    <input type="text" id="id" class="form-control" name="id" placeholder="Enter Name">
                                 </div>
                             <div class="row">
                                 <div class="col mb-3">
-                                <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="atribut" id="exampleRadios1" name="Benefit" value="benefit" checked>
-                                        <label class="form-check-label" for="exampleRadios1">
-                                            Benefit
-                                        </label>
+                                    <label for="nameBasic" class="form-label">Nama Kriteria</label>
+                                    <input type="text" id="nameBasic" class="form-control" name="nama_kriteria" placeholder="Enter Name">
+                                </div>
+                            <div class="row">
+                                <div class="col mb-3">
+                                <label for="bobot1Basic" class="form-label">Bobot</label>
+                                    <input type="number" step="0.1" max="1" min="0.1" id="bobotBasic" name="bobot" class="form-control" placeholder="0.1">
+                                    </div>
+                            </div>
+                            <div class="row">
+                                        <div class="col mb-3">
+                                            <label for="tipeBasic" class="form-label">Tipe</label>
+                                        </div>
+                                    <div class="row">
+                                        <div class="col mb-3">
+                                        <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="atribut" id="exampleRadios1" name="Benefit" value="benefit" checked>
+                                                <label class="form-check-label" for="exampleRadios1">
+                                                    Benefit
+                                                </label>
                                         </div>
                                         <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="atribut" id="exampleRadios2" value="Cost" name="cost">
-                                        <label class="form-check-label" for="exampleRadios2">
-                                            Cost
-                                        </label>
+                                                <input class="form-check-input" type="radio" name="atribut" id="exampleRadios2" value="Cost" name="cost">
+                                                <label class="form-check-label" for="exampleRadios2">
+                                                    Cost
+                                                </label>
                                         </div>
+                                                
                                     </div>
-                                </div>
-                                
-                    </div>
-
-                    <div class="row">
-                         <div class="col mb-3">
-                           <label for="periode1Basic" class="form-label">Periode</label>
-                            <input name="periode" type="number" id="periodeBasic" class="form-control" min="2000">
                             </div>
-                </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                    <button class="btn btn-danger" type="submit">Save changes</button>
-                </div>
-            </div>
-            </form>
-        </div>
-    </div>
+                                        
 
-            {{-- modal confirm delete --}}
-            <div class="modal fade" id="modalHapusKriteria" data-bs-backdrop="static" tabindex="-1"
-                style="display: none;" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="backDropModalTitle">Hapus Kriteria</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                            <div class="row">
+                                <div class="col mb-3">
+                                <label for="periode1Basic" class="form-label">Periode</label>
+                                    <input name="periode" type="number" id="periodeBasic" class="form-control" min="2000">
+                                </div>
+                            </div>
+                        
                         </div>
-                        <div class="modal-body">
-                            <p>Are you sure to delete this??</p>
-                        </div>
+                            
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-danger">Iya</button>
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                            <button class="btn btn-danger" type="submit">Save changes</button>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>
+
+
 
         </div>
     </div>
     
 <script>
+    //button delete
+    document.querySelectorAll('#delete_btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        // Ambil data dan set ke variabel
+        var row = this.closest('tr'),
+            kolom1 = row.querySelector('td:nth-child(2)')
+        // Dan set ke form update
+        // Contoh: set value
+        document.getElementById('id').value = kolom1.textContent;
+        // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
+    });
+    });
     // button update
     document.querySelectorAll('#update_btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
@@ -264,6 +284,5 @@
   });
     
 </script>
-
 
 @endsection

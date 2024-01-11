@@ -172,3 +172,6 @@ Route::post('/inkriteria', [KriteriaController::class, 'store'])->name('inkriter
 
 // Route Update Kriteria
 Route::post('/upkriteria', [KriteriaController::class, 'edit'])->name('upkriteria')->middleware('auth');
+
+// Route Delete Kriteria
+Route::post('/deskriteria', [KriteriaController::class, 'destroy'])->name('deskriteria')->middleware('auth');
