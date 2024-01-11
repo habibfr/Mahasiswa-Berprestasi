@@ -41,7 +41,7 @@
                             <div class="row g-2">
                                 <div class="col mb-3">
                                     <label for="{{str_replace(' ', '_', strtolower($item->nama_kriteria))}}_{{$mahasiswa->id}}" class="form-label">{{ucwords($item->nama_kriteria)}}</label>
-                                    <input type="number" name="{{str_replace(' ', '_', strtolower($item->nama_kriteria))}}_{{$mahasiswa->id}}" id="{{str_replace(' ', '_', strtolower($item->nama_kriteria))}}_{{$mahasiswa->id}}" class="form-control" value="{{$mahasiswa->{$item->nama_kriteria} ?? 0 }}">
+                                    <input step="0.1" type="number" name="{{str_replace(' ', '_', strtolower($item->nama_kriteria))}}_{{$mahasiswa->id}}" id="{{str_replace(' ', '_', strtolower($item->nama_kriteria))}}_{{$mahasiswa->id}}" class="form-control" value="{{$mahasiswa->{$item->nama_kriteria} ?? 0 }}">
                                 </div>
                             </div>
                         @endforeach
@@ -52,7 +52,7 @@
                         <button type="submit" class="btn btn-danger" id="btnModalEditMhs">Save changes</button>
                     </div>
                 </div>
-            </form>
+            {{-- </form> --}}
             {!! Form::close() !!}
 
         </div>

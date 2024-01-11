@@ -134,13 +134,13 @@ Route::get('/form/layouts-horizontal', [HorizontalForm::class, 'index'])->name('
 Route::get('/tables/basic', [TablesBasic::class, 'index'])->name('tables-basic');
 
 // Route for Mahasiswa
-Route::get('/mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa');
+Route::get('/mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa')->middleware('auth');
 
 // import data for mahasiswa
-Route::post('/mahasiswa/import', [MahasiswaController::class, 'importData'])->name('mahasiswa.import');
+Route::post('/mahasiswa/import', [MahasiswaController::class, 'importData'])->name('mahasiswa.import')->middleware('auth');
 
 // Filter Mahasiswa
-Route::get('/mahasiswa/filter', [MahasiswaController::class, 'filter'])->name('mahasiswa.filter');
+Route::get('/mahasiswa/filter', [MahasiswaController::class, 'filter'])->name('mahasiswa.filter')->middleware('auth');
 
 // get mahasiswa by id
 Route::get('/mahasiswa/get-mahasiswa/{id}', [MahasiswaController::class, 'getMahasiswaById']);
@@ -151,7 +151,9 @@ Route::patch('/mahasiswa/update-mahasiswa/{id}', [MahasiswaController::class, 'u
   ->middleware('auth');
 
 // hapus mahasiswa by id
-Route::post('/mahasiswa/delete/{id}', [MahasiswaController::class, 'destroy']);
+Route::delete('/mahasiswa/delete/{id}', [MahasiswaController::class, 'destroy'])
+  ->name('mahasiswa.delete')
+  ->middleware('auth');
 
 // Route for Peringkat
 Route::get('/peringkat', [PeringkatController::class, 'index'])->name('peringkat')->middleware('auth');

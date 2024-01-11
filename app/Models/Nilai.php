@@ -6,13 +6,16 @@ use App\Models\Kriteria;
 use App\Models\Mahasiswa;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Nilai extends Model
 {
-  use HasFactory;
+  use HasFactory, SoftDeletes;
 
   // protected $guarded = ['id'];
   protected $fillable = ['mahasiswa_id', 'kriteria_id', 'nilai'];
+
+  // protected $nullable = ['deleted_at'];
 
   protected $with = ['mahasiswa', 'kriteria'];
 

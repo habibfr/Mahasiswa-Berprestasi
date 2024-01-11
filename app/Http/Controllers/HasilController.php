@@ -17,6 +17,7 @@ class HasilController extends Controller
         $hasil = Mahasiswa::join('hasils', 'mahasiswas.id', '=', 'hasils.mahasiswa_id')
             ->where('hasils.status', 'aktif')
             ->orderBy('hasils.peringkat', 'asc')
+            ->distinct()
             ->get();
 
         return view('content.homepage.index', ['data' => $hasil]);

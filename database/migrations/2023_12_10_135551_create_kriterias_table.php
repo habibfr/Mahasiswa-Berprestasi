@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('nama_kriteria', 50);
             $table->year('periode');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -17,7 +17,7 @@ class PeringkatController extends Controller
   private $kriterias;
   public function index()
   {
-    $kriterias = Kriteria::where('periode', '2023')->get();
+    $kriterias = Kriteria::where('periode', date('Y'))->get();
 
     $hasil = [];
 
@@ -106,8 +106,8 @@ class PeringkatController extends Controller
 
   private function get_result_alternative($jumlah_sorting)
   {
-    // $kriterias = Kriteria::where('periode', date('Y'))->get();
-    $kriterias = Kriteria::where('periode', '2023');
+    $kriterias = Kriteria::where('periode', date('Y'));
+    // $kriterias = Kriteria::where('periode', '2023');
     $this->kriterias = $kriterias->get();
 
     $normalized_matrixes = [];

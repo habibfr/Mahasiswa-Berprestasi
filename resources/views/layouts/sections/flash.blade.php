@@ -1,4 +1,4 @@
-@if (session()->has('login_success') || session()->has('login_ended') || session()->has('published'))
+@if (session()->has('login_success') || session()->has('login_ended') || session()->has('published') || session('mahasiswa_deleted') || session('update_mahasiswa'))
 {{-- <div class="alert alert-success alert-dismissible fade show" role="alert">
     {{ session('login_success') }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -7,9 +7,14 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
 {{-- <div aria-live="polite" aria-atomic="true" class="bg-body-secondary position-relative bd-example-toasts rounded-3"> --}}
     <div class="toast-container p-3 bottom-0 end-0 position-fixed" id="toastPlacement">
-      <div class="bs-toast toast align-items-center {{session('login_success') ? 'bg-success' : ''}} {{session('login_ended') ? 'bg-danger' : ''}} {{session('published') ? 'bg-danger' : ''}} border-0" id="liveToast" role="alert" aria-live="assertive">
+      <div class="bs-toast toast align-items-center 
+      {{session('login_success') || session('update_mahasiswa') ? 'bg-success' : ''}}
+      {{session('login_ended') || session('published') || session('mahasiswa_deleted') ? 'bg-danger' : ''}}
+      border-0" id="liveToast" role="alert" aria-live="assertive">
         <div class="d-flex">
             <div class="toast-body">
+              {{session('mahasiswa_deleted')}}
+              {{session('update_mahasiswa')}}
               {{session('login_success')}}
               {{session('login_ended')}}
               {{session('published')}}
