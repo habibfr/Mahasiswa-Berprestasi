@@ -163,3 +163,8 @@ Route::post('/peringkat/publish', [PeringkatController::class, 'publish'])->name
 // Route for Kriteria
 Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria')->middleware('auth');
 
+// Route insert Kriteria
+Route::post('/inkriteria', [KriteriaController::class, 'store'])->name('inkriteria')->middleware('auth');
+
+// Route Update Kriteria
+Route::post('/upkriteria', [KriteriaController::class, 'edit'])->name('upkriteria')->middleware('auth');
