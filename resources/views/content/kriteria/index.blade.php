@@ -3,6 +3,7 @@
 @section('title', 'Kriteria')
 
 @section('content')
+@include('layouts.sections.flash')
     {{-- <div class="row">
         <div class="col">
             <div class="mb-3">
@@ -110,7 +111,7 @@
 
 
     <!-- Basic Bootstrap Table -->
-    <div class="card">
+    <div class="card mb-5">
         <div class="table-responsive text-nowrap">
             <table class="table">
                 <thead>

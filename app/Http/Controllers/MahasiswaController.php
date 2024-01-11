@@ -104,8 +104,9 @@ class MahasiswaController extends Controller
           // 'CustomerName' =>$sheet->getCell( 'A' . $row )->getValue(),
           'nim' => $sheet->getCell('B' . $row)->getValue(),
           'nama' => $sheet->getCell('C' . $row)->getValue(),
-          'jurusan' => $sheet->getCell('D' . $row)->getValue(),
-          'email' => $sheet->getCell('E' . $row)->getValue(),
+          'angkatan' => $sheet->getCell('D' . $row)->getValue(),
+          'status' => $sheet->getCell('E' . $row)->getValue(),
+          'jurusan' => $sheet->getCell('F' . $row)->getValue(),
         ];
       }
       Mahasiswa::insert($dataMahasiswa);

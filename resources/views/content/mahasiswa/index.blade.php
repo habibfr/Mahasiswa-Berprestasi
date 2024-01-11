@@ -54,6 +54,7 @@
 
     <div id="your-alert-container"></div> --}}
 
+    @include('layouts.sections.flash')
 
     <div class="row">
         <div class="col">
