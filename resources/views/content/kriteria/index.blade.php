@@ -192,7 +192,7 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col mb-3" style="display: none;">
-                                    <input type="text" id="id" class="form-control" name="id" placeholder="Enter Name">
+                                    <input type="text" id="idedit" class="form-control" name="id" placeholder="Enter Name">
                                 </div>
                             <div class="row">
                                 <div class="col mb-3">
@@ -270,12 +270,13 @@
         // Ambil data dan set ke variabel
         var row = this.closest('tr'),
             kolom1 = row.querySelector('td:nth-child(2)')
+            console.log(kolom1)
             kolom2 = row.querySelector('td:nth-child(3)')
             kolom3 = row.querySelector('td:nth-child(4)')
             kolom4 = row.querySelector('td:nth-child(5)')
         // Dan set ke form update
         // Contoh: set value
-        document.getElementById('id').value = kolom1.textContent;
+        document.getElementById('idedit').value = kolom1.textContent;
         document.getElementById('nameBasic').value = kolom2.textContent;
         document.getElementById('bobotBasic').value = kolom3.textContent;
         document.getElementById('periodeBasic').value = kolom4.textContent;
