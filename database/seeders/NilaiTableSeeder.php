@@ -15,51 +15,13 @@ class NilaiTableSeeder extends Seeder
    */
   public function run(): void
   {
-    //
-    // $nilaiData = [
-    //     [
-    //         'mahasiswa_id' => 1, // Sesuaikan dengan ID mahasiswa dari seeder MahasiswaSeeder
-    //         'IPK' => 3.25,
-    //         'SSKM' => 250,
-    //         'TOEFL' => 550,
-    //         'karya_tulis' => 2,
-    //         'created_at' => now(),
-    //         'updated_at' => now(),
-    //     ],
-    //     [
-    //         'mahasiswa_id' => 2, // Sesuaikan dengan ID mahasiswa lainnya
-    //         'IPK' => 3.50,
-    //         'SSKM' => 200,
-    //         'TOEFL' => 600,
-    //         'karya_tulis' => 1,
-    //         'created_at' => now(),
-    //         'updated_at' => now(),
-    //     ],
-    //     [
-    //         'mahasiswa_id' => 3, // Sesuaikan dengan ID mahasiswa lainnya
-    //         'IPK' => 3.90,
-    //         'SSKM' => 150,
-    //         'TOEFL' => 500,
-    //         'karya_tulis' => 3,
-    //         'created_at' => now(),
-    //         'updated_at' => now(),
-    //     ],
-    // ];
     $nilaiData = [];
-    // $data = Mahasiswa::where('status', 'aktif')->get();
-    // for ($i = 1; $i < $data->count(); $i++) {
     foreach (Mahasiswa::where('status', 'aktif')->cursor() as $data) {
-      // if ($i < 10) {
-      //     $nim = '2141010000' . $i;
-      // } else if ($i < 100) {
-      //     $nim = '214101000' . $i;
-      // } else {
-      //     $nim = '21410100' . $i;
-      // }
-      $nim = $data->nim;
 
-      $ipk = Kriteria::where('nama_kriteria', 'IPK')->value('id');
-      $sskm = Kriteria::where('nama_kriteria', 'SSKM')->value('id');
+      $ipk = Kriteria::where('nama_kriteria', 'IPK')->where('periode', date('Y'))->value('id');
+      $sskm = Kriteria::where('nama_kriteria', 'SSKM')->where('periode', date('Y'))->value('id');
+      $ielts = Kriteria::where('nama_kriteria', 'IELTS')->where('periode', date('Y'))->value('id');
+      $jkt = Kriteria::where('nama_kriteria', 'Karya Tulis')->where('periode', date('Y'))->value('id');
 
       $chance_ipk = rand(0, 10);
       if ($chance_ipk >= 6) {
@@ -76,22 +38,34 @@ class NilaiTableSeeder extends Seeder
         'mahasiswa_id' => $data->id,
         'kriteria_id' => $ipk,
         'nilai' => $nilai_ipk,
-        'created_at' => now(),
-        'updated_at' => now(),
       ];
 
       $data_sskm = [
         'mahasiswa_id' => $data->id,
         'kriteria_id' => $sskm,
         'nilai' => floatval(rand(100, 200)),
-        'created_at' => now(),
-        'updated_at' => now(),
       ];
 
-      array_push($nilaiData, $data_ipk, $data_sskm);
+      $data_ielts = [
+        'mahasiswa_id' => $data->id,
+        'kriteria_id' => $ielts,
+        'nilai' => floatval(rand(2, 9)),
+      ];
+
+      $data_jkt = [
+        'mahasiswa_id' => $data->id,
+        'kriteria_id' => $jkt,
+        'nilai' => floatval(rand(0, 5)),
+      ];
+
+      Nilai::create($data_ipk);
+      Nilai::create($data_sskm);
+      Nilai::create($data_ielts);
+      Nilai::create($data_jkt);
+      // array_push($nilaiData, $data_ipk, $data_sskm);
     }
 
     // Insert data dummy ke dalam tabel 'nilai'
-    Nilai::insert($nilaiData);
+    // Nilai::create($nilaiData);
   }
 }

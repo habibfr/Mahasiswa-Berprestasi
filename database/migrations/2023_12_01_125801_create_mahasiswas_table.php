@@ -19,6 +19,7 @@ return new class extends Migration {
       $table->enum('status', ['Aktif', 'Tidak aktif']);
       $table->string('jurusan', 50);
       $table->timestamps();
+      $table->softDeletes();
     });
   }
 

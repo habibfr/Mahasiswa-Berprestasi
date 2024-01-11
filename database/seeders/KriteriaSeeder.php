@@ -19,11 +19,39 @@ class KriteriaSeeder extends Seeder
             'nama_kriteria' => 'IPK',
             'atribut' => 'benefit',
             'bobot' => 0.4,
+            'periode' => '2022'
+        ]);
+
+        Kriteria::create([
+            'nama_kriteria' => 'IELTS',
+            'atribut' => 'benefit',
+            'bobot' => 0.2,
+            'periode' => '2022'
+        ]);
+
+        Kriteria::create([
+            'nama_kriteria' => 'SSKM',
+            'atribut' => 'benefit',
+            'bobot' => 0.2,
+            'periode' => '2022'
+        ]);
+
+        Kriteria::create([
+            'nama_kriteria' => 'Karya Tulis',
+            'atribut' => 'benefit',
+            'bobot' => 0.2,
+            'periode' => '2022'
+        ]);
+
+        Kriteria::create([
+            'nama_kriteria' => 'IPK',
+            'atribut' => 'benefit',
+            'bobot' => 0.4,
             'periode' => '2023'
         ]);
 
         Kriteria::create([
-            'nama_kriteria' => 'TOEFL',
+            'nama_kriteria' => 'IELTS',
             'atribut' => 'benefit',
             'bobot' => 0.2,
             'periode' => '2023'
@@ -41,6 +69,34 @@ class KriteriaSeeder extends Seeder
             'atribut' => 'benefit',
             'bobot' => 0.2,
             'periode' => '2023'
+        ]);
+
+        Kriteria::create([
+            'nama_kriteria' => 'IPK',
+            'atribut' => 'benefit',
+            'bobot' => 0.4,
+            'periode' => '2024'
+        ]);
+
+        Kriteria::create([
+            'nama_kriteria' => 'IELTS',
+            'atribut' => 'benefit',
+            'bobot' => 0.2,
+            'periode' => '2024'
+        ]);
+
+        Kriteria::create([
+            'nama_kriteria' => 'SSKM',
+            'atribut' => 'benefit',
+            'bobot' => 0.2,
+            'periode' => '2024'
+        ]);
+
+        Kriteria::create([
+            'nama_kriteria' => 'Karya Tulis',
+            'atribut' => 'benefit',
+            'bobot' => 0.2,
+            'periode' => '2024'
         ]);
     }
 }

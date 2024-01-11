@@ -19,7 +19,7 @@
 @section('content')
 
     {{-- success upload --}}
-    @if ($message = Session::get('success'))
+    {{-- @if ($message = Session::get('success'))
         <div class="alert alert-success alert-dismissible" role="alert">
             This is a success dismissible alert — check it out!
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -32,11 +32,11 @@
             {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    @endif
+    @endif --}}
 
 
     {{-- error filter --}}
-    @if ($errors->has('jurusan'))
+    {{-- @if ($errors->has('jurusan'))
         <div class="alert alert-danger alert-dismissible" role="alert">
             {{ $errors->first('jurusan') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -52,32 +52,12 @@
         </div>
     @endif
 
-    <div id="your-alert-container"></div>
+    <div id="your-alert-container"></div> --}}
 
 
     <div class="row">
         <div class="col">
             <div class="mb-3 row align-items-center">
-                {{-- <form action="{{ route('mahasiswa.filter') }}" method="GET">
-                    @csrf
-                    <div>
-                        <label class="form-label" for="jurusan_filter">Filter by jurusan dan angkatan</label>
-                    </div>
-                    <div class="form-group">
-                        <select id="jurusan_filter" multiple class="form-control" name="jurusan_filter">
-                            <option value="0" selected>Pilih Jurusan</option>
-                            @foreach ($jurusan as $item)
-                                <option value="{{$item}}">{{$item}}</option>
-                            @endforeach
-                        </select>
-
-
-                        <input class="form-control mx-2 w-50" autocomplete="off" name="angkatan"
-                            min="2015" max="{{now()->format('Y')}}" id="year-filter">
-
-                    </div>
-                    <button type="submit" class="btn btn-secondary">Filter</button>
-                </form> --}}
 
                 <form action="{{ route('mahasiswa.filter') }}" method="GET" class="container">
                     @csrf
@@ -180,13 +160,14 @@
                                             class="bx bx-edit-alt bx-sm me-2"></i>
                                     </span>
                                     <span data-id="{{ $mahasiswa->id }}" class="text-danger btnHapus"
-                                        data-bs-toggle="modal" data-bs-target="#modalHapusMhs"><i
+                                        data-bs-toggle="modal" data-bs-target="#modalHapusMhs{{$mahasiswa->id}}"><i
                                             class="bx bx-trash bx-sm me-2"></i>
                                         </a>
                                     {{-- modal edit --}}
                                 </div>
                             </td>
                             @include('content.mahasiswa.update')
+                            @include('content.mahasiswa.delete')
                         </tr>
 
                     @empty
@@ -199,25 +180,7 @@
     </div>
     {{-- End Tabel Mahasiswa --}}
 
-    {{-- modal confirm delete --}}
-    <div class="modal fade" id="modalHapusMhs" data-bs-backdrop="static" tabindex="-1" style="display: none;"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <form class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="backDropModalTitle">Hapus Mahasiswa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure to delete this??</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="confirmHapus" class="btn btn-danger">Iya</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    {{-- {{$data->links()}} --}}
 
     @push('pricing-script')
         <script>
@@ -339,60 +302,60 @@
                 // })
 
 
-                $('.btnHapus').click(function() {
-                    // Ambil data-id dari tombol edit mahasiswa
-                    var mahasiswaId = $(this).data('id');
-                    // console.log(mahasiswaId);
+                // $('.btnHapus').click(function() {
+                //     // Ambil data-id dari tombol edit mahasiswa
+                //     var mahasiswaId = $(this).data('id');
+                //     // console.log(mahasiswaId);
 
-                    // Lakukan permintaan Ajax untuk mendapatkan data mahasiswa berdasarkan ID
-                    $('#confirmHapus').click(function() {
-                        $.ajax({
-                            url: '/mahasiswa/delete/' + mahasiswaId,
-                            headers: {
+                //     // Lakukan permintaan Ajax untuk mendapatkan data mahasiswa berdasarkan ID
+                //     $('#confirmHapus').click(function() {
+                //         $.ajax({
+                //             url: '/mahasiswa/delete/' + mahasiswaId,
+                //             headers: {
 
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 
-                            },
-                            method: 'post',
-                            dataType: 'json',
-                            success: function(data) {
+                //             },
+                //             method: 'post',
+                //             dataType: 'json',
+                //             success: function(data) {
 
-                                // Handle success, maybe update UI or show a message
-                                // $('#modalHapus').modal('hide');
+                //                 // Handle success, maybe update UI or show a message
+                //                 // $('#modalHapus').modal('hide');
 
-                                var alert = `
-                                            <div class="bs-toast toast toast-placement-ex m-2 fade bg-success top-0 end-0 show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
-                                                <div class="toast-header">
-                                                    <i class="bx bx-bell me-2"></i>
-                                                    <div class="me-auto fw-medium">Briliant</div>
-                                                    <small>1 seconds ago</small>
-                                                </div>
-                                                <div class="toast-body">
-                                                    ${data.message}
-                                                </div>
-                                            </div>
-                                        `;
+                //                 var alert = `
+                //                             <div class="bs-toast toast toast-placement-ex m-2 fade bg-success top-0 end-0 show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+                //                                 <div class="toast-header">
+                //                                     <i class="bx bx-bell me-2"></i>
+                //                                     <div class="me-auto fw-medium">Briliant</div>
+                //                                     <small>1 seconds ago</small>
+                //                                 </div>
+                //                                 <div class="toast-body">
+                //                                     ${data.message}
+                //                                 </div>
+                //                             </div>
+                //                         `;
 
-                                $('#your-alert-container').html(alert);
-                                $("#confirmHapus").hide();
-                                $("#confirmHapus").attr("disabled", true);
+                //                 $('#your-alert-container').html(alert);
+                //                 $("#confirmHapus").hide();
+                //                 $("#confirmHapus").attr("disabled", true);
 
-                                setTimeout(function() {
-                                    window.location.reload()
-                                }, 1500);
+                //                 setTimeout(function() {
+                //                     window.location.reload()
+                //                 }, 1500);
 
-                                // console.log(data.message);
+                //                 // console.log(data.message);
 
-                            },
-                            error: function(error) {
-                                console.log(error.message);
-                                // Handle errors, maybe show an error message
-                                console.error('Error deleting mahasiswa:', error
-                                    .responseJSON);
-                            }
-                        });
-                    })
-                });
+                //             },
+                //             error: function(error) {
+                //                 console.log(error.message);
+                //                 // Handle errors, maybe show an error message
+                //                 console.error('Error deleting mahasiswa:', error
+                //                     .responseJSON);
+                //             }
+                //         });
+                //     })
+                // });
 
 
 

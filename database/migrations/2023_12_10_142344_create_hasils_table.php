@@ -21,6 +21,7 @@ return new class extends Migration
       $table->enum('status', ['aktif', 'tidak aktif']);
       $table->year('periode');
       $table->timestamps();
+      $table->softDeletes();
     });
   }
 
