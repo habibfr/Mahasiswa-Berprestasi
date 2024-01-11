@@ -106,8 +106,26 @@ class KriteriaController extends Controller
   /**
    * Remove the specified resource from storage.
    */
-  public function destroy(Kriteria $kriteria)
+  public function destroy(Request $request)
   {
-    //
+      // Validate the request if needed
+
+    // Extract the ID from the request
+    $id = $request->input('id');
+
+    // Find the record by ID
+    $data = Kriteria::find($id);
+
+    // Check if the record exists
+    if ($data) {
+        // Delete the record
+        $data->delete();
+
+        // Optionally, you may want to add a success message or redirect
+        return redirect()->route('kriteria')->with('success', 'Record successfully deleted');
+    } else {
+        // Record not found, you may want to handle this case
+        return redirect()->route('kriteria')->with('error', 'Record not found');
+    }
   }
 }
