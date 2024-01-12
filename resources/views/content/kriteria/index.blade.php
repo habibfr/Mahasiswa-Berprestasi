@@ -36,7 +36,7 @@
         <div class="row">
             <div class="col">
                 <div class="float-end">
-                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                    <button type="button" class="btn btn-outline-success" data-bs-toggle="modal"
                         data-bs-target="#modalAddKriteria">Tambah</button>
                 </div>
             </div>
@@ -113,7 +113,7 @@
     <!-- Basic Bootstrap Table -->
     <div class="card mb-5">
         <div class="table-responsive text-nowrap">
-            <table class="table">
+            <table class="table table-dark">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -125,10 +125,9 @@
                     </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">
-                    
                         @isset($data)
                         @foreach($data as $data)
-                        <tr>
+                        <tr class="{{ date('Y')==$data->periode ? 'table-success':'table-danger'}}">
                         <td>{{ $loop->index + 1 }}</td>
                         <td style="display:none">{{$data->id}}</td>
                         <td>{{$data->nama_kriteria}}</td>

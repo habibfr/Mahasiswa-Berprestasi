@@ -3,6 +3,8 @@
 @section('title', 'Peringkat')
 
 @section('content')
+<script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+
     <div class="container">
         @include('layouts.sections.flash')
         <div class="row mb-3">
@@ -32,7 +34,7 @@
                             <!-- Tombol "Export" -->
                             <form action="#" method="post" class="d-inline-block">
                                 @csrf
-                                <button class="btn btn-secondary align-self-end">
+                                <button class="btn btn-primary align-self-end">
                                     <i class='bx bx-download me-2'></i>Export</button>
                             </form>
                             <!-- Tombol "Post" dengan margin kiri -->
@@ -40,8 +42,10 @@
                                 @csrf
                                 <input type="hidden" name="jumlah_sorting" value="{{ $jumlah_sorting ?? 10 }}"> <!-- Ganti 10 dengan nilai default yang diinginkan -->
 
-                                <button type="submit" class="btn btn-secondary align-self-end">
-                                    <i class='bx bx-upload me-2'></i>Post</button>
+                                <button type="submit" class="btn btn-danger align-self-end">
+                                    <i class='bx bx-upload me-2' id="uploadIcon"></i>
+                                    Post
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -59,17 +63,17 @@
             @endisset
             <div class="table-responsive text-nowrap">
             <table class="table">
-                <thead>
+                <thead class="table-dark">
                 <tr>
-                    <th>No</th>
-                    <th>NIM</th>
-                    <th>Nama</th>
+                    <th class="text-light">No</th>
+                    <th class="text-light">NIM</th>
+                    <th class="text-light">Nama</th>
                     @isset($kriterias)
                         @foreach ($kriterias as $item)
-                        <th>{{$item->nama_kriteria}}</th>
+                        <th class="text-light">{{$item->nama_kriteria}}</th>
                         @endforeach
                     @endisset
-                    <th>Poin</th>
+                    <th class="text-light">Poin</th>
                 </tr>
                 </thead>
                 <tbody class="table-border-bottom-0">

@@ -78,10 +78,10 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label" for="angkatan">Filter by angkatan</label>
-                            <input class="form-control" autocomplete="off" name="angkatan" min="2020" max="{{ date('Y') }}" id="year-filter">
+                            <input class="form-control" autocomplete="off" name="angkatan" min="2020" max="{{ date('Y') }}" id="year-filter" placeholder="Masukkan tahun">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-secondary">Filter</button>
+                    <button type="submit" class="btn btn-primary">Filter</button>
                 </form>                
                 
             </div>
@@ -106,7 +106,7 @@
                                 </p>
                             @endif
                             <div class="input-group-append" id="button-addon2">
-                                <button class="btn btn-secondary square" type="submit"><i class="ft-upload mr-1"></i>
+                                <button class="btn btn-primary square" type="submit"><i class="ft-upload mr-1"></i>
                                     Upload</button>
                             </div>
                         </div>
@@ -156,14 +156,21 @@
                             @endforeach
                             <td>
                                 <div class="inline">
-                                    <span data-id="{{ $mahasiswa->id }}" class="text-success btnEdit"
-                                        data-bs-toggle="modal" data-bs-target="#modalEditMhs{{$mahasiswa->id}}"><i
-                                            class="bx bx-edit-alt bx-sm me-2"></i>
-                                    </span>
-                                    <span data-id="{{ $mahasiswa->id }}" class="text-danger btnHapus"
-                                        data-bs-toggle="modal" data-bs-target="#modalHapusMhs{{$mahasiswa->id}}"><i
-                                            class="bx bx-trash bx-sm me-2"></i>
-                                        </a>
+                                    <div class="dropdown">
+                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
+                                        <div class="dropdown-menu">
+                                            <span data-id="{{ $mahasiswa->id }}" class="btnEdit dropdown-item btn-outline-warning" role="button"
+                                                data-bs-toggle="modal" data-bs-target="#modalEditMhs{{$mahasiswa->id}}">
+                                                <i class="bx bx-edit-alt me-2"></i>
+                                                Update
+                                            </span>
+                                            <span data-id="{{ $mahasiswa->id }}" class="text-danger btnHapus dropdown-item btn-outline-danger" role="button"
+                                                data-bs-toggle="modal" data-bs-target="#modalHapusMhs{{$mahasiswa->id}}">
+                                                <i class="bx bx-trash me-2"></i>
+                                                Delete
+                                            </span>
+                                        </div>
+                                      </div>
                                     {{-- modal edit --}}
                                 </div>
                             </td>

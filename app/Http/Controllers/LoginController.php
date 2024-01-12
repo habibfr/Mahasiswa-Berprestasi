@@ -16,8 +16,8 @@ class LoginController extends Controller
   public function authenticate(Request $request): RedirectResponse
   {
     $credentials = $request->validate([
-      'nik' => ['required'],
-      'password' => ['required'],
+      'nik' => ['required', 'numeric'],
+      'password' => ['required', 'numeric'],
     ]);
 
     if (Auth::attempt($credentials)) {

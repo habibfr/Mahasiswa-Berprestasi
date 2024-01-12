@@ -16,7 +16,7 @@ class KriteriaController extends Controller
   {
     //
     //ngambil data
-    $data = Kriteria::all();
+    $data = Kriteria::orderBy('periode', 'desc')->get();
     //ngirim data
     return view('content.kriteria.index', ['data' => $data, 'judul' => 'Kriteria']);
   }

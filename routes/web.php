@@ -53,16 +53,29 @@ use App\Http\Controllers\PeringkatController;
 
 // Main Page Route
 // Route::get('/', [Analytics::class, 'index'])->name('dashboard-analytics');
-Route::get('/', [HasilController::class, 'index'])->name('homepage');
+Route::get('/', [HasilController::class, 'index'])
+  ->name('homepage');
 
-// route untuk view/tampilan login
-Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
+// Limiter for login
+Route::middleware(['throttle:login'])->group(function () {
+  // Route group for login
+  Route::controller(LoginController::class)->group(function () {
+    // route untuk view/tampilan login
+    Route::get('/login', 'index')
+      ->name('login')
+      ->middleware('guest');
 
-// route untuk process login
-Route::post('/login', [LoginController::class, 'authenticate'])->name('login_process')->middleware('guest');
+    // route untuk process login
+    Route::post('/login', 'authenticate')
+      ->name('login_process')
+      ->middleware('guest');
+  });
+});
 
 // route untuk process logout
-Route::post('/logout', [LogoutController::class, 'logout'])->name('logout')->middleware('auth');
+Route::post('/logout', [LogoutController::class, 'logout'])
+  ->name('logout')
+  ->middleware('auth');
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
@@ -133,36 +146,53 @@ Route::get('/form/layouts-horizontal', [HorizontalForm::class, 'index'])->name('
 // tables
 Route::get('/tables/basic', [TablesBasic::class, 'index'])->name('tables-basic');
 
-// Route for Mahasiswa
-Route::get('/mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa')->middleware('auth');
+Route::controller(MahasiswaController::class)->group(function () {
+  Route::middleware('auth')->group(function () {
+    Route::prefix('mahasiswa')->group(function () {
+      // Route for Mahasiswa
+      Route::get('/', 'index')
+        ->name('mahasiswa');
 
-// import data for mahasiswa
-Route::post('/mahasiswa/import', [MahasiswaController::class, 'importData'])->name('mahasiswa.import')->middleware('auth');
+      // import data for mahasiswa
+      Route::post('/import', 'importData')
+        ->name('mahasiswa.import');
 
-// Filter Mahasiswa
-Route::get('/mahasiswa/filter', [MahasiswaController::class, 'filter'])->name('mahasiswa.filter')->middleware('auth');
+      // Filter Mahasiswa
+      Route::get('/filter', 'filter')
+        ->name('mahasiswa.filter');
 
-// get mahasiswa by id
-Route::get('/mahasiswa/get-mahasiswa/{id}', [MahasiswaController::class, 'getMahasiswaById']);
+      // get mahasiswa by id
+      Route::get('/get-mahasiswa/{id}', 'getMahasiswaById');
 
-// update mahasiswa by id
-Route::patch('/mahasiswa/update-mahasiswa/{id}', [MahasiswaController::class, 'updateMahasiswa'])
-  ->name('mahasiswa.update')
-  ->middleware('auth');
+      // update mahasiswa by id
+      Route::patch('/update-mahasiswa/{id}', 'updateMahasiswa')
+        ->name('mahasiswa.update');
 
-// hapus mahasiswa by id
-Route::delete('/mahasiswa/delete/{id}', [MahasiswaController::class, 'destroy'])
-  ->name('mahasiswa.delete')
-  ->middleware('auth');
+      // hapus mahasiswa by id
+      Route::delete('/delete/{id}', 'destroy')
+        ->name('mahasiswa.delete');
+    });
+  });
+});
 
 // Route for Peringkat
-Route::get('/peringkat', [PeringkatController::class, 'index'])->name('peringkat')->middleware('auth');
+Route::controller(PeringkatController::class)->group(function () {
+  Route::middleware('auth')->group(function () {
+    Route::prefix('peringkat')->group(function () {
+      // route for peringkat view
+      Route::get('/', 'index')
+        ->name('peringkat');
 
-// route for normalize
-Route::post('/peringkat', [PeringkatController::class, 'result_alternative'])->name('normalize')->middleware('auth');
+      // route for normalize
+      Route::post('/', 'result_alternative')
+        ->name('normalize');
 
-// route untuk publish mahasiswa berprestasi
-Route::post('/peringkat/publish', [PeringkatController::class, 'publish'])->name('publish')->middleware('auth');
+      // route untuk publish mahasiswa berprestasi
+      Route::post('/publish', 'publish')
+        ->name('publish');
+    });
+  });
+});
 
 // Route for Kriteria
 Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria')->middleware('auth');

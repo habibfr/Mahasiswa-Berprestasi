@@ -163,7 +163,7 @@ class MahasiswaController extends Controller
     $min_year = Mahasiswa::min('angkatan');
     $max_year = Mahasiswa::max('angkatan');
     $this->validate($request, [
-      'jurusan' => 'nullable|array',
+      'jurusan' => 'nullable|array|max:' . count($jurusans),
       'angkatan' => 'nullable|numeric|between:' . $min_year . ',' . $max_year,
     ]);
 
@@ -316,12 +316,15 @@ class MahasiswaController extends Controller
       return redirect('mahasiswa')->with('update_mahasiswa', 'Data mahasiswa berhasil diperbarui');
     } catch (\Throwable $th) {
       //throw $th;
-      return redirect('mahasiswa')->with('update_mahasiswa', $th);
+      return redirect('mahasiswa')->with('error', $th);
     }
   }
 
   public function destroy($id)
   {
+    $id->validate([
+      'id' => 'string|required',
+    ]);
     $mahasiswa = Mahasiswa::find($id);
     $nilai = Nilai::where('mahasiswa_id', $id);
 

@@ -24,18 +24,26 @@
                 </div>
           @endif
                 
-          <form id="formAuthentication" class="mb-3" action="{{url('/login')}}" method="post">
+          <form id="formAuthentication" class="mb-3 needs-validation" action="{{url('/login')}}" method="post" novalidate>
             @csrf
             <div class="mb-3">
               <label for="text" class="form-label">NIK</label>
-              <input type="text" class="form-control" id="nik" name="nik" placeholder="Enter your NIK" autofocus>
+              <input required type="text" class="form-control" id="nik" name="nik" placeholder="Enter your NIK" autofocus>
+              <div class="valid-feedback"></div>
+              <div class="invalid-feedback">
+                Masukkan NIK
+              </div>
             </div>
             <div class="mb-3 form-password-toggle">
               <div class="d-flex justify-content-between">
                 <label class="form-label" for="password">Password</label>
               </div>
               <div class="input-group input-group-merge">
-                <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                <input required type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                <div class="valid-feedback"></div>
+                <div class="invalid-feedback">
+                  Masukkan Password
+                </div>
                 <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
               </div>
             </div>

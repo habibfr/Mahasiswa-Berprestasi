@@ -9,6 +9,7 @@ use App\Models\Nilai;
 use Illuminate\Http\Request;
 
 use function PHPSTORM_META\map;
+use function PHPUnit\Framework\isEmpty;
 use function PHPUnit\Framework\isNull;
 
 class PeringkatController extends Controller
@@ -106,77 +107,92 @@ class PeringkatController extends Controller
 
   private function get_result_alternative($jumlah_sorting)
   {
-    $kriterias = Kriteria::where('periode', date('Y'));
-    // $kriterias = Kriteria::where('periode', '2023');
-    $this->kriterias = $kriterias->get();
+    try {
+      //code...
+      $kriterias = Kriteria::where('periode', date('Y'));
+      // $kriterias = Kriteria::where('periode', '2024');
+      $this->kriterias = $kriterias->get();
 
-    $normalized_matrixes = [];
+      !isset($kriterias->get()[0]->id) ? throw new \Exception("Tidak ada kriteria yang tersedia!") : $kriterias;
 
-    foreach ($kriterias->cursor() as $kriteria) {
-      $nama_kriteria = $kriteria->nama_kriteria;
-      array_push(
-        $normalized_matrixes,
-        (object) [
-          'id' => $kriteria->id,
-          'nama_kriteria' => $nama_kriteria,
-          'bobot' => $kriteria->bobot,
-          'ratios' => $this->normalization_per_kriteria($kriteria),
-        ]
-      );
-    }
-
-    $mahasiswas = Mahasiswa::where('status', 'aktif');
-
-    $collections_of_calc = (object) [];
-
-    foreach ($normalized_matrixes as $ratio_and_kriteria) {
-      $array_of_ratio = (object) [];
-      foreach ($ratio_and_kriteria->ratios as $ratio) {
-        $array_of_ratio->{$ratio->id_mahasiswa} = $ratio->ratio * $ratio_and_kriteria->bobot;
+      $sum_of_kriteria = 0;
+      foreach ($kriterias->cursor() as $kriteria) {
+        $sum_of_kriteria += $kriteria->bobot;
       }
-      $collections_of_calc->{$ratio_and_kriteria->nama_kriteria} = $array_of_ratio;
-    }
+      $sum_of_kriteria < 1 || $sum_of_kriteria > 1 ? throw new \Exception("Jumlah bobot kriteria harus 1!") : $kriterias;
 
-    foreach ($mahasiswas->cursor() as $mahasiswa) {
-      $totalScore = 0; // Inisialisasi total nilai untuk setiap mahasiswa
+      $normalized_matrixes = [];
 
-      // Looping through $collections_of_calc untuk setiap kriteria
-      foreach ($collections_of_calc as $kriteriaNama => $kriteriaRatios) {
-        // Jika ID mahasiswa ada dalam koleksi perhitungan kriteria
-        if (property_exists($kriteriaRatios, $mahasiswa->id)) {
-          $totalScore += $kriteriaRatios->{$mahasiswa->id}; // Tambahkan nilai kriteria ke total
+      foreach ($kriterias->cursor() as $kriteria) {
+        $nama_kriteria = $kriteria->nama_kriteria;
+        array_push(
+          $normalized_matrixes,
+          (object) [
+            'id' => $kriteria->id,
+            'nama_kriteria' => $nama_kriteria,
+            'bobot' => $kriteria->bobot,
+            'ratios' => $this->normalization_per_kriteria($kriteria),
+          ]
+        );
+      }
+
+      $mahasiswas = Mahasiswa::where('status', 'aktif');
+
+      $collections_of_calc = (object) [];
+
+      foreach ($normalized_matrixes as $ratio_and_kriteria) {
+        $array_of_ratio = (object) [];
+        foreach ($ratio_and_kriteria->ratios as $ratio) {
+          $array_of_ratio->{$ratio->id_mahasiswa} = $ratio->ratio * $ratio_and_kriteria->bobot;
         }
+        $collections_of_calc->{$ratio_and_kriteria->nama_kriteria} = $array_of_ratio;
       }
 
-      $totalScoresByMahasiswa[$mahasiswa->id] = (object) ['poin' => $totalScore];
-    }
+      foreach ($mahasiswas->cursor() as $mahasiswa) {
+        $totalScore = 0; // Inisialisasi total nilai untuk setiap mahasiswa
 
-    arsort($totalScoresByMahasiswa);
+        // Looping through $collections_of_calc untuk setiap kriteria
+        foreach ($collections_of_calc as $kriteriaNama => $kriteriaRatios) {
+          // Jika ID mahasiswa ada dalam koleksi perhitungan kriteria
+          if (property_exists($kriteriaRatios, $mahasiswa->id)) {
+            $totalScore += $kriteriaRatios->{$mahasiswa->id}; // Tambahkan nilai kriteria ke total
+          }
+        }
 
-    $totalScoresByMahasiswa = array_slice($totalScoresByMahasiswa, 0, $jumlah_sorting, true);
+        $totalScoresByMahasiswa[$mahasiswa->id] = (object) ['poin' => $totalScore];
+      }
 
-    $mahasiswas = $mahasiswas
-      ->join('nilais', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
-      ->join('kriterias', 'kriterias.id', '=', 'nilais.kriteria_id')
-      ->whereIn('mahasiswas.id', array_keys($totalScoresByMahasiswa))
-      ->get();
+      arsort($totalScoresByMahasiswa);
 
-    foreach ($mahasiswas as $mahasiswa) {
-      $mahasiswaId = $mahasiswa->mahasiswa_id;
+      $totalScoresByMahasiswa = array_slice($totalScoresByMahasiswa, 0, $jumlah_sorting, true);
 
-      if (isset($totalScoresByMahasiswa[$mahasiswaId])) {
-        $totalScoresByMahasiswa[$mahasiswaId]->id = $mahasiswa->mahasiswa_id;
-        $totalScoresByMahasiswa[$mahasiswaId]->nim = $mahasiswa->nim;
-        $totalScoresByMahasiswa[$mahasiswaId]->nama = $mahasiswa->nama;
-        foreach ($kriterias->get() as $kriteria) {
-          if ($kriteria->id == $mahasiswa->kriteria_id) {
-            $totalScoresByMahasiswa[$mahasiswaId]->{$kriteria->nama_kriteria} = $mahasiswa->nilai;
+      $mahasiswas = $mahasiswas
+        ->join('nilais', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
+        ->join('kriterias', 'kriterias.id', '=', 'nilais.kriteria_id')
+        ->whereIn('mahasiswas.id', array_keys($totalScoresByMahasiswa))
+        ->get();
+
+      foreach ($mahasiswas as $mahasiswa) {
+        $mahasiswaId = $mahasiswa->mahasiswa_id;
+
+        if (isset($totalScoresByMahasiswa[$mahasiswaId])) {
+          $totalScoresByMahasiswa[$mahasiswaId]->id = $mahasiswa->mahasiswa_id;
+          $totalScoresByMahasiswa[$mahasiswaId]->nim = $mahasiswa->nim;
+          $totalScoresByMahasiswa[$mahasiswaId]->nama = $mahasiswa->nama;
+          foreach ($kriterias->get() as $kriteria) {
+            if ($kriteria->id == $mahasiswa->kriteria_id) {
+              $totalScoresByMahasiswa[$mahasiswaId]->{$kriteria->nama_kriteria} = $mahasiswa->nilai;
+            }
           }
         }
       }
-    }
 
-    $this->totalscoresmahasiswa = $totalScoresByMahasiswa;
+      $this->totalscoresmahasiswa = $totalScoresByMahasiswa;
+    } catch (\Throwable $th) {
+      // throw $th;
+      // dd($th->getMessage());
+      return back()->with('error', $th->getMessage());
+    }
   }
   public function result_alternative(Request $request)
   {
