@@ -40,8 +40,13 @@
                         @foreach ($kriterias as $item)
                             <div class="row g-2">
                                 <div class="col mb-3">
-                                    <label for="{{str_replace(' ', '_', strtolower($item->nama_kriteria))}}_{{$mahasiswa->id}}" class="form-label">{{ucwords($item->nama_kriteria)}}</label>
-                                    <input step="0.1" type="number" name="{{str_replace(' ', '_', strtolower($item->nama_kriteria))}}_{{$mahasiswa->id}}" id="{{str_replace(' ', '_', strtolower($item->nama_kriteria))}}_{{$mahasiswa->id}}" class="form-control" value="{{$mahasiswa->{$item->nama_kriteria} ?? 0 }}">
+                                    <label for="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$mahasiswa->id}}" class="form-label">{{ucwords($item->nama_kriteria)}}</label>
+                                    {{-- @foreach ($subkriterias as $sub)
+                                        @if ($item->id!=$sub->kriteria_id)
+                                            <label for="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$sub->id}}_{{$mahasiswa->id}}" class="form-label">{{ucwords($item->nama_kriteria)}}</label>
+                                        @endif
+                                        <input step="0.1" type="number" name="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$sub->id}}_{{$mahasiswa->id}}" id="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$mahasiswa->id}}" class="form-control" value="{{$mahasiswa->nilai->{$item->nama_kriteria} ?? 0 }}">
+                                    @endforeach --}}
                                 </div>
                             </div>
                         @endforeach

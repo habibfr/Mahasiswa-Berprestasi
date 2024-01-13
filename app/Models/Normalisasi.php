@@ -13,7 +13,7 @@ class Normalisasi extends Model
 
     protected $fillable = ['mahasiswa_id', 'kriteria_id', 'nilai'];
 
-    protected $with = ['mahasiswa', 'kriteria'];
+    // protected $with = ['mahasiswa', 'kriteria'];
 
     public function mahasiswa(): BelongsTo
     {

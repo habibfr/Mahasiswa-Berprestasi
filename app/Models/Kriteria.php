@@ -17,12 +17,12 @@ class Kriteria extends Model
 
   protected $fillable = ['bobot', 'atribut', 'nama_kriteria', 'periode'];
 
-  protected $with = ['subkriteria', 'nilai', 'normalisasi'];
+  // protected $with = ['subkriteria', 'normalisasi'];
 
-  public function nilai()
-  {
-    return $this->hasMany(Nilai::class);
-  }
+  // public function nilai()
+  // {
+  //   return $this->hasMany(Nilai::class);
+  // }
 
   public function subkriteria()
   {

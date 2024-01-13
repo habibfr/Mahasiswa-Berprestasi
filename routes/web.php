@@ -153,6 +153,10 @@ Route::controller(MahasiswaController::class)->group(function () {
       Route::get('/', 'index')
         ->name('mahasiswa');
 
+      // route for datatable list
+      Route::get('/get-mahasiswa-list', 'get_mahasiswas')
+        ->name('mahasiswa.list');
+
       // import data for mahasiswa
       Route::post('/import', 'importData')
         ->name('mahasiswa.import');
@@ -162,7 +166,8 @@ Route::controller(MahasiswaController::class)->group(function () {
         ->name('mahasiswa.filter');
 
       // get mahasiswa by id
-      Route::get('/get-mahasiswa/{id}', 'getMahasiswaById');
+      Route::post('/get-mahasiswa/{id}', 'getMahasiswaById')
+        ->name('mahasiswa.modal');
 
       // update mahasiswa by id
       Route::patch('/update-mahasiswa/{id}', 'updateMahasiswa')

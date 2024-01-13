@@ -23,9 +23,12 @@ class Mahasiswa extends Model
     // return $this->hasMany(Nilai::class, 'mahasiswa_id', 'nim');
     return $this->hasMany(Nilai::class);
   }
-
   public function hasil()
   {
     return $this->hasMany(Hasil::class);
+  }
+  public function normalisasi()
+  {
+    return $this->hasMany(Normalisasi::class);
   }
 }

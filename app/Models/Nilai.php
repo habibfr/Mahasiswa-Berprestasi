@@ -17,7 +17,7 @@ class Nilai extends Model
 
   // protected $nullable = ['deleted_at'];
 
-  protected $with = ['mahasiswa', 'subkriteria'];
+  // protected $with = ['mahasiswa', 'subkriteria'];
 
   public function mahasiswa(): BelongsTo
   {

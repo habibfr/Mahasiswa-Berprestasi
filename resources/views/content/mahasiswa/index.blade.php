@@ -145,6 +145,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {{-- @isset($data)
                     @forelse ($data as $key => $mahasiswa)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
@@ -152,7 +153,7 @@
                             <td>{{ $mahasiswa->nama }}</td>
                             <td>{{ $mahasiswa->status }}</td>
                             @foreach ($kriterias as $kriteria)
-                                <td>{{$mahasiswa->{$kriteria->nama_kriteria} ?? '-' }}</td>
+                                <td>{{$mahasiswa->normalisasi == $kriteria->id ?? '0' }}</td>
                             @endforeach
                             <td>
                                 <div class="inline">
@@ -171,19 +172,20 @@
                                             </span>
                                         </div>
                                       </div>
-                                    {{-- modal edit --}}
+                                    modal edit
                                 </div>
                             </td>
-                            @include('content.mahasiswa.update')
-                            @include('content.mahasiswa.delete')
                         </tr>
-
-                    @empty
+                        @include('content.mahasiswa.update')
+                        @include('content.mahasiswa.delete')
+                        
+                        @empty
                         <p>Maaf data masih kosong!</p>
                     @endforelse
+                    @endisset --}}
                 </tbody>
             </table>
-
+                
         </div>
     </div>
     {{-- End Tabel Mahasiswa --}}
@@ -201,8 +203,51 @@
                     endDate: new Date().getFullYear().toString(),
                     format: 'yyyy'
                 });
-                $('#tabelMahasiswa').DataTable({
+
+                // let table = $('#tabelMahasiswa').DataTable({
+                //     deferRender: true,
+                // })
+                let table = $('#tabelMahasiswa').DataTable({
+                    processing: true,
+                    serverSide: true,
                     deferRender: true,
+                    ajax: "{{route('mahasiswa.list')}}",
+                    columns: [
+                        {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                        {data: 'nim', name: 'nim'},
+                        {data: 'nama', name: 'nama'},
+                        {data: 'status', name: 'status'},
+                        // Tambahkan kolom dinamis sesuai dengan normalisasi
+                        @foreach($kriterias as $kriteria)
+                            { 
+                                data: 'normalisasi.{{ $kriteria->nama_kriteria }}', 
+                                name: 'normalisasi.{{ $kriteria->nama_kriteria }}',
+                                render: function(data, type, full, meta) {
+                                    return data || 0;
+                                }
+                            },
+                        @endforeach
+                        {
+                            data: 'action',
+                            name: 'action',
+                            orderable: true,
+                            searchable: true
+                        }
+                    ]
+                });
+
+                $(document).on('click', '.btnEdit', function () {
+                    let mahasiswaId = $(this).data('id');
+
+                    // Memuat konten modal secara dinamis melalui Ajax
+                    $.ajax({
+                        url: '{{route(mahasiswa.moodal)}}' + mahasiswaId,
+                        type: 'POST',
+                        success: function (data) {
+                            $('#modalEditMhsContent').html(data);
+                            $('#modalEditMhs').modal('show');
+                        }
+                    });
                 });
 
                 // const dataJurusan = [
