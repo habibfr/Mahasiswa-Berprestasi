@@ -8,10 +8,6 @@ use App\Models\Mahasiswa;
 use App\Models\Nilai;
 use Illuminate\Http\Request;
 
-use function PHPSTORM_META\map;
-use function PHPUnit\Framework\isEmpty;
-use function PHPUnit\Framework\isNull;
-
 class PeringkatController extends Controller
 {
   private $totalscoresmahasiswa;

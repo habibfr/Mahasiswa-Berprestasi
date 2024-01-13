@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Hasil;
 use App\Http\Requests\StoreHasilRequest;
 use App\Http\Requests\UpdateHasilRequest;
+use App\Models\Kriteria;
 use App\Models\Mahasiswa;
 
 class HasilController extends Controller
@@ -21,6 +22,8 @@ class HasilController extends Controller
             ->get();
 
         return view('content.homepage.index', ['data' => $hasil]);
+
+        // dd(Kriteria::where('nama_kriteria', 'IPK')->where('periode', date('Y'))->subkriteria()->count());
     }
 
     /**

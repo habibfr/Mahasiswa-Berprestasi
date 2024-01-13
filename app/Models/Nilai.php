@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Kriteria;
 use App\Models\Mahasiswa;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Nilai extends Model
@@ -13,19 +13,19 @@ class Nilai extends Model
   use HasFactory, SoftDeletes;
 
   // protected $guarded = ['id'];
-  protected $fillable = ['mahasiswa_id', 'kriteria_id', 'nilai'];
+  protected $fillable = ['mahasiswa_id', 'subkriteria_id', 'nilai'];
 
   // protected $nullable = ['deleted_at'];
 
-  protected $with = ['mahasiswa', 'kriteria'];
+  protected $with = ['mahasiswa', 'subkriteria'];
 
-  public function mahasiswa()
+  public function mahasiswa(): BelongsTo
   {
-    return $this->belongsTo(Mahasiswa::class, 'mahasiswa_id', 'id');
+    return $this->belongsTo(Mahasiswa::class);
   }
 
-  public function kriteria()
+  public function subkriteria(): BelongsTo
   {
-    return $this->belongsTo(Kriteria::class, 'kriteria_id', 'id');
+    return $this->belongsTo(Subkriteria::class);
   }
 }

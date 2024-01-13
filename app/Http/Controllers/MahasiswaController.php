@@ -82,12 +82,12 @@ class MahasiswaController extends Controller
 
   function importData(Request $request)
   {
-    $this->validate($request, [
-      'uploaded_file' => 'required|file|mimes:xls,xlsx',
-    ]);
-    $the_file = $request->file('uploaded_file');
-
     try {
+      $this->validate($request, [
+        'uploaded_file' => 'required|file|mimes:xls,xlsx',
+      ]);
+      $the_file = $request->file('uploaded_file');
+    
       $spreadsheet = IOFactory::load($the_file->getRealPath());
       $sheet = $spreadsheet->getActiveSheet();
       $row_limit = $sheet->getHighestDataRow();
