@@ -210,3 +210,12 @@ Route::post('/upkriteria', [KriteriaController::class, 'edit'])->name('upkriteri
 
 // Route Delete Kriteria
 Route::post('/deskriteria', [KriteriaController::class, 'destroy'])->name('deskriteria')->middleware('auth');
+
+// Route insert Kriteria
+Route::post('/insubkriteria', [KriteriaController::class, 'substore'])->name('insubkriteria')->middleware('auth');
+
+// Route Update SubKriteria
+Route::post('/upsubkriteria', [KriteriaController::class, 'subedit'])->name('upsubkriteria')->middleware('auth');
+
+// Route Update SubKriteria
+Route::post('/dessubkriteria', [KriteriaController::class, 'destroysub'])->name('dessubkriteria')->middleware('auth');

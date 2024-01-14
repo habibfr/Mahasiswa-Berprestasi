@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Subkriteria extends Model
 {
+    protected $fillable = [
+        'nama_subkriteria',
+        'bobot_normalisasi'
+    ];
     use HasFactory, HasUuids, SoftDeletes;
 
     public function kriteria(): BelongsTo

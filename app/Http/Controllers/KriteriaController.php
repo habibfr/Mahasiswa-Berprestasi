@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kriteria;
+use App\Models\Subkriteria;
 // use App\Http\Requests\StoreKriteriaRequest;
 // use App\Http\Requests\UpdateKriteriaRequest;
 use Illuminate\Http\Request;
@@ -12,13 +13,21 @@ class KriteriaController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
-    //
-    //ngambil data
-    $data = Kriteria::orderBy('periode', 'desc')->get();
-    //ngirim data
-    return view('content.kriteria.index', ['data' => $data, 'judul' => 'Kriteria']);
+    try {
+      // Ngambil data kriteria
+      $data = Kriteria::where('periode', date('Y'))->orderBy('periode', 'desc')->get();
+
+      // Mengambil data subkriteria
+      $sub = Subkriteria::get();
+
+      // Ngirim data
+      return view('content.kriteria.index', ['data' => $data, 'judul' => 'Kriteria', 'sub' => $sub]);
+  } catch (\Exception $e) {
+      // Handle the exception and return an error view with a message
+      return view('content.kriteria.index')->with('error', 'Error: ' . $e->getMessage());
+  }
   }
 
   /**
@@ -38,15 +47,46 @@ class KriteriaController extends Controller
     //
     // dd($request->except(['_token','submit']));
     Kriteria::create($request->except(['_token', 'submit']));
+    // dd($request->all());
+    // Subkriteria::create($request->except(['_token','bobot','atribut','periode','submit']));
+    return redirect('/kriteria')->with('berhasil_ubah_kriteria', 'Berhasil menambahkan kriteria!');
+  }
+
+  public function substore(Request $request)
+  {
+    Subkriteria::create($request->except(['_token', 'submit']));
     return redirect('/kriteria')->with('berhasil_ubah_kriteria', 'Berhasil menambahkan kriteria!');
   }
 
   /**
    * Display the specified resource.
    */
-  public function show(Kriteria $kriteria)
+  public function subedit(Request $request)
   {
     //
+    try{
+    // Validasi data yang diterima dari formulir
+    $request->validate([
+      'nama_subkriteria' => 'required|string|max:50' ,
+      'bobot_normalisasi' => 'required|numeric|min:1|max:4',
+      // Sesuaikan aturan validasi dengan model dan kebutuhan Anda
+    ]);
+    $nama_subkriteria = $request->input('nama_subkriteria');
+    $bobot_normalisasi = $request->input('bobot_normalisasi');
+    // Ambil data user berdasarkan ID
+    $user = Subkriteria::findOrFail($request->id);
+    // dd($request->all());
+    // Update data user dengan data baru
+    $user->nama_subkriteria = $nama_subkriteria;
+    $user->bobot_normalisasi = $bobot_normalisasi;
+    // Simpan perubahan ke database
+    $user->save();
+    // Redirect atau berikan respons sesuai kebutuhan aplikasi Anda
+    return redirect()->route('kriteria')->with('berhasil_ubah_subkriteria', 'Data kriteria berhasil diperbarui');
+  } catch (\Exception $e) {
+    return redirect()->route('kriteria')->with('berhasil_ubah_subkriteria', $e->getMessage());
+  }
+
   }
 
   /**
@@ -61,7 +101,7 @@ class KriteriaController extends Controller
       //
       // dd($request->except(['_token','submit']));
       $sum_of_bobot = Kriteria::where('periode', $request->input('periode'))
-        ->where('nama_kriteria', '!=', $request->input('nama_kriteria'))
+        ->where('id', '!=', $request->input('id'))
         ->sum('bobot');
 
       // dd($sum_of_bobot);
@@ -132,6 +172,28 @@ class KriteriaController extends Controller
     } else {
       // Record not found, you may want to handle this case
       return redirect()->route('kriteria')->with('berhasil_delete_kriteria', 'Record not found!');
+    }
+  }
+
+  public function destroysub(Request $request){
+     // Validate the request if needed
+    // dd($request->all());
+    // Extract the ID from the request
+    $id = $request->input('id');
+
+    // Find the record by ID
+    $data = SubKriteria::find($id);
+
+    // Check if the record exists
+    if ($data) {
+      // Delete the record
+      $data->delete();
+
+      // Optionally, you may want to add a success message or redirect
+      return redirect()->route('kriteria')->with('berhasil_delete_suvkriteria', 'Kriteria berhasil dihapus!');
+    } else {
+      // Record not found, you may want to handle this case
+      return redirect()->route('kriteria')->with('berhasil_delete_subkriteria', 'Record not found!');
     }
   }
 }
