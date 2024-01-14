@@ -162,7 +162,7 @@ Route::controller(MahasiswaController::class)->group(function () {
         ->name('mahasiswa.import');
 
       // Filter Mahasiswa
-      Route::get('/filter', 'filter')
+      Route::post('/filter', 'filter')
         ->name('mahasiswa.filter');
 
       // get mahasiswa by id

@@ -18,54 +18,18 @@
 
 @section('content')
 
-    {{-- success upload --}}
-    {{-- @if ($message = Session::get('success'))
-        <div class="alert alert-success alert-dismissible" role="alert">
-            This is a success dismissible alert — check it out!
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-            </button>
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif --}}
-
-
-    {{-- error filter --}}
-    {{-- @if ($errors->has('jurusan'))
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            {{ $errors->first('jurusan') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-            </button>
-        </div>
-    @endif
-
-    @if ($errors->has('angkatan'))
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            {{ $errors->first('angkatan') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-            </button>
-        </div>
-    @endif
-
-    <div id="your-alert-container"></div> --}}
-
     @include('layouts.sections.flash')
 
     <div class="row">
         <div class="col">
             <div class="mb-3 row align-items-center">
 
-                <form action="{{ route('mahasiswa.filter') }}" method="GET" class="container">
+                <form id="filterForm" class="container">
                     @csrf
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
                             <label class="form-label" for="jurusan_filter">Filter by jurusan</label>
-                            <select id="jurusan_filter" multiple class="form-select" name="jurusan[]">
+                            <select id="jurusanFilter" multiple class="form-select" name="jurusan[]">
                                 @isset($jurusan)
                                 <option value="0" selected>Pilih Jurusan</option>
                                 @foreach ($jurusan as $item)
@@ -78,11 +42,11 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label" for="angkatan">Filter by angkatan</label>
-                            <input class="form-control" autocomplete="off" name="angkatan" min="2020" max="{{ date('Y') }}" id="year-filter" placeholder="Masukkan tahun">
+                            <input class="form-control" autocomplete="off" name="angkatan" min="2020" max="{{ date('Y') }}" id="angkatanFilter" placeholder="Masukkan tahun">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Filter</button>
-                </form>                
+                    <button class="btn btn-primary" id="filter-button">Filter</button>
+                </form>
                 
             </div>
         </div>
@@ -145,49 +109,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @isset($data)
-                    @forelse ($data as $key => $mahasiswa)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $mahasiswa->nim }}</td>
-                            <td>{{ $mahasiswa->nama }}</td>
-                            <td>{{ $mahasiswa->status }}</td>
-                            @foreach ($kriterias as $kriteria)
-                                <td>{{$mahasiswa->normalisasi == $kriteria->id ?? '0' }}</td>
-                            @endforeach
-                            <td>
-                                <div class="inline">
-                                    <div class="dropdown">
-                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
-                                        <div class="dropdown-menu">
-                                            <span data-id="{{ $mahasiswa->id }}" class="btnEdit dropdown-item btn-outline-warning" role="button"
-                                                data-bs-toggle="modal" data-bs-target="#modalEditMhs{{$mahasiswa->id}}">
-                                                <i class="bx bx-edit-alt me-2"></i>
-                                                Update
-                                            </span>
-                                            <span data-id="{{ $mahasiswa->id }}" class="text-danger btnHapus dropdown-item btn-outline-danger" role="button"
-                                                data-bs-toggle="modal" data-bs-target="#modalHapusMhs{{$mahasiswa->id}}">
-                                                <i class="bx bx-trash me-2"></i>
-                                                Delete
-                                            </span>
-                                        </div>
-                                      </div>
-                                    modal edit
-                                </div>
-                            </td>
-                        </tr>
-                        @include('content.mahasiswa.update')
-                        @include('content.mahasiswa.delete')
-                        
-                        @empty
-                        <p>Maaf data masih kosong!</p>
-                    @endforelse
-                    @endisset --}}
                 </tbody>
-            </table>
+                </table>
                 
+            </div>
         </div>
-    </div>
+        @include('content.mahasiswa.delete')
+        @include('content.mahasiswa.update')
     {{-- End Tabel Mahasiswa --}}
 
     {{-- {{$data->links()}} --}}
@@ -196,17 +124,6 @@
         <script>
             $(document).ready(function() {
 
-                $('#year-filter').datepicker({
-                    minViewMode: 2,
-                    autoclose: true,
-                    startDate: "2020",
-                    endDate: new Date().getFullYear().toString(),
-                    format: 'yyyy'
-                });
-
-                // let table = $('#tabelMahasiswa').DataTable({
-                //     deferRender: true,
-                // })
                 let table = $('#tabelMahasiswa').DataTable({
                     processing: true,
                     serverSide: true,
@@ -236,16 +153,118 @@
                     ]
                 });
 
-                $(document).on('click', '.btnEdit', function () {
-                    let mahasiswaId = $(this).data('id');
+                $(document).on('submit', '#filterForm', function (event) {
+                    event.preventDefault();
 
-                    // Memuat konten modal secara dinamis melalui Ajax
+                    let jurusanFilter=$('#jurusanFilter').val();
+                    let angkatanFilter=$('#angkatanFilter').val();
+                    
+                    let formData={
+                        _token: "{{csrf_token()}}",
+                        jurusan: jurusanFilter,
+                        angkatan: angkatanFilter,
+                    }
+
+                    if (table) {
+                        // Clear and destroy the DataTable
+                        table.clear().destroy();
+
+                        // Reinitialize the DataTable with new data
+                        table = $('#tabelMahasiswa').DataTable({
+                            // your DataTable options
+                            ajax: {
+                                url: "{{route('mahasiswa.filter')}}", // Assuming 'data' contains the new URL
+                                type: 'POST',
+                                data: formData,
+                                dataType: 'json',
+                            },
+                            processing: true,
+                            serverSide: true,
+                            deferRender: true,
+                            columns: [
+                                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                                {data: 'nim', name: 'nim'},
+                                {data: 'nama', name: 'nama'},
+                                {data: 'status', name: 'status'},
+                                // Tambahkan kolom dinamis sesuai dengan normalisasi
+                                @foreach($kriterias as $kriteria)
+                                    { 
+                                        data: 'normalisasi.{{ $kriteria->nama_kriteria }}', 
+                                        name: 'normalisasi.{{ $kriteria->nama_kriteria }}',
+                                        render: function(data, type, full, meta) {
+                                            return data || 0;
+                                        }
+                                    },
+                                @endforeach
+                                {
+                                    data: 'action',
+                                    name: 'action',
+                                    orderable: true,
+                                    searchable: true
+                                }
+                            ]
+                        });
+                    }
+                })
+
+
+                $('#angkatanFilter').datepicker({
+                    minViewMode: 2,
+                    autoclose: true,
+                    startDate: "2020",
+                    endDate: new Date().getFullYear().toString(),
+                    format: 'yyyy'
+                });
+
+                $(document).on('click', '.btnHapus', function() {
+                    let mahasiswaId = $(this).data('id');
+                    window.currentMahasiswaId = mahasiswaId;
+                    $('#modalHapusMhs form').attr('action', function(i, val) {
+                        // Ganti __id__ dengan variabel JavaScript yang menyimpan ID mahasiswa
+                        return val.replace('__id__', window.currentMahasiswaId);
+                    });
+                });
+
+                $(document).on('click', '.btnEdit', function () {
+                    // Ambil data-id dari tombol edit mahasiswa
+                    let mahasiswaId = $(this).data('id');
+                    window.currentMahasiswaId = mahasiswaId;
+                    // console.log(mahasiswaId);
+
+                    // Lakukan permintaan Ajax untuk mendapatkan data mahasiswa berdasarkan ID
                     $.ajax({
-                        url: '{{route(mahasiswa.moodal)}}' + mahasiswaId,
-                        type: 'POST',
-                        success: function (data) {
-                            $('#modalEditMhsContent').html(data);
+                        url: "{{route('mahasiswa.modal', ['id' => '__id__']) }}".replace('__id__', mahasiswaId),
+                        method: 'POST',
+                        dataType: 'json', // Tentukan bahwa kita mengharapkan respons JSON
+                        data: {
+                            _token: "{{ csrf_token() }}", // Tambahkan token CSRF ke data permintaan
+                        },
+                        success: function(data) {
+
+                            // Update konten modal dengan data yang diterima
+                            $('#nim_mhs').val(data[mahasiswaId].nim);
+                            $('#nama_mhs').val(data[mahasiswaId].nama);
+                            $('#jurusan_mhs').val(data[mahasiswaId].jurusan);
+                            @foreach($kriterias as $kriteria)            
+                                @if($subkriterias->where('kriteria_id', $kriteria->id)->isNotEmpty())
+                                    // {{-- Loop through the subkriterias of the current kriteria --}}
+                                    @foreach($subkriterias->where('kriteria_id', $kriteria->id) as $subkriteria)
+                                            $("#{{str_replace(' ', '', strtolower($kriteria->nama_kriteria))}}_{{$subkriteria->id}}_mhs").val(data[mahasiswaId].nilai["{{ $subkriteria->nama_subkriteria }}"]);
+                                    @endforeach
+                                @endif
+                            @endforeach
+
+                            // Tampilkan modal
                             $('#modalEditMhs').modal('show');
+
+                            // Pada bagian yang sesuai di dalam skrip JavaScript Anda
+                            $('#modalEditMhs form').attr('action', function(i, val) {
+                                // Ganti __id__ dengan variabel JavaScript yang menyimpan ID mahasiswa
+                                return val.replace('__id__', window.currentMahasiswaId);
+                            });
+                        },
+                        error: function() {
+                            console.log('Gagal mengambil data mahasiswa.');
                         }
                     });
                 });
@@ -259,13 +278,16 @@
                 // Ketika tombol edit diklik
                 // $('.btnEdit').click(function() {
                 //     // Ambil data-id dari tombol edit mahasiswa
-                //     var mahasiswaId = $(this).data('id');
-                //     // console.log(mahasiswaId);
+                //     console.log(this);
+                //     let mahasiswaId = $(this).data('id');
+                //     window.currentMahasiswaId = mahasiswaId;
+                //     console.log(mahasiswaId);
+                //     alert(mahasiswaId);
 
                 //     // Lakukan permintaan Ajax untuk mendapatkan data mahasiswa berdasarkan ID
                 //     $.ajax({
-                //         url: '/mahasiswa/get-mahasiswa/' + mahasiswaId,
-                //         method: 'GET',
+                //         url: "{{route('mahasiswa.modal', ['id' => '__id__']) }}".replace('__id__', mahasiswaId),
+                //         method: 'POST',
                 //         dataType: 'json', // Tentukan bahwa kita mengharapkan respons JSON
                 //         success: function(data) {
 
@@ -275,16 +297,22 @@
                 //             $('#nim_mhs').val(data[mahasiswaId].nim);
                 //             $('#nama_mhs').val(data[mahasiswaId].nama);
                 //             $('#jurusan_mhs').val(data[mahasiswaId].jurusan);
-                //             $('#ipk_mhs').val(data[mahasiswaId].IPK);
-                //             $('#sskm_mhs').val(data[mahasiswaId].SSKM);
-                //             $('#toefl_mhs').val(data[mahasiswaId].TOEFL);
-                //             if (data[mahasiswaId].karya_tulis == null || data[mahasiswaId].karya_tulis == mahasiswaId) {
-                //                 $('#karya_tulis_mhs').val(0);
-                //             } else {
-                //                 $('#karya_tulis_mhs').val(data[mahasiswaId].karya_tulis);
-                //             }
+                //             // @foreach($kriterias as $kriterias)
+
+                //             // @endforeach
+                //             // if (data[mahasiswaId].karya_tulis == null || data[mahasiswaId].karya_tulis == mahasiswaId) {
+                //             //     $('#karya_tulis_mhs').val(0);
+                //             // } else {
+                //             //     $('#karya_tulis_mhs').val(data[mahasiswaId].karya_tulis);
+                //             // }
                 //             // Tampilkan modal
                 //             $('#modalEditMhs').modal('show');
+
+                //             // Pada bagian yang sesuai di dalam skrip JavaScript Anda
+                //             $('#modalEditMhs form').attr('action', function(i, val) {
+                //                 // Ganti __id__ dengan variabel JavaScript yang menyimpan ID mahasiswa
+                //                 return val.replace('__id__', window.currentMahasiswaId);
+                //             });
                 //         },
                 //         error: function() {
                 //             console.log('Gagal mengambil data mahasiswa.');

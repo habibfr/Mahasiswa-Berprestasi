@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Hasil;
 use App\Models\Kriteria;
 use App\Models\Mahasiswa;
-use App\Models\Nilai;
+use App\Models\Normalisasi;
 use Illuminate\Http\Request;
 
 class PeringkatController extends Controller
@@ -18,14 +18,14 @@ class PeringkatController extends Controller
 
     $hasil = [];
 
-    $mahasiswas = Mahasiswa::leftJoin('nilais', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
+    $mahasiswas = Mahasiswa::leftJoin('normalisasis', 'normalisasis.mahasiswa_id', '=', 'mahasiswas.id')
       ->leftJoin('hasils', 'hasils.mahasiswa_id', '=', 'mahasiswas.id')
-      ->leftJoin('kriterias', 'kriterias.id', '=', 'nilais.kriteria_id')
+      ->leftJoin('kriterias', 'kriterias.id', '=', 'normalisasis.kriteria_id')
       ->select(
         'mahasiswas.id as mahasiswa_id',
         'mahasiswas.nim',
         'mahasiswas.nama',
-        'nilais.nilai',
+        'normalisasis.nilai',
         'kriterias.nama_kriteria',
         'hasils.poin'
       )
@@ -62,14 +62,15 @@ class PeringkatController extends Controller
   public function normalization_per_kriteria(Kriteria $kriteria)
   {
     // panggil nilai dengan kondisi mahasiswa aktif dan kriteria tertentu
-    $nilais = Nilai::join('kriterias', 'kriterias.id', '=', 'nilais.kriteria_id')
-      ->join('mahasiswas', 'mahasiswas.id', '=', 'nilais.mahasiswa_id')
+    $nilais = Normalisasi::join('kriterias', 'kriterias.id', '=', 'normalisasis.kriteria_id')
+      ->join('mahasiswas', 'mahasiswas.id', '=', 'normalisasis.mahasiswa_id')
       ->where('kriterias.nama_kriteria', '=', $kriteria->nama_kriteria)
       ->where('mahasiswas.status', 'aktif');
 
     $array_of_normalized = [];
 
     // logic normalisasi
+    // jika tipe kriteria adalah benefit
     if (strcasecmp($kriteria->atribut, 'Benefit') == 0) {
       $maxnilais = $nilais->max('nilai');
 
@@ -83,6 +84,7 @@ class PeringkatController extends Controller
           ]
         );
       }
+    // jika tipe kriteria adalah cost
     } elseif (strcasecmp($kriteria->atribut, 'Cost') == 0) {
       $minnilais = $nilais->min('nilai');
 
@@ -163,8 +165,8 @@ class PeringkatController extends Controller
       $totalScoresByMahasiswa = array_slice($totalScoresByMahasiswa, 0, $jumlah_sorting, true);
 
       $mahasiswas = $mahasiswas
-        ->join('nilais', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
-        ->join('kriterias', 'kriterias.id', '=', 'nilais.kriteria_id')
+        ->join('normalisasis', 'normalisasis.mahasiswa_id', '=', 'mahasiswas.id')
+        ->join('kriterias', 'kriterias.id', '=', 'normalisasis.kriteria_id')
         ->whereIn('mahasiswas.id', array_keys($totalScoresByMahasiswa))
         ->get();
 

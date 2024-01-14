@@ -10,7 +10,7 @@ class Hasil extends Model
 {
   use HasFactory;
 
-  protected $with = ['mahasiswas'];
+  protected $with = ['mahasiswa'];
 
   protected $fillable = [
     'mahasiswa_id',

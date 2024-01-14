@@ -1,10 +1,11 @@
 {{-- Update Modal --}}
-<div class="modal fade" id="modalEditMhs{{$mahasiswa->id}}" data-bs-backdrop="static" tabindex="-1" style="display: none;"
+<div class="modal fade" id="modalEditMhs" data-bs-backdrop="static" tabindex="-1" style="display: none;"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            {!! Form::model($data, ['method'=>'patch', 'route'=>['mahasiswa.update', $mahasiswa->id]]) !!}
+            {{-- {!! Form::model($data, ['method'=>'patch', 'route'=>['mahasiswa.update', $mahasiswa->id]]) !!} --}}
+            {!! Form::open(['method'=>'patch', 'route'=>['mahasiswa.update', '__id__']]) !!}
             {{-- <form action="{{route('mahasiswa.update', ['id'=>$mahasiswa->id])}}" method="patch"> --}}
-                @csrf
+                {{-- @csrf --}}
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="labelEditMhs">Edit Data Mahasiswa</h5>
@@ -15,40 +16,44 @@
                         <div class="row g-2">
                             <div class="col mb-3">
                                 <label for="nim_mhs" class="form-label">NIM</label>
-                                <input disabled type="text" id="nim_mhs" class="form-control" placeholder="21410100050"
-                                    aria-label="Last name" required value="{{$mahasiswa->nim}}">
+                                <input disabled type="text" id="nim_mhs" class="form-control" placeholder="NIM"
+                                    aria-label="Last name" required value="">
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col mb-3">
                                 <label for="nama_mhs" class="form-label">Nama</label>
-                                <input type="text" id="nama_mhs" class="form-control" placeholder="Enter Name"
-                                    required value="{{$mahasiswa->nama}}" disabled>
+                                <input type="text" id="nama_mhs" class="form-control" placeholder="Nama"
+                                    required value="" disabled>
                             </div>
                         </div>
 
                         <div class="row g-2">
                             <div class="col mb-3">
                                 <label for="jurusan_mhs" class="form-label">Jurusan</label>
-                                <input type="text" id="nama_mhs" class="form-control" placeholder="Enter Name"
-                                    required value="{{$mahasiswa->jurusan}}" disabled>
+                                <input type="text" id="jurusan_mhs" class="form-control" placeholder="Jurusan"
+                                    required value="" disabled>
                             </div>
                         </div>
 
-                        @isset($kriteria)
+                        @isset($kriterias)
                         @foreach ($kriterias as $item)
-                            <div class="row g-2">
-                                <div class="col mb-3">
-                                    <label for="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$mahasiswa->id}}" class="form-label">{{ucwords($item->nama_kriteria)}}</label>
-                                    {{-- @foreach ($subkriterias as $sub)
-                                        @if ($item->id!=$sub->kriteria_id)
-                                            <label for="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$sub->id}}_{{$mahasiswa->id}}" class="form-label">{{ucwords($item->nama_kriteria)}}</label>
+                        <div class="row g-2">
+                            <div class="col mb-3">
+                                <label for="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_mhs" class="form-label">{{ucwords($item->nama_kriteria)}}</label><br>
+                                @foreach ($subkriterias as $sub)
+                                    @if ($item->id == $sub->kriteria_id)
+                                        @if ((str_replace(' ', '', strtolower($item->nama_kriteria)) != str_replace(' ', '', strtolower($sub->nama_subkriteria))))
+                                        <label for="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$sub->id}}_mhs" class="form-label">{{ucwords($sub->nama_subkriteria)}}</label>
+                                        <input step="0.1" type="number" name="{{str_replace(' ', '', strtolower($sub->nama_subkriteria))}}_{{$sub->id}}" id="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$sub->id}}_mhs" class="form-control" value="">
+                                        @else
+                                        <input step="0.1" type="number" name="{{str_replace(' ', '', strtolower($sub->nama_subkriteria))}}_{{$sub->id}}" id="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$sub->id}}_mhs" class="form-control" value="">
                                         @endif
-                                        <input step="0.1" type="number" name="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$sub->id}}_{{$mahasiswa->id}}" id="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$mahasiswa->id}}" class="form-control" value="{{$mahasiswa->nilai->{$item->nama_kriteria} ?? 0 }}">
-                                    @endforeach --}}
-                                </div>
+                                    @endif
+                                @endforeach
                             </div>
+                        </div>
                         @endforeach
                         @endisset
                     </div>
@@ -59,6 +64,5 @@
                 </div>
             {{-- </form> --}}
             {!! Form::close() !!}
-
         </div>
 </div>

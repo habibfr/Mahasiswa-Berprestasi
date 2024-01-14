@@ -28,16 +28,34 @@ class MahasiswaController extends Controller
   {
     return Kriteria::where('periode', date('Y'))->get();
   }
+  private function get_subkriterias($kriterias_id = false)
+  {
+    return $kriterias_id != false ? Subkriteria::where('kriteria_id', $kriterias_id)->get() : Subkriteria::get();
+  }
   public function index()
   {
     $jurusan = $this->get_jurusan();
     $kriterias = $this->get_kriteria();
+    $arrsubkriterias = [];
+
+    // ambil subkriteria
+    foreach ($kriterias as $kriteria) {
+
+      $subkriterias = $this->get_subkriterias($kriteria->id);
+      foreach ($subkriterias as $subkriteria) {
+        array_push($arrsubkriterias, $subkriteria);
+      }
+    }
+    $arrsubkriterias = collect($arrsubkriterias);
 
     return view('content.mahasiswa.index', [
       'jurusan' => $jurusan,
       'kriterias' => $kriterias,
+      'subkriterias' => $arrsubkriterias,
       'judul' => 'Mahasiswa',
     ]);
+    // $mahasiswas = Mahasiswa::onlyTrashed()->get();
+    // dd($mahasiswas);
   }
   public function get_mahasiswas(Request $request)
   {
@@ -99,33 +117,23 @@ class MahasiswaController extends Controller
       return DataTables::of(collect($hasil))
         ->addIndexColumn()
         ->addColumn('action', function ($row) {
-          $action_button = '<div class="inline">
-          <div class="dropdown">
-              <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
-              <div class="dropdown-menu">
-                  <span data-id="'.$row->id.'" class="btnEdit dropdown-item btn-outline-warning" role="button"
+          $action_button = '<div class="inline-block">
+                  <span data-id="' . $row->id . '" class="btnEdit btn-outline-warning btn-icon btn" type="button" role="button"
                       data-bs-toggle="modal" data-bs-target="#modalEditMhs">
                       <i class="bx bx-edit-alt me-2"></i>
-                      Update
                   </span>
-                  <span data-id="'.$row->id.'" class="text-danger btnHapus dropdown-item btn-outline-danger" role="button"
+                  <span data-id="' . $row->id . '" class="text-danger btnHapus btn-outline-danger btn-icon btn" type="button" role="button"
                       data-bs-toggle="modal" data-bs-target="#modalHapusMhs">
                       <i class="bx bx-trash me-2"></i>
-                      Delete
                   </span>
-              </div>
-            </div>
-      </div>';
+            </div>';
           return $action_button;
         })
         ->rawColumns(['action'])
         ->make(true);
     }
   }
-  private function get_subkriterias($kriterias_id = false)
-  {
-    return $kriterias_id != false ? Subkriteria::where('kriteria_id', $kriterias_id)->get() : Subkriteria::get();
-  }
+
   function importData(Request $request)
   {
     try {
@@ -232,7 +240,76 @@ class MahasiswaController extends Controller
       $data->where('angkatan', $angkatan);
     }
 
-    
+    $mahasiswas = $data->orderBy('mahasiswas.nim', 'asc')
+      ->get()
+      ->filter(function ($value, $key) {
+        $year = intval(date('Y')) - intval($value->angkatan);
+        if ($year > 1 && $year <= 3) {
+          return $value;
+        }
+      });
+
+    foreach ($mahasiswas as $mahasiswa) {
+      $mahasiswaId = $mahasiswa->id;
+
+      // Tambahkan data mahasiswa
+      if (!isset($hasil[$mahasiswaId])) {
+        $hasil[$mahasiswaId] = (object) [
+          'id' => $mahasiswaId,
+          'nim' => $mahasiswa->nim,
+          'nama' => $mahasiswa->nama,
+          'status' => $mahasiswa->status,
+          'jurusan' => $mahasiswa->jurusan,
+          // 'nilai' => (object)[],
+          'normalisasi' => (object)[],
+        ];
+      }
+      // ================================================
+
+      // Tambahkan data nilais
+      // =================================================================
+      $kriterias = $this->get_kriteria();
+      foreach ($kriterias as $kriteria) {
+        $hasil[$mahasiswaId]
+          ->normalisasi
+          ->{$kriteria->nama_kriteria}
+          = Normalisasi::where('mahasiswa_id', $mahasiswaId)
+          ->where('kriteria_id', $kriteria->id)
+          ->value('nilai');
+
+        // $subkriterias = $this->get_subkriterias($kriteria->id);
+        // foreach ($subkriterias as $subkriteria) {
+        //   $hasil[$mahasiswaId]
+        //     ->nilai
+        //     ->{$subkriteria->nama_subkriteria}
+        //     = Nilai::where('mahasiswa_id', $mahasiswaId)
+        //     ->where('subkriteria_id', $subkriteria->id)
+        //     ->value('nilai');
+        // }
+      }
+      // =================================
+    }
+    // end loop of mahasiswa
+
+    return DataTables::of(collect($hasil))
+      ->addIndexColumn()
+      ->addColumn('action', function ($row) {
+        $action_button = '<div class="inline-block">
+                                <span data-id="' . $row->id . '" class="btnEdit btn-outline-warning btn-icon btn" type="button" role="button"
+                                    data-bs-toggle="modal" data-bs-target="#modalEditMhs">
+                                    <i class="bx bx-edit-alt me-2"></i>
+                                </span>
+                                <span data-id="' . $row->id . '" class="text-danger btnHapus btn-outline-danger btn-icon btn" type="button" role="button"
+                                    data-bs-toggle="modal" data-bs-target="#modalHapusMhs">
+                                    <i class="bx bx-trash me-2"></i>
+                                </span>
+                          </div>';
+        return $action_button;
+      })
+      ->rawColumns(['action'])
+      ->make(true);
+
+      
 
     // $mahasiswas = $data->leftJoin('normalisasis', 'normalisasis.mahasiswa_id', '=', 'mahasiswas.id')
     //   ->leftJoin('kriterias', 'kriterias.id', '=', 'normalisasis.kriteria_id')
@@ -283,84 +360,109 @@ class MahasiswaController extends Controller
   {
     $kriterias = $this->get_kriteria();
 
-    // $nilaiMahasiswa = Nilai::join('mahasiswas', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
-    //   ->select('nilais.*', 'mahasiswas.*')
-    //   ->where('mahasiswas.id', $id)
-    //   ->get();
+    $mahasiswas = Mahasiswa::where('mahasiswas.id', $id)->get();
 
-    // $mahasiswas = Mahasiswa::leftJoin('nilais', 'nilais.mahasiswa_id', '=', 'mahasiswas.id')
-    //   ->leftJoin('kriterias', 'kriterias.id', '=', 'nilais.kriteria_id')
-    //   ->select(
-    //     'mahasiswas.id as mahasiswa_id',
-    //     'mahasiswas.nim',
-    //     'mahasiswas.nama',
-    //     'mahasiswas.status',
-    //     'mahasiswas.jurusan',
-    //     'nilais.nilai',
-    //     'kriterias.nama_kriteria'
-    //   )
-    //   ->where('mahasiswas.id', $id)
-    //   ->get();
+    foreach ($mahasiswas as $mahasiswa) {
+      $mahasiswaId = $mahasiswa->id;
 
-    // foreach ($mahasiswas as $mahasiswa) {
-    //   $mahasiswaId = $mahasiswa->mahasiswa_id;
+      // Tambahkan data mahasiswa
+      if (!isset($hasil[$mahasiswaId])) {
+        $hasil[$mahasiswaId] = (object) [
+          'id' => $mahasiswaId,
+          'nim' => $mahasiswa->nim,
+          'nama' => $mahasiswa->nama,
+          'status' => $mahasiswa->status,
+          'jurusan' => $mahasiswa->jurusan,
+          'nilai' => [],
+          // 'normalisasi' => (object)[],
+        ];
+      }
+      // ================================================
 
-    //   if (!isset($hasil[$mahasiswaId])) {
-    //     $hasil[$mahasiswaId] = (object) [
-    //       'id' => $mahasiswaId,
-    //       'nim' => $mahasiswa->nim,
-    //       'nama' => $mahasiswa->nama,
-    //       'status' => $mahasiswa->status,
-    //       'jurusan' => $mahasiswa->jurusan,
-    //     ];
-    //   }
+      // Tambahkan data nilais
+      // =================================================================
+      $kriterias = $this->get_kriteria();
+      foreach ($kriterias as $kriteria) {
 
-    //   if (!empty($mahasiswa->nama_kriteria)) {
-    //     $hasil[$mahasiswaId]->{$mahasiswa->nama_kriteria} = $mahasiswa->nilai;
-    //   }
-    // }
-    // var_dump($hasil);
-    // return response()->json($hasil);
+        $subkriterias = $this->get_subkriterias($kriteria->id);
+        foreach ($subkriterias as $subkriteria) {
+          $nilai = Nilai::where('mahasiswa_id', $mahasiswaId)
+            ->where('subkriteria_id', $subkriteria->id)
+            ->value('nilai');
+
+          isset($nilai) ? $nilai : $nilai = 0;
+
+          if (str_replace(' ', '', strtolower($kriteria->nama_kriteria)) == str_replace(' ', '', strtolower($subkriteria->nama_subkriteria))) {
+            $hasil[$mahasiswaId]
+              ->nilai[$kriteria->nama_kriteria] = $nilai;
+          } else {
+            $hasil[$mahasiswaId]
+              ->nilai[$subkriteria->nama_subkriteria] = $nilai;
+          }
+        }
+      }
+      // =================================
+    }
+
+    return response()->json($hasil);
   }
-
-  // MahasiswaController.php
 
   public function updateMahasiswa(Request $request, $id)
   {
     try {
       //code...
-      // $kriterias = $this->get_kriteria();
+      $kriterias = $this->get_kriteria();
+      $subkriterias = $this->get_subkriterias();
 
-      // $request_validate = [];
+      $request_validate = [];
 
-      // foreach ($kriterias as $kriteria) {
-      //   $request_validate[str_replace(' ', '_', strtolower($kriteria->nama_kriteria)) . '_' . $id] = 'nullable|numeric';
-      // }
+      foreach ($kriterias as $kriteria) {
+        if ($subkriterias->where('kriteria_id', $kriteria->id)->isNotEmpty()) {
+          foreach ($subkriterias->where('kriteria_id', $kriteria->id) as $subkriteria) {
+            $request_validate[str_replace(' ', '_', strtolower($kriteria->nama_kriteria)) . '_' . $subkriteria->id] = 'nullable|numeric';
+          }
+        }
+      }
 
-      // $request->validate($request_validate);
+      $request->validate($request_validate);
 
-      // // Ambil data mahasiswa dari database berdasarkan ID
-      // $mahasiswa = Mahasiswa::find($id);
+      // Ambil data mahasiswa dari database berdasarkan ID
+      $mahasiswa = Mahasiswa::find($id);
 
-      // if (!$mahasiswa) {
-      //   return back()->with('message', 'Mahasiswa not found');
-      // }
+      if (!$mahasiswa) {
+        return back()->with('error', 'Mahasiswa tidak ada!');
+      }
 
-      // $datas_nilai = [];
-      // foreach ($kriterias as $kriteria) {
-      //   $id_input = str_replace(' ', '_', strtolower($kriteria->nama_kriteria)) . '_' . $id;
+      $datas_nilai = [];
+      foreach ($kriterias as $kriteria) {
+        if ($subkriterias->where('kriteria_id', $kriteria->id)->isNotEmpty()) {
+          $sum_of_nilai = 0;
 
-      //   if (!key_exists($id_input, $request->input())) {
-      //     break;
-      //   }
+          foreach ($subkriterias->where('kriteria_id', $kriteria->id) as $subkriteria) {
 
-      //   $nilai = Nilai::leftJoin('kriterias', 'kriterias.id', '=', 'nilais.kriteria_id')
-      //     ->where('nilais.mahasiswa_id', $id)
-      //     ->where('kriterias.nama_kriteria', $kriteria->nama_kriteria)
-      //     ->update(['nilais.nilai' => $request->input($id_input)]);
-      // }
+            $id_input = str_replace(' ', '_', strtolower($subkriteria->nama_subkriteria)) . '_' . $subkriteria->id;
 
-      // return redirect('mahasiswa')->with('update_mahasiswa', 'Data mahasiswa berhasil diperbarui');
+            if (!key_exists($id_input, $request->input())) {
+              continue;
+            }
+
+            $nilai = Nilai::leftJoin('subkriterias', 'subkriterias.id', '=', 'nilais.subkriteria_id')
+              ->where('nilais.mahasiswa_id', $id)
+              ->where('subkriterias.nama_subkriteria', $subkriteria->nama_subkriteria)
+              ->update(['nilais.nilai' => $request->input($id_input)]);
+
+            $sum_of_nilai += ($request->input($id_input) * $subkriteria->bobot_normalisasi);
+            // var_dump($request->input());
+          }
+
+          Normalisasi::where('kriteria_id', $kriteria->id)
+            ->where('mahasiswa_id', $id)
+            ->update(['nilai' => $sum_of_nilai]);
+          // var_dump($sum_of_nilai);
+        }
+      }
+
+      return redirect()->route('mahasiswa')->with('update_mahasiswa', 'Data mahasiswa berhasil diperbarui');
     } catch (\Throwable $th) {
       //throw $th;
       return redirect('mahasiswa')->with('error', $th);
@@ -372,18 +474,20 @@ class MahasiswaController extends Controller
     // $id->validate([
     //   'id' => 'string|required',
     // ]);
-    // $mahasiswa = Mahasiswa::find($id);
-    // $nilai = Nilai::where('mahasiswa_id', $id);
+    $mahasiswa = Mahasiswa::find($id);
+    $nilai = Nilai::where('mahasiswa_id', $id);
+    $normalisasi = Normalisasi::where('mahasiswa_id', $id);
 
-    // if ($mahasiswa) {
-    //   $mahasiswa->delete();
-    //   $nilai->delete();
+    if ($mahasiswa) {
+      $mahasiswa->delete();
+      $nilai->delete();
+      $normalisasi->delete();
 
-    //   // You can return a response if needed
-    //   return redirect('mahasiswa')->with('mahasiswa_deleted', 'Mahasiswa deleted successfully');
-    // } else {
-    //   // Return a response indicating that the Mahasiswa was not found
-    //   return redirect('mahasiswa')->with('error', 'Mahasiswa not found');
-    // }
+      // You can return a response if needed
+      return redirect('mahasiswa')->with('mahasiswa_deleted', 'Mahasiswa deleted successfully');
+    } else {
+      // Return a response indicating that the Mahasiswa was not found
+      return redirect('mahasiswa')->with('error', 'Mahasiswa not found');
+    }
   }
 }

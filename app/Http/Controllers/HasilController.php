@@ -15,7 +15,7 @@ class HasilController extends Controller
      */
     public function index()
     {
-        $hasil = Mahasiswa::join('hasils', 'mahasiswas.id', '=', 'hasils.mahasiswa_id')
+        $hasil = Hasil::leftJoin('mahasiswas', 'mahasiswas.id', '=', 'hasils.mahasiswa_id')
             ->where('hasils.status', 'aktif')
             ->orderBy('hasils.peringkat', 'asc')
             ->distinct()

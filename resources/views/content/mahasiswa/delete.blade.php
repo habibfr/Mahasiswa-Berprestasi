@@ -1,8 +1,9 @@
     {{-- modal confirm delete --}}
-    <div class="modal fade" id="modalHapusMhs{{$mahasiswa->id}}" data-bs-backdrop="static" tabindex="-1" style="display: none;"
+    <div class="modal fade" id="modalHapusMhs" data-bs-backdrop="static" tabindex="-1" style="display: none;"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            {!! Form::model($data, ['method'=>'delete', 'route'=>['mahasiswa.delete', $mahasiswa->id]]) !!}
+            {{-- {!! Form::model($data, ['method'=>'delete', 'route'=>['mahasiswa.delete', $mahasiswa->id]]) !!} --}}
+            {!! Form::open(['method'=>'delete', 'route'=>['mahasiswa.delete', '__id__']]) !!}
                 <div class="modal-content">
                     <div class="modal-header bg-light">
                         <h2 class="modal-title fw-bold text-danger" id="backDropModalTitle">Hapus Mahasiswa</h2>

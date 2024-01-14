@@ -62,9 +62,9 @@
             </div>
             @endisset
             <div class="table-responsive text-nowrap">
-            <table class="table">
+            <table class="table table-striped">
                 <thead class="table-dark">
-                <tr>
+                <tr role="button">
                     <th class="text-light">No</th>
                     <th class="text-light">NIM</th>
                     <th class="text-light">Nama</th>
@@ -79,7 +79,7 @@
                 <tbody class="table-border-bottom-0">
                     @isset($matrix)
                     @foreach ($matrix as $index => $item)
-                    <tr>
+                    <tr role="button">
                         <td>{{$loop->iteration}}</td>
                         <td>{{$item->nim}}</td>
                         <td>{{$item->nama}}</td>
@@ -90,7 +90,7 @@
                     </tr>
                     @endforeach
                     @else
-                    <tr>
+                    <tr role="button">
                         <td class="text-center">
                             Tidak ada data
                         </td>
