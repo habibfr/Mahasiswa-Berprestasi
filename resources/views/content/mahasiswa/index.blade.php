@@ -83,28 +83,28 @@
     {{-- Tabel Mahasiswa --}}
     <div class="card mb-5">
         <div class="table-responsive text-nowrap m-4">
-            <table id="tabelMahasiswa" class="table table-striped dataTable" style="width: 100%;"
+            <table id="tabelMahasiswa" class="table table-striped dataTable table-hover" style="width: 100%;"
                 aria-describedby="tabelMahasiswa_info">
                 <thead>
-                    <tr class="table-primary">
-                        <th class="sorting sorting_asc" tabindex="0" aria-controls="tabelMahasiswa" rowspan="1"
+                    <tr class="table-dark">
+                        <th class="sorting text-light sorting_asc" tabindex="0" aria-controls="tabelMahasiswa" rowspan="1"
                             colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending"
                             style="width: 86px;">No
                         </th>
-                        <th class="sorting" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
+                        <th class="sorting text-light" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
                             aria-label="Position: activate to sort column ascending" style="width: 132px;">NIM
                         </th>
-                        <th class="sorting" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
+                        <th class="sorting text-light" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
                             aria-label="Office: activate to sort column ascending" style="width: 66px;">Nama</th>
-                        <th class="sorting" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
+                        <th class="sorting text-light" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
                             aria-label="None: activate to sort column ascending" style="width: 66px;">Status</th>
                         @isset($kriterias)
                             @foreach ($kriterias as $item)
-                            <th class="sorting" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
+                            <th class="sorting text-light" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
                                 aria-label="Age: activate to sort column ascending" style="width: 26px;">{{$item->nama_kriteria}}</th>
                             @endforeach
                         @endisset
-                        <th class="sorting" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
+                        <th class="sorting text-light" tabindex="0" aria-controls="tabelMahasiswa" colspan="1"
                             aria-label="Salary: activate to sort column ascending" style="width: 55px;">Action</th>
                     </tr>
                 </thead>

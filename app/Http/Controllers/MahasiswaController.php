@@ -99,16 +99,6 @@ class MahasiswaController extends Controller
             = Normalisasi::where('mahasiswa_id', $mahasiswaId)
             ->where('kriteria_id', $kriteria->id)
             ->value('nilai');
-
-          // $subkriterias = $this->get_subkriterias($kriteria->id);
-          // foreach ($subkriterias as $subkriteria) {
-          //   $hasil[$mahasiswaId]
-          //     ->nilai
-          //     ->{$subkriteria->nama_subkriteria}
-          //     = Nilai::where('mahasiswa_id', $mahasiswaId)
-          //     ->where('subkriteria_id', $subkriteria->id)
-          //     ->value('nilai');
-          // }
         }
         // =================================
       }
@@ -120,11 +110,11 @@ class MahasiswaController extends Controller
           $action_button = '<div class="inline-block">
                   <span data-id="' . $row->id . '" class="btnEdit btn-outline-warning btn-icon btn" type="button" role="button"
                       data-bs-toggle="modal" data-bs-target="#modalEditMhs">
-                      <i class="bx bx-edit-alt me-2"></i>
+                      <i class="bx bx-edit-alt"></i>
                   </span>
                   <span data-id="' . $row->id . '" class="text-danger btnHapus btn-outline-danger btn-icon btn" type="button" role="button"
                       data-bs-toggle="modal" data-bs-target="#modalHapusMhs">
-                      <i class="bx bx-trash me-2"></i>
+                      <i class="bx bx-trash"></i>
                   </span>
             </div>';
           return $action_button;
@@ -134,78 +124,78 @@ class MahasiswaController extends Controller
     }
   }
 
-  function importData(Request $request)
-  {
-    try {
-      $this->validate($request, [
-        'uploaded_file' => 'required|file|mimes:xls,xlsx',
-      ]);
-      $the_file = $request->file('uploaded_file');
+  // function importData(Request $request)
+  // {
+  //   try {
+  //     $this->validate($request, [
+  //       'uploaded_file' => 'required|file|mimes:xls,xlsx',
+  //     ]);
+  //     $the_file = $request->file('uploaded_file');
 
-      $spreadsheet = IOFactory::load($the_file->getRealPath());
-      $sheet = $spreadsheet->getActiveSheet();
-      $row_limit = $sheet->getHighestDataRow();
-      $column_limit = $sheet->getHighestDataColumn();
-      $row_range = range(2, $row_limit);
-      // $column_range = range( 'H', $column_limit );
-      $startcount = 2;
-      // $data = array();
+  //     $spreadsheet = IOFactory::load($the_file->getRealPath());
+  //     $sheet = $spreadsheet->getActiveSheet();
+  //     $row_limit = $sheet->getHighestDataRow();
+  //     $column_limit = $sheet->getHighestDataColumn();
+  //     $row_range = range(2, $row_limit);
+  //     // $column_range = range( 'H', $column_limit );
+  //     $startcount = 2;
+  //     // $data = array();
 
-      $jumlahBaris = Mahasiswa::count() + 1;
+  //     $jumlahBaris = Mahasiswa::count() + 1;
 
-      foreach ($row_range as $row) {
-        $dataMahasiswa[] = [
-          // 'CustomerName' =>$sheet->getCell( 'A' . $row )->getValue(),
-          'nim' => $sheet->getCell('B' . $row)->getValue(),
-          'nama' => $sheet->getCell('C' . $row)->getValue(),
-          'angkatan' => $sheet->getCell('D' . $row)->getValue(),
-          'status' => $sheet->getCell('E' . $row)->getValue(),
-          'jurusan' => $sheet->getCell('F' . $row)->getValue(),
-        ];
-      }
-      Mahasiswa::insert($dataMahasiswa);
+  //     foreach ($row_range as $row) {
+  //       $dataMahasiswa[] = [
+  //         // 'CustomerName' =>$sheet->getCell( 'A' . $row )->getValue(),
+  //         'nim' => $sheet->getCell('B' . $row)->getValue(),
+  //         'nama' => $sheet->getCell('C' . $row)->getValue(),
+  //         'angkatan' => $sheet->getCell('D' . $row)->getValue(),
+  //         'status' => $sheet->getCell('E' . $row)->getValue(),
+  //         'jurusan' => $sheet->getCell('F' . $row)->getValue(),
+  //       ];
+  //     }
+  //     Mahasiswa::insert($dataMahasiswa);
 
-      foreach ($row_range as $row) {
-        $mahasiswa = Mahasiswa::where('nim', $sheet->getCell('B' . $row)->getValue())->first();
-        // dd()
-        $dataNilai[] = [
-          // 'CustomerName' =>$sheet->getCell( 'A' . $row )->getValue(),
-          // 'nim' => $sheet->getCell( 'B' . $row )->getValue(),
+  //     foreach ($row_range as $row) {
+  //       $mahasiswa = Mahasiswa::where('nim', $sheet->getCell('B' . $row)->getValue())->first();
+  //       // dd()
+  //       $dataNilai[] = [
+  //         // 'CustomerName' =>$sheet->getCell( 'A' . $row )->getValue(),
+  //         // 'nim' => $sheet->getCell( 'B' . $row )->getValue(),
 
-          'mahasiswa_id' => $mahasiswa->id,
-          'IPK' => $sheet->getCell('F' . $row)->getValue(),
-          'SSKM' => $sheet->getCell('G' . $row)->getValue(),
-          'TOEFL' => $sheet->getCell('H' . $row)->getValue(),
-        ];
-      }
-      // Insert into Nilai table
-      Nilai::insert($dataNilai);
+  //         'mahasiswa_id' => $mahasiswa->id,
+  //         'IPK' => $sheet->getCell('F' . $row)->getValue(),
+  //         'SSKM' => $sheet->getCell('G' . $row)->getValue(),
+  //         'TOEFL' => $sheet->getCell('H' . $row)->getValue(),
+  //       ];
+  //     }
+  //     // Insert into Nilai table
+  //     Nilai::insert($dataNilai);
 
-      // try {
-      //     // Insert into Mahasiswa table
+  //     // try {
+  //     //     // Insert into Mahasiswa table
 
-      //     // If everything is successful, commit the transaction
-      //     DB::commit();
-      // } catch (\Exception $e) {
-      //     // If an exception occurs, rollback the transaction
-      //     DB::rollback();
+  //     //     // If everything is successful, commit the transaction
+  //     //     DB::commit();
+  //     // } catch (\Exception $e) {
+  //     //     // If an exception occurs, rollback the transaction
+  //     //     DB::rollback();
 
-      //     // Log or print the exception message for debugging
-      //     dd($e->getMessage());
-      // }
-    } catch (\Illuminate\Database\QueryException $e) {
-      if ($e->getCode() == '23000') {
-        // Tangani kesalahan unik di sini
-        session()->flash('error', 'Data Mahasiswa sudah digunakan diimport');
-        return redirect()->back();
-      } else {
-        // Tangani kesalahan lainnya
-        session()->flash('error', 'Terjadi kesalahan pada server');
-        return redirect()->back();
-      }
-    }
-    return back()->withSuccess('Great! Data has been successfully uploaded.');
-  }
+  //     //     // Log or print the exception message for debugging
+  //     //     dd($e->getMessage());
+  //     // }
+  //   } catch (\Illuminate\Database\QueryException $e) {
+  //     if ($e->getCode() == '23000') {
+  //       // Tangani kesalahan unik di sini
+  //       session()->flash('error', 'Data Mahasiswa sudah digunakan diimport');
+  //       return redirect()->back();
+  //     } else {
+  //       // Tangani kesalahan lainnya
+  //       session()->flash('error', 'Terjadi kesalahan pada server');
+  //       return redirect()->back();
+  //     }
+  //   }
+  //   return back()->withSuccess('Great! Data has been successfully uploaded.');
+  // }
 
   public function filter(Request $request)
   {
@@ -297,11 +287,11 @@ class MahasiswaController extends Controller
         $action_button = '<div class="inline-block">
                                 <span data-id="' . $row->id . '" class="btnEdit btn-outline-warning btn-icon btn" type="button" role="button"
                                     data-bs-toggle="modal" data-bs-target="#modalEditMhs">
-                                    <i class="bx bx-edit-alt me-2"></i>
+                                    <i class="bx bx-edit-alt"></i>
                                 </span>
                                 <span data-id="' . $row->id . '" class="text-danger btnHapus btn-outline-danger btn-icon btn" type="button" role="button"
                                     data-bs-toggle="modal" data-bs-target="#modalHapusMhs">
-                                    <i class="bx bx-trash me-2"></i>
+                                    <i class="bx bx-trash"></i>
                                 </span>
                           </div>';
         return $action_button;

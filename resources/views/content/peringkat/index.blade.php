@@ -62,7 +62,7 @@
             </div>
             @endisset
             <div class="table-responsive text-nowrap">
-            <table class="table table-striped">
+            <table class="table table-striped table-hover">
                 <thead class="table-dark">
                 <tr role="button">
                     <th class="text-light">No</th>
