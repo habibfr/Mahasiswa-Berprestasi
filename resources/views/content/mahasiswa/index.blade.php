@@ -51,10 +51,10 @@
             </div>
         </div>
         <div class="col">
-            <div class="float-end">
+            {{-- <div class="float-end">
 
-                {{-- <div id="floatingInputHelp mb-2" class="form-text">Import excel</div>
-                <button type="button" class="btn btn-danger">Import</button> --}}
+                <div id="floatingInputHelp mb-2" class="form-text">Import excel</div>
+                <button type="button" class="btn btn-danger">Import</button>
 
                 <form action="{{ route('mahasiswa.import') }}" method="post" enctype="multipart/form-data">
                     @csrf
@@ -76,7 +76,7 @@
                         </div>
                     </fieldset>
                 </form>
-            </div>
+            </div> --}}
         </div>
     </div>
 
@@ -211,8 +211,8 @@
                 $('#angkatanFilter').datepicker({
                     minViewMode: 2,
                     autoclose: true,
-                    startDate: "2020",
-                    endDate: new Date().getFullYear().toString(),
+                    startDate: "{{$min_angkatan}}",
+                    endDate: "{{$max_angkatan}}",
                     format: 'yyyy'
                 });
 

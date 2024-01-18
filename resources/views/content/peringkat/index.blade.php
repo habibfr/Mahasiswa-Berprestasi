@@ -38,15 +38,11 @@
                                     <i class='bx bx-download me-2'></i>Export</button>
                             </form>
                             <!-- Tombol "Post" dengan margin kiri -->
-                            <form action="peringkat/publish" method="post" class="d-inline-block ml-2">
-                                @csrf
-                                <input type="hidden" name="jumlah_sorting" value="{{ $jumlah_sorting ?? 10 }}"> <!-- Ganti 10 dengan nilai default yang diinginkan -->
-
-                                <button type="submit" class="btn btn-danger align-self-end">
-                                    <i class='bx bx-upload me-2' id="uploadIcon"></i>
-                                    Post
-                                </button>
-                            </form>
+                            <button type="button" class="btn btn-danger d-inline-block ml-2" data-bs-toggle="modal" data-bs-target="#postModal">
+                                <i class='bx bx-upload me-2' id="uploadIcon"></i>
+                                Post
+                            </button>
+                            @include('content.peringkat.post')
                         </div>
                     </div>
                 </div>

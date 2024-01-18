@@ -36,6 +36,8 @@ class MahasiswaController extends Controller
   {
     $jurusan = $this->get_jurusan();
     $kriterias = $this->get_kriteria();
+    $min_angkatan = Mahasiswa::min('angkatan');
+    $max_angkatan = Mahasiswa::max('angkatan');
     $arrsubkriterias = [];
 
     // ambil subkriteria
@@ -52,6 +54,8 @@ class MahasiswaController extends Controller
       'jurusan' => $jurusan,
       'kriterias' => $kriterias,
       'subkriterias' => $arrsubkriterias,
+      'min_angkatan' => $min_angkatan,
+      'max_angkatan' => $max_angkatan,
       'judul' => 'Mahasiswa',
     ]);
     // $mahasiswas = Mahasiswa::onlyTrashed()->get();
@@ -299,7 +303,7 @@ class MahasiswaController extends Controller
       ->rawColumns(['action'])
       ->make(true);
 
-      
+
 
     // $mahasiswas = $data->leftJoin('normalisasis', 'normalisasis.mahasiswa_id', '=', 'mahasiswas.id')
     //   ->leftJoin('kriterias', 'kriterias.id', '=', 'normalisasis.kriteria_id')
