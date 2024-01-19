@@ -36,8 +36,8 @@ class MahasiswaController extends Controller
   {
     $jurusan = $this->get_jurusan();
     $kriterias = $this->get_kriteria();
-    $min_angkatan = Mahasiswa::min('angkatan');
-    $max_angkatan = Mahasiswa::max('angkatan');
+    $min_angkatan = Mahasiswa::whereBetween('angkatan', [intval(date('Y'))-3, intval(date('Y'))-1])->min('angkatan');
+    $max_angkatan = Mahasiswa::whereBetween('angkatan', [intval(date('Y'))-3, intval(date('Y'))-1])->max('angkatan');
     $arrsubkriterias = [];
 
     // ambil subkriteria
@@ -127,168 +127,85 @@ class MahasiswaController extends Controller
         ->make(true);
     }
   }
-
-  // function importData(Request $request)
-  // {
-  //   try {
-  //     $this->validate($request, [
-  //       'uploaded_file' => 'required|file|mimes:xls,xlsx',
-  //     ]);
-  //     $the_file = $request->file('uploaded_file');
-
-  //     $spreadsheet = IOFactory::load($the_file->getRealPath());
-  //     $sheet = $spreadsheet->getActiveSheet();
-  //     $row_limit = $sheet->getHighestDataRow();
-  //     $column_limit = $sheet->getHighestDataColumn();
-  //     $row_range = range(2, $row_limit);
-  //     // $column_range = range( 'H', $column_limit );
-  //     $startcount = 2;
-  //     // $data = array();
-
-  //     $jumlahBaris = Mahasiswa::count() + 1;
-
-  //     foreach ($row_range as $row) {
-  //       $dataMahasiswa[] = [
-  //         // 'CustomerName' =>$sheet->getCell( 'A' . $row )->getValue(),
-  //         'nim' => $sheet->getCell('B' . $row)->getValue(),
-  //         'nama' => $sheet->getCell('C' . $row)->getValue(),
-  //         'angkatan' => $sheet->getCell('D' . $row)->getValue(),
-  //         'status' => $sheet->getCell('E' . $row)->getValue(),
-  //         'jurusan' => $sheet->getCell('F' . $row)->getValue(),
-  //       ];
-  //     }
-  //     Mahasiswa::insert($dataMahasiswa);
-
-  //     foreach ($row_range as $row) {
-  //       $mahasiswa = Mahasiswa::where('nim', $sheet->getCell('B' . $row)->getValue())->first();
-  //       // dd()
-  //       $dataNilai[] = [
-  //         // 'CustomerName' =>$sheet->getCell( 'A' . $row )->getValue(),
-  //         // 'nim' => $sheet->getCell( 'B' . $row )->getValue(),
-
-  //         'mahasiswa_id' => $mahasiswa->id,
-  //         'IPK' => $sheet->getCell('F' . $row)->getValue(),
-  //         'SSKM' => $sheet->getCell('G' . $row)->getValue(),
-  //         'TOEFL' => $sheet->getCell('H' . $row)->getValue(),
-  //       ];
-  //     }
-  //     // Insert into Nilai table
-  //     Nilai::insert($dataNilai);
-
-  //     // try {
-  //     //     // Insert into Mahasiswa table
-
-  //     //     // If everything is successful, commit the transaction
-  //     //     DB::commit();
-  //     // } catch (\Exception $e) {
-  //     //     // If an exception occurs, rollback the transaction
-  //     //     DB::rollback();
-
-  //     //     // Log or print the exception message for debugging
-  //     //     dd($e->getMessage());
-  //     // }
-  //   } catch (\Illuminate\Database\QueryException $e) {
-  //     if ($e->getCode() == '23000') {
-  //       // Tangani kesalahan unik di sini
-  //       session()->flash('error', 'Data Mahasiswa sudah digunakan diimport');
-  //       return redirect()->back();
-  //     } else {
-  //       // Tangani kesalahan lainnya
-  //       session()->flash('error', 'Terjadi kesalahan pada server');
-  //       return redirect()->back();
-  //     }
-  //   }
-  //   return back()->withSuccess('Great! Data has been successfully uploaded.');
-  // }
-
   public function filter(Request $request)
   {
-    $jurusan = $request->jurusan;
-    $angkatan = $request->angkatan;
-    $kriterias = $this->get_kriteria();
-    $jurusans = $this->get_jurusan();
-
-    $min_year = Mahasiswa::min('angkatan');
-    $max_year = Mahasiswa::max('angkatan');
-    $this->validate($request, [
-      'jurusan' => 'nullable|array|max:' . count($jurusans),
-      'angkatan' => 'nullable|numeric|between:' . $min_year . ',' . $max_year,
-    ]);
-
-    $dataJurusan = [];
-    foreach ($this->get_jurusan() as $value) {
-      array_push($dataJurusan, $value);
-    }
-
-    // $persamaan = array_intersect($jurusan, $dataJurusan);
-
-    // Filter Jurusan
-    $data = Mahasiswa::query();
-
-    if (!empty($jurusan) && $jurusan[0] != 0) {
-      $data->whereIn('jurusan', $jurusan);
-    }
-
-    // Filter Angkatan
-    if (!is_null($angkatan)) {
-      $data->where('angkatan', $angkatan);
-    }
-
-    $mahasiswas = $data->orderBy('mahasiswas.nim', 'asc')
-      ->get()
-      ->filter(function ($value, $key) {
-        $year = intval(date('Y')) - intval($value->angkatan);
-        if ($year > 1 && $year <= 3) {
-          return $value;
-        }
-      });
-
-    foreach ($mahasiswas as $mahasiswa) {
-      $mahasiswaId = $mahasiswa->id;
-
-      // Tambahkan data mahasiswa
-      if (!isset($hasil[$mahasiswaId])) {
-        $hasil[$mahasiswaId] = (object) [
-          'id' => $mahasiswaId,
-          'nim' => $mahasiswa->nim,
-          'nama' => $mahasiswa->nama,
-          'status' => $mahasiswa->status,
-          'jurusan' => $mahasiswa->jurusan,
-          // 'nilai' => (object)[],
-          'normalisasi' => (object)[],
-        ];
-      }
-      // ================================================
-
-      // Tambahkan data nilais
-      // =================================================================
+    try {
+      $jurusan = $request->jurusan;
+      $angkatan = $request->angkatan;
       $kriterias = $this->get_kriteria();
-      foreach ($kriterias as $kriteria) {
-        $hasil[$mahasiswaId]
-          ->normalisasi
-          ->{$kriteria->nama_kriteria}
-          = Normalisasi::where('mahasiswa_id', $mahasiswaId)
-          ->where('kriteria_id', $kriteria->id)
-          ->value('nilai');
+      $jurusans = $this->get_jurusan();
 
-        // $subkriterias = $this->get_subkriterias($kriteria->id);
-        // foreach ($subkriterias as $subkriteria) {
-        //   $hasil[$mahasiswaId]
-        //     ->nilai
-        //     ->{$subkriteria->nama_subkriteria}
-        //     = Nilai::where('mahasiswa_id', $mahasiswaId)
-        //     ->where('subkriteria_id', $subkriteria->id)
-        //     ->value('nilai');
-        // }
+      $min_year = Mahasiswa::min('angkatan');
+      $max_year = Mahasiswa::max('angkatan');
+      $this->validate($request, [
+        'jurusan' => 'nullable|array|max:' . count($jurusans),
+        'angkatan' => 'nullable|numeric|between:' . $min_year . ',' . $max_year,
+      ]);
+
+      $dataJurusan = [];
+      foreach ($this->get_jurusan() as $value) {
+        array_push($dataJurusan, $value);
       }
-      // =================================
-    }
-    // end loop of mahasiswa
 
-    return DataTables::of(collect($hasil))
-      ->addIndexColumn()
-      ->addColumn('action', function ($row) {
-        $action_button = '<div class="inline-block">
+      // $persamaan = array_intersect($jurusan, $dataJurusan);
+
+      // Filter Jurusan
+      $data = Mahasiswa::query();
+
+      if (!empty($jurusan) && $jurusan[0] != 0) {
+        $data->whereIn('jurusan', $jurusan);
+      }
+
+      // Filter Angkatan
+      if (!is_null($angkatan)) {
+        $data->where('angkatan', $angkatan);
+      }
+
+      $mahasiswas = $data->orderBy('mahasiswas.nim', 'asc')
+        ->get()
+        ->filter(function ($value, $key) {
+          $year = intval(date('Y')) - intval($value->angkatan);
+          if ($year > 1 && $year <= 3) {
+            return $value;
+          }
+        });
+
+      foreach ($mahasiswas as $mahasiswa) {
+        $mahasiswaId = $mahasiswa->id;
+
+        // Tambahkan data mahasiswa
+        if (!isset($hasil[$mahasiswaId])) {
+          $hasil[$mahasiswaId] = (object) [
+            'id' => $mahasiswaId,
+            'nim' => $mahasiswa->nim,
+            'nama' => $mahasiswa->nama,
+            'status' => $mahasiswa->status,
+            'jurusan' => $mahasiswa->jurusan,
+            // 'nilai' => (object)[],
+            'normalisasi' => (object)[],
+          ];
+        }
+        // ================================================
+
+        // Tambahkan data nilais
+        // =================================================================
+        $kriterias = $this->get_kriteria();
+        foreach ($kriterias as $kriteria) {
+          $hasil[$mahasiswaId]
+            ->normalisasi
+            ->{$kriteria->nama_kriteria}
+            = Normalisasi::where('mahasiswa_id', $mahasiswaId)
+            ->where('kriteria_id', $kriteria->id)
+            ->value('nilai');
+        }
+        // =================================
+      }
+      // end loop of mahasiswa
+
+      return DataTables::of(collect($hasil))
+        ->addIndexColumn()
+        ->addColumn('action', function ($row) {
+          $action_button = '<div class="inline-block">
                                 <span data-id="' . $row->id . '" class="btnEdit btn-outline-warning btn-icon btn" type="button" role="button"
                                     data-bs-toggle="modal" data-bs-target="#modalEditMhs">
                                     <i class="bx bx-edit-alt"></i>
@@ -298,107 +215,69 @@ class MahasiswaController extends Controller
                                     <i class="bx bx-trash"></i>
                                 </span>
                           </div>';
-        return $action_button;
-      })
-      ->rawColumns(['action'])
-      ->make(true);
-
-
-
-    // $mahasiswas = $data->leftJoin('normalisasis', 'normalisasis.mahasiswa_id', '=', 'mahasiswas.id')
-    //   ->leftJoin('kriterias', 'kriterias.id', '=', 'normalisasis.kriteria_id')
-    //   ->select(
-    //     'mahasiswas.id as mahasiswa_id',
-    //     'mahasiswas.nim',
-    //     'mahasiswas.nama',
-    //     'mahasiswas.status',
-    //     'mahasiswas.jurusan',
-    //     'mahasiswas.angkatan',
-    //     'normalisasis.nilai',
-    //     'kriterias.nama_kriteria'
-    //   )
-    //   ->orderBy('mahasiswas.nim', 'asc')
-    //   ->get()
-    //   ->filter(function ($value, $key) {
-    //     $year = intval(date('Y')) - intval($value->angkatan);
-    //     if ($year > 1 && $year <= 3) {
-    //       return $value;
-    //     }
-    //   });
-
-    // foreach ($mahasiswas as $mahasiswa) {
-    //   $mahasiswaId = $mahasiswa->mahasiswa_id;
-
-    //   if (!isset($hasil[$mahasiswaId])) {
-    //     $hasil[$mahasiswaId] = (object) [
-    //       'id' => $mahasiswaId,
-    //       'nim' => $mahasiswa->nim,
-    //       'nama' => $mahasiswa->nama,
-    //       'status' => $mahasiswa->status,
-    //       'jurusan' => $mahasiswa->jurusan,
-    //     ];
-    //   }
-
-    //   if (!empty($mahasiswa->nama_kriteria)) {
-    //     $hasil[$mahasiswaId]->{$mahasiswa->nama_kriteria} = $mahasiswa->nilai;
-    //   }
-    // }
-
-    // return view('content.mahasiswa.index', [
-    //   'kriterias' => $kriterias,
-    //   'jurusan' => $jurusans
-    // ]);
+          return $action_button;
+        })
+        ->rawColumns(['action'])
+        ->make(true);
+    } catch (\Throwable $th) {
+      // return redirect('mahasiswa')->with('error', $th);
+      return response()->json(['error' => $th->getMessage()], 500);
+    }
   }
 
   public function getMahasiswaById($id)
   {
-    $kriterias = $this->get_kriteria();
-
-    $mahasiswas = Mahasiswa::where('mahasiswas.id', $id)->get();
-
-    foreach ($mahasiswas as $mahasiswa) {
-      $mahasiswaId = $mahasiswa->id;
-
-      // Tambahkan data mahasiswa
-      if (!isset($hasil[$mahasiswaId])) {
-        $hasil[$mahasiswaId] = (object) [
-          'id' => $mahasiswaId,
-          'nim' => $mahasiswa->nim,
-          'nama' => $mahasiswa->nama,
-          'status' => $mahasiswa->status,
-          'jurusan' => $mahasiswa->jurusan,
-          'nilai' => [],
-          // 'normalisasi' => (object)[],
-        ];
-      }
-      // ================================================
-
-      // Tambahkan data nilais
-      // =================================================================
+    try {
       $kriterias = $this->get_kriteria();
-      foreach ($kriterias as $kriteria) {
 
-        $subkriterias = $this->get_subkriterias($kriteria->id);
-        foreach ($subkriterias as $subkriteria) {
-          $nilai = Nilai::where('mahasiswa_id', $mahasiswaId)
-            ->where('subkriteria_id', $subkriteria->id)
-            ->value('nilai');
+      $mahasiswas = Mahasiswa::where('mahasiswas.id', $id)->get();
 
-          isset($nilai) ? $nilai : $nilai = 0;
+      foreach ($mahasiswas as $mahasiswa) {
+        $mahasiswaId = $mahasiswa->id;
 
-          if (str_replace(' ', '', strtolower($kriteria->nama_kriteria)) == str_replace(' ', '', strtolower($subkriteria->nama_subkriteria))) {
-            $hasil[$mahasiswaId]
-              ->nilai[$kriteria->nama_kriteria] = $nilai;
-          } else {
-            $hasil[$mahasiswaId]
-              ->nilai[$subkriteria->nama_subkriteria] = $nilai;
+        // Tambahkan data mahasiswa
+        if (!isset($hasil[$mahasiswaId])) {
+          $hasil[$mahasiswaId] = (object) [
+            'id' => $mahasiswaId,
+            'nim' => $mahasiswa->nim,
+            'nama' => $mahasiswa->nama,
+            'status' => $mahasiswa->status,
+            'jurusan' => $mahasiswa->jurusan,
+            'nilai' => [],
+            // 'normalisasi' => (object)[],
+          ];
+        }
+        // ================================================
+
+        // Tambahkan data nilais
+        // =================================================================
+        $kriterias = $this->get_kriteria();
+        foreach ($kriterias as $kriteria) {
+
+          $subkriterias = $this->get_subkriterias($kriteria->id);
+          foreach ($subkriterias as $subkriteria) {
+            $nilai = Nilai::where('mahasiswa_id', $mahasiswaId)
+              ->where('subkriteria_id', $subkriteria->id)
+              ->value('nilai');
+
+            isset($nilai) ? $nilai : $nilai = 0;
+
+            if (str_replace(' ', '', strtolower($kriteria->nama_kriteria)) == str_replace(' ', '', strtolower($subkriteria->nama_subkriteria))) {
+              $hasil[$mahasiswaId]
+                ->nilai[$kriteria->nama_kriteria] = $nilai;
+            } else {
+              $hasil[$mahasiswaId]
+                ->nilai[$subkriteria->nama_subkriteria] = $nilai;
+            }
           }
         }
+        // =================================
       }
-      // =================================
-    }
 
-    return response()->json($hasil);
+      return response()->json($hasil);
+    } catch (\Throwable $th) {
+      return redirect('mahasiswa')->with('error', $th);
+    }
   }
 
   public function updateMahasiswa(Request $request, $id)
