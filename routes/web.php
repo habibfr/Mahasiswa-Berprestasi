@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PDFController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\dashboard\Analytics;
 use App\Http\Controllers\layouts\WithoutMenu;
@@ -196,6 +197,11 @@ Route::controller(PeringkatController::class)->group(function () {
       Route::post('/publish', 'publish')
         ->name('publish');
     });
+  });
+
+  Route::prefix('peringkat')->group(function () {
+    Route::get('/generate-pdf', [PDFController::class, 'generatePeringkatPDF'])
+      ->name('generatePeringkatPDF');
   });
 });
 

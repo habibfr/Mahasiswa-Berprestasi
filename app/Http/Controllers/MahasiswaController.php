@@ -220,8 +220,8 @@ class MahasiswaController extends Controller
         ->rawColumns(['action'])
         ->make(true);
     } catch (\Throwable $th) {
-      // return redirect('mahasiswa')->with('error', $th);
-      return response()->json(['error' => $th->getMessage()], 500);
+      return redirect('mahasiswa')->with('error', $th);
+      // return response()->json(['error' => $th->getMessage()], 500);
     }
   }
 

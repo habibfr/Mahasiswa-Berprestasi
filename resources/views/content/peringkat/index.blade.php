@@ -32,7 +32,7 @@
                     <div class="col offset-2">
                         <div class="float-end">
                             <!-- Tombol "Export" -->
-                            <form action="#" method="post" class="d-inline-block">
+                            <form action="{{route('generatePeringkatPDF')}}" method="get" class="d-inline-block">
                                 @csrf
                                 <button class="btn btn-primary align-self-end">
                                     <i class='bx bx-download me-2'></i>Export</button>
