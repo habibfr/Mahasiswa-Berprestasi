@@ -19,11 +19,8 @@ class KriteriaController extends Controller
       // Ngambil data kriteria
       $data = Kriteria::where('periode', date('Y'))->orderBy('periode', 'desc')->get();
 
-      // Mengambil data subkriteria
-      $sub = Subkriteria::get();
-
       // Ngirim data
-      return view('content.kriteria.index', ['data' => $data, 'judul' => 'Kriteria', 'sub' => $sub]);
+      return view('content.kriteria.index', ['data' => $data, 'judul' => 'Kriteria']);
   } catch (\Exception $e) {
       // Handle the exception and return an error view with a message
       return view('content.kriteria.index')->with('error', 'Error: ' . $e->getMessage());
@@ -33,9 +30,13 @@ class KriteriaController extends Controller
   /**
    * Show the form for creating a new resource.
    */
-  public function create()
+  public function subkriteria(Request $request)
   {
-    //
+      // Mengambil data subkriteria
+      // $sub = Subkriteria::get();
+      // dd($request->all());
+      
+      return response()->json(['message' => 'Permintaan AJAX berhasil']);
 
   }
 

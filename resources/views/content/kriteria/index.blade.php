@@ -4,7 +4,6 @@
 
 @section('content')
 @include('layouts.sections.flash')
-
     {{-- <div class="row">
         <div class="col">
             <div class="mb-3">
@@ -72,19 +71,6 @@
                                 </tr>
                             </thead>
                             <tbody class="table-border-bottom-0">
-                                @if(is_array($data) || is_object($data))
-                                @foreach($data as $item)
-                                <tr>
-                                    <td style="display: none">
-                                        {{ $item->id}}
-                                    </td>
-                                    @foreach($sub as $subdata)
-                                    @if($item->id == $subdata->kriteria_id)
-                                    <td style="display: none">{{$subdata ->id}}</td>
-                                    <td style="display: none">{{$subdata ->kriteria_id}}</td>
-                                    <td>{{$subdata->nama_subkriteria}}</td>
-                                    <td>{{$subdata->bobot_normalisasi}}</td>
-                                    <td>
                                         <div class="inline">
                                             <span class="text-success" id="subupdate_btn" data-bs-toggle="modal" data-bs-target="#modalEditSubKriteria"><i
                                             class="bx bx-edit-alt bx-sm me-2"></i>
@@ -94,12 +80,6 @@
                                         </span>
                                         </div>
                                     </td>
-                                    @endif
-                                <tr>
-                                @endforeach
-                                @endforeach
-                                @endif
-                                
                             </tbody>
                         </table>
                     </div>
@@ -431,21 +411,43 @@
         
         </div>
     </div>
-    
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
+    //ajax
+    $(document).ready(function() {
+        $('#subkriteria_btn').on('click', function() {
+            // Ambil data dan set ke variabel
+            var row = $(this).closest('tr');
+            var kolom1 = row.find('td:nth-child(2)');
+            
+            // Dan set ke form update
+            // Contoh: set value
+            var kriteria_id = kolom1.text();
+            const dataSend = {
+                id: kriteria_id,
+                _token: "{{ csrf_token() }}",
+            };
 
-    //pass
-    document.querySelectorAll('#subkriteria_btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-        // Ambil data dan set ke variabel
-        var row = this.closest('tr'),
-            kolom1 = row.querySelector('td:nth-child(2)')
-            console.log(kolom1);
-        // Dan set ke form update
-        // Contoh: set value
-        document.getElementById('pass').value = kolom1.textContent;
-        // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
-    });
+            console.log("{{csrf_token()}}");
+            console.log(kriteria_id);
+
+            // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
+            $.ajax({
+                url: "{{route('subkriteria')}}",
+                type: 'POST',
+                contentType: 'application/json',
+                headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                data: JSON.stringify(dataSend),
+                success: function(data) {
+                    console.log(data);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('ajax error',textStatus, errorThrown);
+                }
+            });
+        });
     });
 
     //button delete kriteria
