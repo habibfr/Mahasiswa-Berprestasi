@@ -448,7 +448,6 @@
                 }
             });
         });
-    });
 
     //button delete kriteria
     document.querySelectorAll('#delete_btn').forEach(function(btn) {
@@ -516,6 +515,8 @@
         // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
     });
   });
+});
+
 
 </script>
 
