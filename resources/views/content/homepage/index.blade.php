@@ -7,9 +7,6 @@
     @include('layouts.sections.flash')
 
     <nav class="mb-5 pb-3 pt-3 d-flex text-center text-white bg-dark">
-        {{-- <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-            <header class="mb-auto">
-                <div> --}}
                 <div class="container-fluid">
                     <div class="row justify-content-between align-items-center w-100">
                     <div class="col-md-2 text-start">
@@ -18,14 +15,8 @@
                             KRILIN
                         </a>
                     </div>
-                    {{-- <div class="nav nav-masthead justify-content-center float-md-right">
-                        <a class="nav-link admin h4 {{explode('/',ucwords(request()->path()))[0]=='Mahasiswa'?'navbar-active':''}}" href="{{ route('mahasiswa') }}" >Mahasiswa</a>
-                        <a class="nav-link admin h4 {{explode('/',ucwords(request()->path()))[0]=='Kriteria'?'navbar-active':''}}" href="{{ route('kriteria') }}" >Kriteria</a>
-                        <a class="nav-link admin h4 {{explode('/',ucwords(request()->path()))[0]=='Peringkat'?'navbar-active':''}}" href="{{ route('peringkat') }}" >Peringkat</a>
-                    </div> --}}
                     <div class="col-md-2 text-end">
                         @auth
-                        {{-- <div class="position-absolute text-start" style="top: 1vw; right: 1vw"> --}}
                         <div class="position-relative">
                             <li class="nav dropdown">
                                 <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 20vw;">
@@ -56,7 +47,6 @@
                                 </ul>
                             </li>
                         </div>
-                        {{-- </div> --}}
                         @else
                         <div class="">
                             <a href="/login" class="btn btn-danger fw-bold d-flex align-items-center">
@@ -68,58 +58,20 @@
                     </div>
                     </div>
                 </div>
-                {{-- </div>
-            </header>
-        </div> --}}
     </nav>
-    {{-- <div class="row justify-content-between align-items-start">
-        <div class="col-md-2 text-start">
-            <a href="/" style="text-decoration: none;">
-                <h1 class="fw-bold" style="color: black">
-                    KRILIN
-                </h1>
-            </a>
-        </div>
-        @auth
-        <div class="col-md-2 text-start">
-            <li class="nav dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 20vw;">
-                  Hello, {{auth()->user()->name}}
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="/mahasiswa">
-                    <i class='bx bxs-group me-2'></i>Mahasiswa</a></li>
-                  <li><a class="dropdown-item" href="/kriteria">
-                    <i class='bx bx-target-lock me-2'></i>Kriteria</a></li>
-                  <li><a class="dropdown-item" href="peringkat">
-                    <i class='bx bx-trophy me-2'></i>Peringkat</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li>
-                    <form action="{{'logout'}}" method="post">
-                        @csrf
-                        <button type="submit" class="dropdown-item">
-                            <i class='bx bx-log-out me-2'></i>
-                            Logout
-                        </button>
-                    </form>
-                  </li>
-                </ul>
-            </li>
-        </div>
-        @else
-        <div class="col-md-2 text-end">
-            <a href="/login" class="btn btn-danger fw-bold d-flex align-items-center">
-                <i class='bx bx-log-in me-2'></i>
-                <span>LOGIN</span>
-            </a>
-        </div>
-        @endauth
-    </div> --}}
 
     <main class="container">
-        <div class="row text-center mb-3"><h1 class="fw-bold" style="color: black">Mahasiswa Berprestasi</h1></div>
-        <div class="row text-end mb-3"><div class="col"><button class="btn btn-secondary">Unduh</button></div></div>
-        <div class="card">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="fw-bold mb-auto" style="color: black; text-align:center; flex-grow: 1;">
+                Mahasiswa Berprestasi
+            </h1>
+            <form action="{{route('generatePeringkatPDF')}}" method="get" class="d-inline-block">
+                @csrf
+                <button class="btn btn-primary align-self-end">
+                    <i class='bx bx-download me-2'></i>Export</button>
+            </form>
+        </div>
+        <div class="card mt-3">
         <div class="table-responsive text-nowrap">
             <table class="table table-hover">
             <thead class="table-dark">

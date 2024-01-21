@@ -124,34 +124,34 @@
         <script>
             $(document).ready(function() {
 
-                let table = $('#tabelMahasiswa').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    deferRender: true,
-                    ajax: "{{route('mahasiswa.list')}}",
-                    columns: [
-                        {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                        {data: 'nim', name: 'nim'},
-                        {data: 'nama', name: 'nama'},
-                        {data: 'status', name: 'status'},
-                        // Tambahkan kolom dinamis sesuai dengan normalisasi
-                        @foreach($kriterias as $kriteria)
-                            { 
-                                data: 'normalisasi.{{ $kriteria->nama_kriteria }}', 
-                                name: 'normalisasi.{{ $kriteria->nama_kriteria }}',
-                                render: function(data, type, full, meta) {
-                                    return data || 0;
-                                }
-                            },
-                        @endforeach
-                        {
-                            data: 'action',
-                            name: 'action',
-                            orderable: true,
-                            searchable: true
-                        }
-                    ]
-                });
+                    let table = $('#tabelMahasiswa').DataTable({
+                        processing: true,
+                        serverSide: true,
+                        deferRender: true,
+                        ajax: "{{route('mahasiswa.list')}}",
+                        columns: [
+                            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                            {data: 'nim', name: 'nim'},
+                            {data: 'nama', name: 'nama'},
+                            {data: 'status', name: 'status'},
+                            // Tambahkan kolom dinamis sesuai dengan normalisasi
+                            @foreach($kriterias as $kriteria)
+                                { 
+                                    data: 'normalisasi.{{ $kriteria->nama_kriteria }}', 
+                                    name: 'normalisasi.{{ $kriteria->nama_kriteria }}',
+                                    render: function(data, type, full, meta) {
+                                        return data || 0;
+                                    }
+                                },
+                            @endforeach
+                            {
+                                data: 'action',
+                                name: 'action',
+                                orderable: true,
+                                searchable: true
+                            }
+                        ]
+                    });
 
                 $(document).on('submit', '#filterForm', function (event) {
                     event.preventDefault();
@@ -170,13 +170,32 @@
                         table.clear().destroy();
 
                         // Reinitialize the DataTable with new data
-                        table = $('#tabelMahasiswa').DataTable({
+                        table = $('#tabelMahasiswa')
+                        .DataTable({
                             // your DataTable options
+                            language: {
+                                emptyTable: "Tidak ada data"
+                            },
                             ajax: {
                                 url: "{{route('mahasiswa.filter')}}", // Assuming 'data' contains the new URL
                                 type: 'POST',
                                 data: formData,
                                 dataType: 'json',
+                                dataSrc: function (json) {
+                                    console.log('success');
+                                    $('div .dataTables_processing div').css({
+                                        'display': 'none',
+                                    })
+                                    return json.data;
+                                },
+                                error: function (xhr, textStatus, errorThrown) {
+                                    table.clear()
+                                    console.log(xhr.status)
+                                    $('div .dataTables_processing div').css({
+                                        'display': 'none',
+                                    })
+                                    $('#tabelMahasiswa tbody').html("<tr><td colspan='10' class='text-center h4'>Data tidak dapat ditemukan atau tersedia...</td></tr>");
+                                }
                             },
                             processing: true,
                             serverSide: true,
