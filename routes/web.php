@@ -50,6 +50,7 @@ use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\PeringkatController;
+use App\Models\Kriteria;
 
 // Main Page Route
 // Route::get('/', [Analytics::class, 'index'])->name('dashboard-analytics');
@@ -204,6 +205,9 @@ Route::get('/kriteria', [KriteriaController::class, 'index'])->name('kriteria')-
 
 // Route insert Kriteria
 Route::post('/inkriteria', [KriteriaController::class, 'store'])->name('inkriteria')->middleware('auth');
+
+// Route data subkriteria
+Route::post('/subkriteria', [KriteriaController::class, 'subkriteria'])->name('subkriteria')->middleware('auth');
 
 // Route Update Kriteria
 Route::post('/upkriteria', [KriteriaController::class, 'edit'])->name('upkriteria')->middleware('auth');
