@@ -33,11 +33,9 @@ class KriteriaController extends Controller
   public function subkriteria(Request $request)
   {
       // Mengambil data subkriteria
-      // $sub = Subkriteria::get();
-      // dd($request->all());
-      
-      return response()->json(['message' => 'Permintaan AJAX berhasil']);
-
+      $datasub = Subkriteria::where('kriteria_id',$request->id)->get();
+      // dd($request->all());      
+      return response()->json(['datasub'=>$datasub]);
   }
 
   /**
