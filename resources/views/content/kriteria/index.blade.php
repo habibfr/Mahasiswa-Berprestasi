@@ -2,6 +2,15 @@
 
 @section('title', 'Kriteria')
 
+@section('vendor-style')
+    <link href="{{ url('https://cdn.datatables.net/v/bs5/dt-1.13.8/datatables.min.css') }}" rel="stylesheet">
+@endsection
+
+@section('vendor-script')
+    {{-- vendor files --}}
+    <script src="{{ url('https://cdn.datatables.net/v/bs5/dt-1.13.8/datatables.min.js') }}"></script>
+@endsection
+
 @section('content')
 @include('layouts.sections.flash')
     {{-- <div class="row">
@@ -62,7 +71,7 @@
                 
                 <div class="modal-body">
                     <div class="row">
-                        <table class="table" id="tabelsub">
+                        <table class="table dataTable" id="tabelsub">
                             <thead>
                                 <tr>
                                     <th>Nama Subkriteria</th>
@@ -71,16 +80,16 @@
                                 </tr>
                             </thead>
                             <tbody class="table-border-bottom-0" id="tabel_sub">
-                                    <td>
+                                    {{-- <td>
                                         <div class="inline">
                                             <span class="text-success" id="subupdate_btn" data-bs-toggle="modal" data-bs-target="#modalEditSubKriteria"><i
                                             class="bx bx-edit-alt bx-sm me-2"></i>
-                                        </span>
-                                        <span class="text-danger" id="subdelete_btn" data-bs-toggle="modal" data-bs-target="#modalHapusSubKriteria"><i
-                                        class="bx bx-trash bx-sm me-2"></i>
-                                        </span>
+                                            </span>
+                                            <span class="text-danger" id="subdelete_btn" data-bs-toggle="modal" data-bs-target="#modalHapusSubKriteria"><i
+                                            class="bx bx-trash bx-sm me-2"></i>
+                                            </span>
                                         </div>
-                                    </td>
+                                    </td> --}}
                             </tbody>
                         </table>
                     </div>
@@ -415,7 +424,8 @@
 <script>
     //ajax
     $(document).ready(function() {
-        $('#tabel_sub').DataTable();
+        let tableSubkriteria = $('#tabelsub').DataTable();
+
         // show data sub kriteria
         $('.subkriteria_btn').on('click', function() {
             // Ambil data dan set ke variabel
@@ -430,8 +440,7 @@
                 id: kriteria_id,
             };
 
-            console.log("{{csrf_token()}}");
-            console.log(kriteria_id);
+            // console.log("{{csrf_token()}}");
 
             // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
             $.ajax({
@@ -443,27 +452,43 @@
                 },
                 data: JSON.stringify(dataSend),
                 success: function(data) {
-                    console.log(dataSend)
-                    console.log(data.length)            
-                    var table = document.getElementById("tabelsub")
-                    var tableBody = document.getElementById("tabel_sub")
-                    for (const key in data) {
-                        const datajson = data[key]
-                        datajson.forEach(obj => {
-                            const dataRow = tableBody.insertRow();
-                            console.log(obj.id)
-                            const cell = dataRow.insertCell(); 
-                            cell.textContent = obj.nama_subkriteria;
+                    tableSubkriteria.clear();
+
+                    data.datasub.forEach(element => {
+                        tableSubkriteria.row.add([
+                            element.nama_subkriteria,
+                            element.bobot_normalisasi,
+                            `
+                            <div class="inline">
+                                <span class="text-success" id="subupdate_btn" data-bs-toggle="modal" data-bs-target="#modalEditSubKriteria">
+                                    <i class="bx bx-edit-alt bx-sm me-2"></i>
+                                </span>
+                                <span class="text-danger" id="subdelete_btn" data-bs-toggle="modal" data-bs-target="#modalHapusSubKriteria">
+                                    <i class="bx bx-trash bx-sm me-2"></i>
+                                </span>
+                            </div>
+                            `,
+                        ]).draw(false)
+                    });
+                    // var table = document.getElementById("tabelsub")
+                    // var tableBody = document.getElementById("tabel_sub")
+                    // for (const key in data) {
+                    //     const datajson = data[key]
+                    //     datajson.forEach(obj => {
+                    //         const dataRow = tableBody.insertRow();
+                    //         console.log(obj.id)
+                    //         const cell = dataRow.insertCell(); 
+                    //         cell.textContent = obj.nama_subkriteria;
                             
-                        })
-                        console.log(JSON.stringify(data));
-                        console.log(key)
+                    //     })
+                    //     console.log(JSON.stringify(data));
+                    //     console.log(key)
                     //     for (const prop in data[key]) {
                     //     console.log(data[key].id);
                     //     const cell = dataRow.insertCell();
                     //     cell.textContent = data[key]["id"];
                     // }
-                    }
+                    // }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.error('ajax error',textStatus, errorThrown);
@@ -479,65 +504,65 @@
                 kolom1 = row.querySelector('td:nth-child(2)')
                 // Dan set ke form update
                 // Contoh: set value
-        document.getElementById('id').value = kolom1.textContent;
-        // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
-    });
-});
+            document.getElementById('id').value = kolom1.textContent;
+            // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
+            });
+        });
 
 
-//button delete subkriteria
-document.querySelectorAll('#subdelete_btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-        // Ambil data dan set ke variabel
-        var row = this.closest('tr'),
-        kolom1 = row.querySelector('td:nth-child(1)')
-        // Dan set ke form update
-        // Contoh: set value
-        document.getElementById('idsub').value = kolom1.textContent;
-        // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
-    });
-});
+        //button delete subkriteria
+        document.querySelectorAll('#subdelete_btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                // Ambil data dan set ke variabel
+                var row = this.closest('tr'),
+                kolom1 = row.querySelector('td:nth-child(1)')
+                // Dan set ke form update
+                // Contoh: set value
+                document.getElementById('idsub').value = kolom1.textContent;
+                // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
+            });
+        });
 
-// button update kriteria 
-document.querySelectorAll('#update_btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-        // Ambil data dan set ke variabel
-        var row = this.closest('tr'),
-        kolom1 = row.querySelector('td:nth-child(2)')
-        console.log(kolom1)
-        kolom2 = row.querySelector('td:nth-child(3)')
-        kolom3 = row.querySelector('td:nth-child(4)')
-        kolom4 = row.querySelector('td:nth-child(5)')
-        // Dan set ke form update
-        // Contoh: set value
-        document.getElementById('idedit').value = kolom1.textContent;
-        document.getElementById('nameBasic').value = kolom2.textContent;
-        document.getElementById('bobotBasic').value = kolom3.textContent;
-        document.getElementById('periodeBasic').value = kolom4.textContent;
-        // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
-    });
-});
+        // button update kriteria 
+        document.querySelectorAll('#update_btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                // Ambil data dan set ke variabel
+                var row = this.closest('tr'),
+                kolom1 = row.querySelector('td:nth-child(2)')
+                console.log(kolom1)
+                kolom2 = row.querySelector('td:nth-child(3)')
+                kolom3 = row.querySelector('td:nth-child(4)')
+                kolom4 = row.querySelector('td:nth-child(5)')
+                // Dan set ke form update
+                // Contoh: set value
+                document.getElementById('idedit').value = kolom1.textContent;
+                document.getElementById('nameBasic').value = kolom2.textContent;
+                document.getElementById('bobotBasic').value = kolom3.textContent;
+                document.getElementById('periodeBasic').value = kolom4.textContent;
+                // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
+            });
+        });
 
-// button update subkriteria 
-document.querySelectorAll('#subupdate_btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-        // Ambil data dan set ke variabel
-        var row = this.closest('tr'),
-        kolom1 = row.querySelector('td:nth-child(1)')
-        kolom2 = row.querySelector('td:nth-child(2)')
-        kolom3 = row.querySelector('td:nth-child(3)')
-        kolom4 = row.querySelector('td:nth-child(4)')
-        // console.log(kolom2)
-        // Dan set ke form update
-        // Contoh: set value
-        document.getElementById('idsubedit').value = kolom1.textContent;
-        document.getElementById('krisubdedit').value = kolom2.textContent;
-        document.getElementById('name_SubKriteriaBasic').value = kolom3.textContent;
-        document.getElementById('bobot_normalisasiBasic').value = kolom4.textContent;
-        // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
+        // button update subkriteria 
+        document.querySelectorAll('#subupdate_btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                // Ambil data dan set ke variabel
+                var row = this.closest('tr'),
+                kolom1 = row.querySelector('td:nth-child(1)')
+                kolom2 = row.querySelector('td:nth-child(2)')
+                kolom3 = row.querySelector('td:nth-child(3)')
+                kolom4 = row.querySelector('td:nth-child(4)')
+                // console.log(kolom2)
+                // Dan set ke form update
+                // Contoh: set value
+                document.getElementById('idsubedit').value = kolom1.textContent;
+                document.getElementById('krisubdedit').value = kolom2.textContent;
+                document.getElementById('name_SubKriteriaBasic').value = kolom3.textContent;
+                document.getElementById('bobot_normalisasiBasic').value = kolom4.textContent;
+                // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
+            });
+        });
     });
-});
-});
 </script>
 
 @endsection
