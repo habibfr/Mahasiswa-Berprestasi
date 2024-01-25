@@ -61,10 +61,12 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel1">Table Subkriteria</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    
                 </div>
                 <div class="col">
                     <div class="float-end">
-                        <div id="floatingInputHelp mb-2" class="form-text" >
+                        <div id="floatingInputHelp mb-2" class="form-text" style="padding-right: 25px;">
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalAddSubKriteria" id="addsub_btn">Tambah</button>
                         </div>
                     </div>
                 </div>
@@ -80,16 +82,6 @@
                                 </tr>
                             </thead>
                             <tbody class="table-border-bottom-0" id="tabel_sub">
-                                    {{-- <td>
-                                        <div class="inline">
-                                            <span class="text-success" id="subupdate_btn" data-bs-toggle="modal" data-bs-target="#modalEditSubKriteria"><i
-                                            class="bx bx-edit-alt bx-sm me-2"></i>
-                                            </span>
-                                            <span class="text-danger" id="subdelete_btn" data-bs-toggle="modal" data-bs-target="#modalHapusSubKriteria"><i
-                                            class="bx bx-trash bx-sm me-2"></i>
-                                            </span>
-                                        </div>
-                                    </td> --}}
                             </tbody>
                         </table>
                     </div>
@@ -120,23 +112,23 @@
                                 <input type="text" id="idsubedit" class="form-control" name="id" placeholder="">
                             </div>
                             <div class="col mb-3" style="display: none;">
-                                <input type="text" id="krisubdedit" class="form-control" name="kriteria_id" placeholder="">
+                                <input type="text" id="krisubedit" class="form-control" name="kriteria_id" placeholder="">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col mb-3">
                                 <label for="nameBasic" class="form-label">Nama SubKriteria</label>
-                                <input type="text" id="name_SubKriteriaBasic" class="form-control" name="nama_subkriteria" placeholder="Enter Name">
+                                <input type="text" id="name_SubKriteria" class="form-control" name="nama_subkriteria" placeholder="Enter Name">
                             </div>
                         </div>
                         <div class="row">
                                 <div class="col mb-3">
                                     <label for="bobot1Basic" class="form-label">Bobot_Normalisasi</label>
-                                    <input type="number" step="1" max="5" min="1" id="bobot_normalisasiBasic" name="bobot_normalisasi" class="form-control" placeholder="1">
+                                    <input type="number" step="1" max="5" min="1" id="bobot_normalisasi" name="bobot_normalisasi" class="form-control" placeholder="1">
                                 </div>
                         </div>  
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="" id="editsubclose">Close</button>
                             <button class="btn btn-danger" type="submit">Save changes</button>
                         </div>
                     </div>
@@ -160,6 +152,14 @@
                 <form action="/insubkriteria" method="post">
                     @csrf
                     <div class="modal-body">
+                    <div class="row">
+                            <div class="col mb-3" style="display: none;">
+                                <input type="text" id="idsub" class="form-control" name="id" placeholder="">
+                            </div>
+                            <div class="col mb-3" style="display: none;">
+                                <input type="text" id="krisub" class="form-control" name="kriteria_id" placeholder="">
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col mb-3" >
                             <label for="nameBasic" class="form-label">Nama SubKriteria</label>
@@ -169,12 +169,12 @@
                         <div class="row">
                             <div class="col mb-3" >
                             <label for="bobot1Basic" class="form-label">Bobot_Normalisasi</label>
-                                <input type="number" step="1" max="5" min="1" id="bobot_normalisasiBasic" name="bobot_normalisasi" class="form-control" placeholder="1">
+                                <input type="number" step="1" max="5" min="1" id="bobot_normalisasi" name="bobot_normalisasi" class="form-control" placeholder="1">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="" id="addsubclose">Close</button>
                         <button class="btn btn-danger" type="submit">Save changes</button>
                     </div>
                 </form>
@@ -266,7 +266,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary"
-                        data-bs-dismiss="modal">Close</button>
+                        data-bs-dismiss="" id="delsubclose">Close</button>
                     <button type="submit" class="btn btn-danger">Iya</button>
                 </div>
                 </form>
@@ -421,11 +421,11 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
 <script>
     //ajax
     $(document).ready(function() {
         let tableSubkriteria = $('#tabelsub').DataTable();
-
         // show data sub kriteria
         $('.subkriteria_btn').on('click', function() {
             // Ambil data dan set ke variabel
@@ -439,61 +439,60 @@
                 _token: "{{ csrf_token() }}",
                 id: kriteria_id,
             };
-
+            
             // console.log("{{csrf_token()}}");
-
+            
             // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
             $.ajax({
                 url: "{{route('subkriteria')}}",
                 type: 'POST',
                 contentType: 'application/json',
                 headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                 },
                 data: JSON.stringify(dataSend),
                 success: function(data) {
                     tableSubkriteria.clear();
-
                     data.datasub.forEach(element => {
                         tableSubkriteria.row.add([
                             element.nama_subkriteria,
                             element.bobot_normalisasi,
                             `
                             <div class="inline">
-                                <span class="text-success" id="subupdate_btn" data-bs-toggle="modal" data-bs-target="#modalEditSubKriteria">
-                                    <i class="bx bx-edit-alt bx-sm me-2"></i>
-                                </span>
-                                <span class="text-danger" id="subdelete_btn" data-bs-toggle="modal" data-bs-target="#modalHapusSubKriteria">
-                                    <i class="bx bx-trash bx-sm me-2"></i>
-                                </span>
+                            <span class="text-success" id="subupdate_btn" data-bs-toggle="modal" data-bs-target="#modalEditSubKriteria" data-subkriteriaid="${element.id}" data-kriteriaid="${element.kriteria_id}">
+                            <i class="bx bx-edit-alt bx-sm me-2"></i>
+                            </span>
+                            <span class="text-danger" id="subdelete_btn" data-bs-toggle="modal" data-bs-target="#modalHapusSubKriteria" data-subkriteriaid="${element.id}" data-kriteriaid="${element.kriteria_id}">
+                            <i class="bx bx-trash bx-sm me-2"></i>
+                            </span>
                             </div>
                             `,
                         ]).draw(false)
                     });
-                    // var table = document.getElementById("tabelsub")
-                    // var tableBody = document.getElementById("tabel_sub")
-                    // for (const key in data) {
-                    //     const datajson = data[key]
-                    //     datajson.forEach(obj => {
-                    //         const dataRow = tableBody.insertRow();
-                    //         console.log(obj.id)
-                    //         const cell = dataRow.insertCell(); 
-                    //         cell.textContent = obj.nama_subkriteria;
-                            
-                    //     })
-                    //     console.log(JSON.stringify(data));
-                    //     console.log(key)
-                    //     for (const prop in data[key]) {
-                    //     console.log(data[key].id);
-                    //     const cell = dataRow.insertCell();
-                    //     cell.textContent = data[key]["id"];
-                    // }
-                    // }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.error('ajax error',textStatus, errorThrown);
                 }
             });
+            
+                    $('#editsubclose').on('click', function() {
+                    // Menutup modal menggunakan JavaScript
+                    $('#modalEditSubKriteria').modal('hide');
+                    $('#modalSubKriteria').modal('show');
+                    })
+
+                    $('#delsubclose').on('click', function() {
+                    // Menutup modal menggunakan JavaScript
+                    $('#modalHapusSubKriteria').modal('hide');
+                    $('#modalSubKriteria').modal('show');
+                    }) 
+
+                    $('#addsubclose').on('click', function() {
+                    // Menutup modal menggunakan JavaScript
+                    $('#modalAddSubKriteria').modal('hide');
+                    $('#modalSubKriteria').modal('show');
+                    }) 
+
         });
         
         //button delete kriteria
@@ -511,15 +510,30 @@
 
 
         //button delete subkriteria
-        document.querySelectorAll('#subdelete_btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                // Ambil data dan set ke variabel
-                var row = this.closest('tr'),
-                kolom1 = row.querySelector('td:nth-child(1)')
-                // Dan set ke form update
-                // Contoh: set value
-                document.getElementById('idsub').value = kolom1.textContent;
-                // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
+        $(document).on('click', '#subdelete_btn', function() {
+            const dataSend = {
+                _token: "{{ csrf_token() }}",
+                id: $(this).data('subkriteriaid'),
+                };
+
+                $.ajax({
+                url: "{{route('upsubshow')}}",
+                type: 'POST',
+                contentType: 'application/json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                data: JSON.stringify(dataSend),
+                success: function(data) {
+                    //kebaca
+                    console.log(JSON.stringify(data))
+                    data.datasub.forEach(element=>{
+                        document.getElementById('idsub').value = element.id                                 
+                    })
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('ajax error',textStatus, errorThrown);
+                }
             });
         });
 
@@ -529,10 +543,10 @@
                 // Ambil data dan set ke variabel
                 var row = this.closest('tr'),
                 kolom1 = row.querySelector('td:nth-child(2)')
-                console.log(kolom1)
                 kolom2 = row.querySelector('td:nth-child(3)')
                 kolom3 = row.querySelector('td:nth-child(4)')
                 kolom4 = row.querySelector('td:nth-child(5)')
+                console.log(kolom1);
                 // Dan set ke form update
                 // Contoh: set value
                 document.getElementById('idedit').value = kolom1.textContent;
@@ -543,23 +557,41 @@
             });
         });
 
+        $(document).on('click', '#addsub_btn', function() {
+            document.getElementById('idsub').value = $('#subupdate_btn').data('subkriteriaid');
+            document.getElementById('krisub').value = $('#subupdate_btn').data('kriteriaid');
+            console.log(1)
+        });
+
         // button update subkriteria 
-        document.querySelectorAll('#subupdate_btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                // Ambil data dan set ke variabel
-                var row = this.closest('tr'),
-                kolom1 = row.querySelector('td:nth-child(1)')
-                kolom2 = row.querySelector('td:nth-child(2)')
-                kolom3 = row.querySelector('td:nth-child(3)')
-                kolom4 = row.querySelector('td:nth-child(4)')
-                // console.log(kolom2)
-                // Dan set ke form update
-                // Contoh: set value
-                document.getElementById('idsubedit').value = kolom1.textContent;
-                document.getElementById('krisubdedit').value = kolom2.textContent;
-                document.getElementById('name_SubKriteriaBasic').value = kolom3.textContent;
-                document.getElementById('bobot_normalisasiBasic').value = kolom4.textContent;
-                // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
+        $(document).on('click', '#subupdate_btn', function() {
+                const dataSend = {
+                _token: "{{ csrf_token() }}",
+                id: $(this).data('subkriteriaid'),
+                };
+
+                $.ajax({
+                url: "{{route('upsubshow')}}",
+                type: 'POST',
+                contentType: 'application/json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                data: JSON.stringify(dataSend),
+                success: function(data) {
+                    //kebaca
+                    console.log(JSON.stringify(data))
+                    data.datasub.forEach(element=>{
+                        document.getElementById('idsubedit').value = element.id
+                        document.getElementById('krisubedit').value = element.kriteria_id
+                        document.getElementById('name_SubKriteria').value = element.nama_subkriteria
+                        document.getElementById('bobot_normalisasi').value = element.bobot_normalisasi
+                                                
+                    })
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('ajax error',textStatus, errorThrown);
+                }
             });
         });
     });

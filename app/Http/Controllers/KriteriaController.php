@@ -53,8 +53,17 @@ class KriteriaController extends Controller
 
   public function substore(Request $request)
   {
+    // dd($request->all());
     Subkriteria::create($request->except(['_token', 'submit']));
     return redirect('/kriteria')->with('berhasil_ubah_kriteria', 'Berhasil menambahkan kriteria!');
+  }
+
+
+  public function subeditshow(Request $request){
+          // Mengambil data subkriteria
+          $datasub = Subkriteria::where('id',$request->id)->get();
+          // dd($request->all());      
+          return response()->json(['datasub'=>$datasub]);
   }
 
   /**

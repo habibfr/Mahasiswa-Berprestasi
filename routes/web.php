@@ -225,6 +225,9 @@ Route::post('/deskriteria', [KriteriaController::class, 'destroy'])->name('deskr
 Route::post('/insubkriteria', [KriteriaController::class, 'substore'])->name('insubkriteria')->middleware('auth');
 
 // Route Update SubKriteria
+Route::post('/upsubshow', [KriteriaController::class, 'subeditshow'])->name('upsubshow')->middleware('auth');
+
+// Route Update SubKriteria
 Route::post('/upsubkriteria', [KriteriaController::class, 'subedit'])->name('upsubkriteria')->middleware('auth');
 
 // Route Update SubKriteria

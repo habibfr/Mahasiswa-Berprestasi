@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Subkriteria extends Model
 {
     protected $fillable = [
+        "kriteria_id",
         'nama_subkriteria',
         'bobot_normalisasi'
     ];
