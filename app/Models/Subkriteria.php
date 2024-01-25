@@ -15,6 +15,8 @@ class Subkriteria extends Model
         'nama_subkriteria',
         'bobot_normalisasi'
     ];
+    protected $guarded = ['id'];
+
     use HasFactory, HasUuids, SoftDeletes;
 
     public function kriteria(): BelongsTo
