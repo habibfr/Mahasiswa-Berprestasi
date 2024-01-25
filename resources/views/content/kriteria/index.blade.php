@@ -254,12 +254,12 @@
                 <form action="/dessubkriteria" method="post">
                     @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="backDropModalTitle">Hapus Kriteria</h5>
+                    <h5 class="modal-title" id="backDropModalTitle">Hapus Subkriteria</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
-                <div class="col mb-3" style="display: none;" >
-                            <input type="text" id="idsub" class="form-control" name="id" placeholder="Enter Name">
+                <div class="col mb-3" style="display:none;" >
+                            <input type="text" id="idsubdel" class="form-control" name="id" placeholder="Enter Name">
                         </div>
                 <div class="modal-body">
                     <p>Are you sure to delete this??</p>
@@ -528,7 +528,7 @@
                     //kebaca
                     console.log(JSON.stringify(data))
                     data.datasub.forEach(element=>{
-                        document.getElementById('idsub').value = element.id                                 
+                        document.getElementById('idsubdel').value = element.id                                 
                     })
                 },
                 error: function(jqXHR, textStatus, errorThrown) {

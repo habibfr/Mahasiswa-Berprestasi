@@ -184,21 +184,16 @@ class KriteriaController extends Controller
   }
 
   public function destroysub(Request $request){
-     // Validate the request if needed
+    
     // dd($request->all());
-    // Extract the ID from the request
-    $id = $request->input('id');
-
-    // Find the record by ID
-    $data = SubKriteria::find($id);
 
     // Check if the record exists
-    if ($data) {
+    if ($request) {
       // Delete the record
-      $data->delete();
-
+      Subkriteria::where('id', $request->id)->delete();
+      
       // Optionally, you may want to add a success message or redirect
-      return redirect()->route('kriteria')->with('berhasil_delete_suvkriteria', 'Kriteria berhasil dihapus!');
+      return redirect()->route('kriteria')->with('berhasil_delete_subkriteria', 'Kriteria berhasil dihapus!');
     } else {
       // Record not found, you may want to handle this case
       return redirect()->route('kriteria')->with('berhasil_delete_subkriteria', 'Record not found!');
