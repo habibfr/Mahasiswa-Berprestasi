@@ -68,13 +68,14 @@ class MahasiswaController extends Controller
       // $hasil = new stdClass;
       // ===================================================
       $mahasiswas = Mahasiswa::orderBy('mahasiswas.nim', 'asc')
-        ->get()
-        ->filter(function ($value, $key) {
-          $year = intval(date('Y')) - intval($value->angkatan);
-          if ($year > 1 && $year <= 3) {
-            return $value;
-          }
-        });
+        ->whereBetween('angkatan', [intval(date('Y'))-3, intval(date('Y'))-1])
+        ->get();
+        // ->filter(function ($value, $key) {
+        //   $year = intval(date('Y')) - intval($value->angkatan);
+        //   if ($year > 1 && $year <= 3) {
+        //     return $value;
+        //   }
+        // });
 
       foreach ($mahasiswas as $mahasiswa) {
         $mahasiswaId = $mahasiswa->id;
@@ -162,13 +163,14 @@ class MahasiswaController extends Controller
       }
 
       $mahasiswas = $data->orderBy('mahasiswas.nim', 'asc')
-        ->get()
-        ->filter(function ($value, $key) {
-          $year = intval(date('Y')) - intval($value->angkatan);
-          if ($year > 1 && $year <= 3) {
-            return $value;
-          }
-        });
+        ->whereBetween('angkatan', [intval(date('Y'))-3, intval(date('Y'))-1])
+        ->get();
+        // ->filter(function ($value, $key) {
+        //   $year = intval(date('Y')) - intval($value->angkatan);
+        //   if ($year > 1 && $year <= 3) {
+        //     return $value;
+        //   }
+        // });
 
       foreach ($mahasiswas as $mahasiswa) {
         $mahasiswaId = $mahasiswa->id;

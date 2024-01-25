@@ -65,6 +65,7 @@ class PeringkatController extends Controller
     $nilais = Normalisasi::join('kriterias', 'kriterias.id', '=', 'normalisasis.kriteria_id')
       ->join('mahasiswas', 'mahasiswas.id', '=', 'normalisasis.mahasiswa_id')
       ->where('kriterias.nama_kriteria', '=', $kriteria->nama_kriteria)
+      ->whereBetween('mahasiswas.angkatan', [intval(date('Y'))-3, intval(date('Y'))-1])
       ->where('mahasiswas.status', 'aktif');
 
     $array_of_normalized = [];
@@ -111,8 +112,10 @@ class PeringkatController extends Controller
       // $kriterias = Kriteria::where('periode', '2024');
       $this->kriterias = $kriterias->get();
 
+      // Cek apakah kriteria tahun ini telah ada
       !isset($kriterias->get()[0]->id) ? throw new \Exception("Tidak ada kriteria yang tersedia!") : $kriterias;
 
+      // Cek apakah jumlah kriteria telah berjumlah 1
       $sum_of_kriteria = 0;
       foreach ($kriterias->cursor() as $kriteria) {
         $sum_of_kriteria += $kriteria->bobot;
@@ -134,7 +137,7 @@ class PeringkatController extends Controller
         );
       }
 
-      $mahasiswas = Mahasiswa::where('status', 'aktif');
+      $mahasiswas = Mahasiswa::where('status', 'aktif')->whereBetween('angkatan', [intval(date('Y'))-3, intval(date('Y'))-1]);
 
       $collections_of_calc = (object) [];
 
