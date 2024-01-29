@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('id');
             $table->foreignUuid('kriteria_id');
             $table->string('nama_subkriteria');
-            $table->float('bobot_normalisasi')->default(1);
+            $table->decimal('bobot_normalisasi')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

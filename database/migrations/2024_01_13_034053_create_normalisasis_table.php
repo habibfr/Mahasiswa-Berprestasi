@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('normalisasis', function (Blueprint $table) {
             $table->foreignUuid('mahasiswa_id');
             $table->foreignUuid('kriteria_id');
-            $table->float('nilai')->default(0);
+            $table->decimal('nilai')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

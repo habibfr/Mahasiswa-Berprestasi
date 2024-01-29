@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kriteria;
+use App\Models\Mahasiswa;
+use App\Models\Nilai;
+use App\Models\Normalisasi;
 use App\Models\Subkriteria;
 // use App\Http\Requests\StoreKriteriaRequest;
 // use App\Http\Requests\UpdateKriteriaRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class KriteriaController extends Controller
 {
@@ -21,10 +25,10 @@ class KriteriaController extends Controller
 
       // Ngirim data
       return view('content.kriteria.index', ['data' => $data, 'judul' => 'Kriteria']);
-  } catch (\Exception $e) {
+    } catch (\Exception $e) {
       // Handle the exception and return an error view with a message
       return view('content.kriteria.index')->with('error', 'Error: ' . $e->getMessage());
-  }
+    }
   }
 
   /**
@@ -32,10 +36,10 @@ class KriteriaController extends Controller
    */
   public function subkriteria(Request $request)
   {
-      // Mengambil data subkriteria
-      $datasub = Subkriteria::where('kriteria_id',$request->id)->get();
-      // dd($request->all());      
-      return response()->json(['datasub'=>$datasub]);
+    // Mengambil data subkriteria
+    $datasub = Subkriteria::where('kriteria_id', $request->id)->get();
+    // dd($request->all());
+    return response()->json(['datasub' => $datasub]);
   }
 
   /**
@@ -43,12 +47,30 @@ class KriteriaController extends Controller
    */
   public function store(Request $request)
   {
-    //
-    // dd($request->except(['_token','submit']));
-    Kriteria::create($request->except(['_token', 'submit']));
-    // dd($request->all());
-    // Subkriteria::create($request->except(['_token','bobot','atribut','periode','submit']));
-    return redirect('/kriteria')->with('berhasil_ubah_kriteria', 'Berhasil menambahkan kriteria!');
+    try {
+      $sum_of_bobot = Kriteria::where('periode', $request->input('periode'))
+        ->where('id', '!=', $request->input('id'))
+        ->sum('bobot');
+
+      $request->validate([
+        'bobot' => 'required|numeric|min:0|max:' . (1 - ($sum_of_bobot)),
+        'atribut' => 'required|in:benefit,cost',
+        'nama_kriteria' => 'required|string|max:50',
+        'periode' => 'required|integer|min:1000|max:9999',
+        // Sesuaikan aturan validasi dengan model dan kebutuhan Anda
+      ]);
+
+      $kriteria = Kriteria::create($request->except(['_token', 'submit']));
+      $subkriteria = [];
+      collect($subkriteria);
+      $subkriteria['nama_subkriteria'] = $kriteria->nama_kriteria;
+      $subkriteria['kriteria_id'] = $kriteria->id;
+      $subkriteria = Subkriteria::create($subkriteria);
+
+      return redirect('/kriteria')->with('berhasil_ubah_kriteria', 'Berhasil menambahkan kriteria!');
+    } catch (\Throwable $th) {
+      return redirect('/kriteria')->with('error', $th->getMessage());
+    }
   }
 
   public function substore(Request $request)
@@ -59,11 +81,12 @@ class KriteriaController extends Controller
   }
 
 
-  public function subeditshow(Request $request){
-          // Mengambil data subkriteria
-          $datasub = Subkriteria::where('id',$request->id)->get();
-          // dd($request->all());      
-          return response()->json(['datasub'=>$datasub]);
+  public function subeditshow(Request $request)
+  {
+    // Mengambil data subkriteria
+    $datasub = Subkriteria::where('id', $request->id)->get();
+    // dd($request->all());      
+    return response()->json(['datasub' => $datasub]);
   }
 
   /**
@@ -72,29 +95,51 @@ class KriteriaController extends Controller
   public function subedit(Request $request)
   {
     //
-    try{
-    // Validasi data yang diterima dari formulir
-    $request->validate([
-      'nama_subkriteria' => 'required|string|max:50' ,
-      'bobot_normalisasi' => 'required|numeric|min:1|max:4',
-      // Sesuaikan aturan validasi dengan model dan kebutuhan Anda
-    ]);
-    $nama_subkriteria = $request->input('nama_subkriteria');
-    $bobot_normalisasi = $request->input('bobot_normalisasi');
-    // Ambil data user berdasarkan ID
-    $user = Subkriteria::findOrFail($request->id);
-    // dd($request->all());
-    // Update data user dengan data baru
-    $user->nama_subkriteria = $nama_subkriteria;
-    $user->bobot_normalisasi = $bobot_normalisasi;
-    // Simpan perubahan ke database
-    $user->save();
-    // Redirect atau berikan respons sesuai kebutuhan aplikasi Anda
-    return redirect()->route('kriteria')->with('berhasil_ubah_subkriteria', 'Data kriteria berhasil diperbarui');
-  } catch (\Exception $e) {
-    return redirect()->route('kriteria')->with('berhasil_ubah_subkriteria', $e->getMessage());
-  }
+    try {
+      // Validasi data yang diterima dari formulir
+      $request->validate([
+        'nama_subkriteria' => 'required|string|max:50',
+        'bobot_normalisasi' => 'required|numeric|min:1|max:999',
+        // Sesuaikan aturan validasi dengan model dan kebutuhan Anda
+      ]);
+      $nama_subkriteria = $request->input('nama_subkriteria');
+      $bobot_normalisasi = $request->input('bobot_normalisasi');
+      // Ambil data user berdasarkan ID
+      $subkriteria = Subkriteria::findOrFail($request->id);
+      // dd($request->all());
+      // Update data subkriteria dengan data baru
+      $subkriteria->nama_subkriteria = $nama_subkriteria;
+      $subkriteria->bobot_normalisasi = $bobot_normalisasi;
+      // Simpan perubahan ke database
+      $subkriteria->save();
 
+      // ambil mahasiswa yang aktif dan sesuai peraturan
+      Mahasiswa::where('status', 'aktif')
+        ->whereBetween('angkatan', [intval(date('Y')) - 3, intval(date('Y')) - 1])
+        ->get()
+        ->map(function ($mahasiswa) use ($subkriteria) {
+          // kalikan dengan bobot normalisasi dan jumlah ulang nilai di nilai sesuai mahasiswa dan subkriteria
+          $nilai = Nilai::join('subkriterias', 'subkriterias.id', '=', 'nilais.subkriteria_id')
+            ->where([
+              ['mahasiswa_id', $mahasiswa->id],
+              ['kriteria_id', $subkriteria->kriteria_id],
+            ])
+            ->selectRaw('SUM(nilais.nilai * subkriterias.bobot_normalisasi) as total_nilai')
+            ->get();
+          // dd($nilai->first()->total_nilai);
+
+          // update nilai di normalisasi sesuai kriteria
+          $normalisasi = Normalisasi::where([
+            ['mahasiswa_id', $mahasiswa->id],
+            ['kriteria_id', $subkriteria->kriteria_id]
+          ])->update(['nilai' => $nilai->first()->total_nilai]);
+        });
+
+      // Redirect atau berikan respons sesuai kebutuhan aplikasi Anda
+      return redirect()->route('kriteria')->with('berhasil_ubah_subkriteria', 'Data kriteria berhasil diperbarui');
+    } catch (\Exception $e) {
+      return redirect()->route('kriteria')->with('error', $e->getMessage());
+    }
   }
 
   /**
@@ -145,7 +190,7 @@ class KriteriaController extends Controller
       // Redirect atau berikan respons sesuai kebutuhan aplikasi Anda
       return redirect()->route('kriteria')->with('berhasil_ubah_kriteria', 'Data kriteria berhasil diperbarui');
     } catch (\Exception $e) {
-      return redirect()->route('kriteria')->with('berhasil_ubah_kriteria', $e->getMessage());
+      return redirect()->route('kriteria')->with('error', $e->getMessage());
     }
   }
 
@@ -174,6 +219,7 @@ class KriteriaController extends Controller
     if ($data) {
       // Delete the record
       $data->delete();
+      Subkriteria::where('kriteria_id', $id)->delete();
 
       // Optionally, you may want to add a success message or redirect
       return redirect()->route('kriteria')->with('berhasil_delete_kriteria', 'Kriteria berhasil dihapus!');
@@ -183,15 +229,16 @@ class KriteriaController extends Controller
     }
   }
 
-  public function destroysub(Request $request){
-    
+  public function destroysub(Request $request)
+  {
+
     // dd($request->all());
 
     // Check if the record exists
     if ($request) {
       // Delete the record
       Subkriteria::where('id', $request->id)->delete();
-      
+
       // Optionally, you may want to add a success message or redirect
       return redirect()->route('kriteria')->with('berhasil_delete_subkriteria', 'Kriteria berhasil dihapus!');
     } else {

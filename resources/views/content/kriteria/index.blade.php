@@ -122,7 +122,7 @@
                         <div class="row">
                                 <div class="col mb-3">
                                     <label for="bobot1Basic" class="form-label">Bobot Normalisasi</label>
-                                    <input type="number" step="1" max="5" min="1" id="bobot_normalisasi" name="bobot_normalisasi" class="form-control" placeholder="1">
+                                    <input type="number" step="1" min="1" id="bobot_normalisasi" name="bobot_normalisasi" class="form-control" placeholder="1">
                                 </div>
                         </div>  
                         <div class="modal-footer">
@@ -205,7 +205,7 @@
                             </div>
                     </div>
                     <div class="row">
-                                <div class="col mb-3">
+                                <div class="col">
                                     <label for="tipeBasic" class="form-label">Tipe</label>
                                 </div>
                             <div class="row">
@@ -215,15 +215,15 @@
                                         <label class="form-check-label" for="exampleRadios1">
                                             Benefit
                                         </label>
-                                        </div>
-                                        <div class="form-check">
+                                </div>
+                                <div class="form-check">
                                         <input class="form-check-input" type="radio" name="atribut" id="exampleRadios2" value="cost" name="cost">
                                         <label class="form-check-label" for="exampleRadios2">
                                             Cost
                                         </label>
-                                        </div>
-                                    </div>
                                 </div>
+                                </div>
+                            </div>
                                 
                     </div>
 
@@ -244,7 +244,7 @@
             </div>
     </div>
 
-    {{-- modal confirm delete --}}
+    {{-- modal confirm delete subkriteria --}}
     <div class="modal fade" id="modalHapusSubKriteria" data-bs-backdrop="static" tabindex="-1"
         style="display: none;" aria-hidden="true">
         <div class="modal-dialog">
@@ -275,147 +275,149 @@
 
 
     <!-- Basic Bootstrap Table -->
-    <div class="card mb-5">
-        <div class="table-responsive text-nowrap m-4">
-            <table class="table table-striped" style="width: 100%;">
-                <div>
-                <thead>
-                    <tr class="table-primary">
-                        <th scope="col">No</th>
-                        <th style="display: none;" scope="col">Id</th>
-                        <th scope="col">Nama</th>
-                        <th scope="col">Bobot</th>
-                        <th scope="col">Periode</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="table-border-bottom-0">
-                        @if(isset($error))
-                        @else
-                            @foreach($data as $data)
-                            <tr>
-                            <td scope="row">{{ $loop->index + 1 }}</td>
-                            <td style="display:none">{{$data->id}}</td>
-                            <td>{{$data->nama_kriteria}}</td>
-                            <td>{{$data->bobot}}</td>
-                            <td>{{$data->periode}}</td>
-                            <td>
-                                <div class="inline">
-                                    <span class="subkriteria_btn text-danger" id="subkriteria_btn" data-bs-toggle="modal" data-bs-target="#modalSubKriteria"><i
-                                        class="bx bx-table bx-sm me-2"></i>
-                                    </span>
-                                    <span class="text-success" id="update_btn" data-bs-toggle="modal" data-bs-target="#modalEditKriteria"><i
-                                            class="bx bx-edit-alt bx-sm me-2"></i>
-                                    </span>
-                                    <span class="text-danger" id="delete_btn" data-bs-toggle="modal" data-bs-target="#modalHapusKriteria"><i
-                                            class="bx bx-trash bx-sm me-2"></i>
+    <div class="container">
+        <div class="card mb-5">
+            <div class="table-responsive text-nowrap m-4">
+                <table class="table table-striped" style="width: 100%;">
+                    <div>
+                    <thead>
+                        <tr class="table-primary">
+                            <th scope="col">No</th>
+                            <th style="display: none;" scope="col">Id</th>
+                            <th scope="col">Nama</th>
+                            <th scope="col">Bobot</th>
+                            <th scope="col">Periode</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                            @if(isset($error))
+                            @else
+                                @foreach($data as $data)
+                                <tr>
+                                <td scope="row">{{ $loop->index + 1 }}</td>
+                                <td style="display:none">{{$data->id}}</td>
+                                <td>{{$data->nama_kriteria}}</td>
+                                <td>{{$data->bobot}}</td>
+                                <td>{{$data->periode}}</td>
+                                <td>
+                                    <div class="inline">
+                                        <span class="subkriteria_btn text-danger" id="subkriteria_btn" data-bs-toggle="modal" data-bs-target="#modalSubKriteria"><i
+                                            class="bx bx-table bx-sm me-2"></i>
                                         </span>
-                                </div>
-                            </td>
-                            </tr>
-                            @endforeach
-                        @endif
-                </tbody>
-                </div>
-            </table>
+                                        <span class="text-success" id="update_btn" data-bs-toggle="modal" data-bs-target="#modalEditKriteria"><i
+                                                class="bx bx-edit-alt bx-sm me-2"></i>
+                                        </span>
+                                        <span class="text-danger" id="delete_btn" data-bs-toggle="modal" data-bs-target="#modalHapusKriteria"><i
+                                                class="bx bx-trash bx-sm me-2"></i>
+                                            </span>
+                                    </div>
+                                </td>
+                                </tr>
+                                @endforeach
+                            @endif
+                    </tbody>
+                    </div>
+                </table>
 
-            {{-- modal confirm delete --}}
-            <div class="modal fade" id="modalHapusKriteria" data-bs-backdrop="static" tabindex="-1"
-                style="display: none;" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form action="/deskriteria" method="post">
+                {{-- modal confirm delete kriteria --}}
+                <div class="modal fade" id="modalHapusKriteria" data-bs-backdrop="static" tabindex="-1"
+                    style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="/deskriteria" method="post">
+                                @csrf
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="backDropModalTitle">Hapus Kriteria</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="col mb-3" style="display: none;" >
+                                        <input type="text" id="id" class="form-control" name="id" placeholder="Enter Name">
+                                    </div>
+                            <div class="modal-body">
+                                <p>Are you sure to delete this??</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-danger">Iya</button>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                {{-- modal edit kriteria --}}
+                <div class="modal fade" id="modalEditKriteria" data-bs-backdrop="static" tabindex="-1"
+                    style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel1">Edit Kriteria</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <form action="/upkriteria" method="post">
                             @csrf
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="backDropModalTitle">Hapus Kriteria</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="col mb-3" style="display: none;" >
-                                    <input type="text" id="id" class="form-control" name="id" placeholder="Enter Name">
-                                </div>
-                        <div class="modal-body">
-                            <p>Are you sure to delete this??</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary"
-                                data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-danger">Iya</button>
-                        </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            
-            {{-- modal edit kriteria --}}
-            <div class="modal fade" id="modalEditKriteria" data-bs-backdrop="static" tabindex="-1"
-                style="display: none;" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel1">Edit Kriteria</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <form action="/upkriteria" method="post">
-                        @csrf
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col mb-3" style="display: none;">
-                                    <input type="text" id="idedit" class="form-control" name="id" placeholder="Enter Name">
-                                </div>
-                            <div class="row">
-                                <div class="col mb-3">
-                                    <label for="nameBasic" class="form-label">Nama Kriteria</label>
-                                    <input type="text" id="nameBasic" class="form-control" name="nama_kriteria" placeholder="Enter Name">
-                                </div>
-                            <div class="row">
-                                <div class="col mb-3">
-                                <label for="bobot1Basic" class="form-label">Bobot</label>
-                                    <input type="number" step="0.1" max="1" min="0.1" id="bobotBasic" name="bobot" class="form-control" placeholder="0.1">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col mb-3" style="display: none;">
+                                        <input type="text" id="idedit" class="form-control" name="id" placeholder="Enter Name">
                                     </div>
-                            </div>
-                            <div class="row">
-                                        <div class="col mb-3">
-                                            <label for="tipeBasic" class="form-label">Tipe</label>
-                                        </div>
-                                    <div class="row">
-                                        <div class="col mb-3">
-                                        <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="atribut" id="exampleRadios1" name="Benefit" value="benefit" checked>
-                                                <label class="form-check-label" for="exampleRadios1">
-                                                    Benefit
-                                                </label>
-                                        </div>
-                                        <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="atribut" id="exampleRadios2" value="Cost" name="cost">
-                                                <label class="form-check-label" for="exampleRadios2">
-                                                    Cost
-                                                </label>
-                                        </div>
-                                                
+                                <div class="row">
+                                    <div class="col mb-3">
+                                        <label for="nameBasic" class="form-label">Nama Kriteria</label>
+                                        <input type="text" id="nameBasic" class="form-control" name="nama_kriteria" placeholder="Enter Name">
                                     </div>
-                            </div>
-                                        
+                                <div class="row">
+                                    <div class="col mb-3">
+                                    <label for="bobot1Basic" class="form-label">Bobot</label>
+                                        <input type="number" step="0.1" max="1" min="0.1" id="bobotBasic" name="bobot" class="form-control" placeholder="0.1">
+                                        </div>
+                                </div>
+                                <div class="row">
+                                            <div class="col">
+                                                <label for="tipeBasic" class="form-label">Tipe</label>
+                                            </div>
+                                        <div class="row">
+                                            <div class="col mb-3">
+                                            <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="atribut" id="exampleRadios1" name="Benefit" value="benefit" checked>
+                                                    <label class="form-check-label" for="exampleRadios1">
+                                                        Benefit
+                                                    </label>
+                                            </div>
+                                            <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="atribut" id="exampleRadios2" value="Cost" name="cost">
+                                                    <label class="form-check-label" for="exampleRadios2">
+                                                        Cost
+                                                    </label>
+                                            </div>
+                                                    
+                                        </div>
+                                </div>
+                                            
 
-                            <div class="row">
-                                <div class="col mb-3">
-                                <label for="periode1Basic" class="form-label">Periode</label>
-                                    <input name="periode" type="number" id="periodeBasic" class="form-control" min="2000">
+                                <div class="row">
+                                    <div class="col mb-3">
+                                    <label for="periode1Basic" class="form-label">Periode</label>
+                                        <input name="periode" type="number" id="periodeBasic" class="form-control" min="2000">
+                                    </div>
                                 </div>
-                            </div>
-                        
-                        </div>
                             
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                            <button class="btn btn-danger" type="submit">Save changes</button>
+                            </div>
+                                
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                                <button class="btn btn-danger" type="submit">Save changes</button>
+                            </div>
+                            </form>
                         </div>
-                        </form>
                     </div>
                 </div>
+            
             </div>
-        
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
