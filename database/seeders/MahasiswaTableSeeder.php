@@ -25,7 +25,8 @@ class MahasiswaTableSeeder extends Seeder
             foreach ($arr_of_jurusan as $jurusan) {
                 $mahasiswaData = [];
 
-                for ($i = 1; $i < rand(40, 91); $i++) {
+                // for ($i = 1; $i < rand(40, 91); $i++) {
+                for ($i = 1; $i < 4; $i++) {
                     $nim = $year_of_nim . $jurusan['kode'] . str_pad($i, 4, 0, STR_PAD_LEFT);
 
                     $nama = fake()->name();

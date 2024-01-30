@@ -12,44 +12,85 @@ class PeringkatController extends Controller
 {
   private $totalscoresmahasiswa;
   private $kriterias;
+  // private function get_kriteria()
+  // {
+  //   return Kriteria::where('periode', date('Y'))->get();
+  // }
   public function index()
   {
     $kriterias = Kriteria::where('periode', date('Y'))->get();
 
     $hasil = [];
 
-    $mahasiswas = Mahasiswa::leftJoin('normalisasis', 'normalisasis.mahasiswa_id', '=', 'mahasiswas.id')
-      ->leftJoin('hasils', 'hasils.mahasiswa_id', '=', 'mahasiswas.id')
-      ->leftJoin('kriterias', 'kriterias.id', '=', 'normalisasis.kriteria_id')
-      ->select(
-        'mahasiswas.id as mahasiswa_id',
-        'mahasiswas.nim',
-        'mahasiswas.nama',
-        'normalisasis.nilai',
-        'kriterias.nama_kriteria',
-        'hasils.poin'
-      )
+    // $mahasiswas = Mahasiswa::leftJoin('normalisasis', 'normalisasis.mahasiswa_id', '=', 'mahasiswas.id')
+    //   ->leftJoin('hasils', 'hasils.mahasiswa_id', '=', 'mahasiswas.id')
+    //   ->leftJoin('kriterias', 'kriterias.id', '=', 'normalisasis.kriteria_id')
+    //   ->select(
+    //     'mahasiswas.id as mahasiswa_id',
+    //     'mahasiswas.nim',
+    //     'mahasiswas.nama',
+    //     'normalisasis.nilai',
+    //     'kriterias.nama_kriteria',
+    //     'hasils.poin'
+    //   )
+    //   ->where('hasils.status', 'aktif')
+    //   ->orderBy('hasils.peringkat', 'asc')
+    //   ->get();
+
+    $mahasiswas = Mahasiswa::orderBy('mahasiswas.nim', 'asc')
+      ->join('hasils', 'hasils.mahasiswa_id', '=', 'mahasiswas.id')
       ->where('hasils.status', 'aktif')
-      ->orderBy('hasils.peringkat', 'asc')
+      ->whereBetween('angkatan', [intval(date('Y')) - 3, intval(date('Y')) - 1])
       ->get();
 
     foreach ($mahasiswas as $mahasiswa) {
-      $mahasiswaId = $mahasiswa->mahasiswa_id;
+      $mahasiswaId = $mahasiswa->id;
 
+      // Tambahkan data mahasiswa
       if (!isset($hasil[$mahasiswaId])) {
         $hasil[$mahasiswaId] = (object) [
           'id' => $mahasiswaId,
           'nim' => $mahasiswa->nim,
           'nama' => $mahasiswa->nama,
+          'status' => $mahasiswa->status,
+          'jurusan' => $mahasiswa->jurusan,
+          // 'nilai' => (object)[],
+          'normalisasi' => (object) [],
+          'poin' => $mahasiswa->poin ?? 0,
         ];
       }
+      // ================================================
 
-      if (!empty($mahasiswa->nama_kriteria)) {
-        $hasil[$mahasiswaId]->{$mahasiswa->nama_kriteria} = $mahasiswa->nilai;
+      // Tambahkan data nilais
+      // =================================================================
+      // $kriterias = $this->get_kriteria();
+      foreach ($kriterias as $kriteria) {
+        $hasil[$mahasiswaId]->normalisasi->{$kriteria->nama_kriteria} = Normalisasi::where('mahasiswa_id', $mahasiswaId)
+          ->where('kriteria_id', $kriteria->id)
+          ->value('nilai');
       }
-
-      $hasil[$mahasiswaId]->poin = $mahasiswa->poin;
+      // =================================
     }
+
+    // dd($hasil);
+
+    // foreach ($mahasiswas as $mahasiswa) {
+    //   $mahasiswaId = $mahasiswa->mahasiswa_id;
+
+    //   if (!isset($hasil[$mahasiswaId])) {
+    //     $hasil[$mahasiswaId] = (object) [
+    //       'id' => $mahasiswaId,
+    //       'nim' => $mahasiswa->nim,
+    //       'nama' => $mahasiswa->nama,
+    //     ];
+    //   }
+
+    //   if (!empty($mahasiswa->nama_kriteria)) {
+    //     $hasil[$mahasiswaId]->{$mahasiswa->nama_kriteria} = $mahasiswa->nilai;
+    //   }
+
+    //   $hasil[$mahasiswaId]->poin = $mahasiswa->poin;
+    // }
 
     return view('content.peringkat.index', [
       'judul' => 'Peringkat',
@@ -65,7 +106,7 @@ class PeringkatController extends Controller
     $nilais = Normalisasi::join('kriterias', 'kriterias.id', '=', 'normalisasis.kriteria_id')
       ->join('mahasiswas', 'mahasiswas.id', '=', 'normalisasis.mahasiswa_id')
       ->where('kriterias.nama_kriteria', '=', $kriteria->nama_kriteria)
-      ->whereBetween('mahasiswas.angkatan', [intval(date('Y'))-3, intval(date('Y'))-1])
+      ->whereBetween('mahasiswas.angkatan', [intval(date('Y')) - 3, intval(date('Y')) - 1])
       ->where('mahasiswas.status', 'aktif');
 
     $array_of_normalized = [];
@@ -85,7 +126,7 @@ class PeringkatController extends Controller
           ]
         );
       }
-    // jika tipe kriteria adalah cost
+      // jika tipe kriteria adalah cost
     } elseif (strcasecmp($kriteria->atribut, 'Cost') == 0) {
       $minnilais = $nilais->min('nilai');
 
@@ -113,14 +154,16 @@ class PeringkatController extends Controller
       $this->kriterias = $kriterias->get();
 
       // Cek apakah kriteria tahun ini telah ada
-      !isset($kriterias->get()[0]->id) ? throw new \Exception("Tidak ada kriteria yang tersedia!") : $kriterias;
+      !isset($kriterias->get()[0]->id) ? throw new \Exception('Tidak ada kriteria yang tersedia!') : $kriterias;
 
       // Cek apakah jumlah kriteria telah berjumlah 1
       $sum_of_kriteria = 0;
       foreach ($kriterias->cursor() as $kriteria) {
         $sum_of_kriteria += $kriteria->bobot;
       }
-      $sum_of_kriteria < 1 || $sum_of_kriteria > 1 ? throw new \Exception("Jumlah bobot kriteria harus 1!") : $kriterias;
+      $sum_of_kriteria < 1 || $sum_of_kriteria > 1
+        ? throw new \Exception('Jumlah bobot kriteria harus 1!')
+        : $kriterias;
 
       $normalized_matrixes = [];
 
@@ -137,7 +180,10 @@ class PeringkatController extends Controller
         );
       }
 
-      $mahasiswas = Mahasiswa::where('status', 'aktif')->whereBetween('angkatan', [intval(date('Y'))-3, intval(date('Y'))-1]);
+      $mahasiswas = Mahasiswa::where('status', 'aktif')->whereBetween('angkatan', [
+        intval(date('Y')) - 3,
+        intval(date('Y')) - 1,
+      ]);
 
       $collections_of_calc = (object) [];
 
@@ -180,11 +226,18 @@ class PeringkatController extends Controller
           $totalScoresByMahasiswa[$mahasiswaId]->id = $mahasiswa->mahasiswa_id;
           $totalScoresByMahasiswa[$mahasiswaId]->nim = $mahasiswa->nim;
           $totalScoresByMahasiswa[$mahasiswaId]->nama = $mahasiswa->nama;
-          foreach ($kriterias->get() as $kriteria) {
-            if ($kriteria->id == $mahasiswa->kriteria_id) {
-              $totalScoresByMahasiswa[$mahasiswaId]->{$kriteria->nama_kriteria} = $mahasiswa->nilai;
-            }
-          }
+          $totalScoresByMahasiswa[$mahasiswaId]->normalisasi = (object) [];
+        }
+
+        // foreach ($kriterias->get() as $kriteria) {
+        //   if ($kriteria->id == $mahasiswa->kriteria_id) {
+        //     $totalScoresByMahasiswa[$mahasiswaId]->normalisasi->{$kriteria->nama_kriteria} = $mahasiswa->nilai;
+        //   }
+        // }
+        foreach ($kriterias->get() as $kriteria) {
+          $totalScoresByMahasiswa[$mahasiswaId]->normalisasi->{$kriteria->nama_kriteria} = Normalisasi::where('mahasiswa_id', $mahasiswaId)
+            ->where('kriteria_id', $kriteria->id)
+            ->value('nilai');
         }
       }
 

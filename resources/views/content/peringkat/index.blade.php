@@ -80,7 +80,7 @@
                         <td>{{$item->nim}}</td>
                         <td>{{$item->nama}}</td>
                         @foreach ($kriterias as $kriteria)
-                            <td>{{$item->{$kriteria->nama_kriteria} ?? '-' }}</td>
+                            <td>{{$item->normalisasi->{$kriteria->nama_kriteria} ?? '-' }}</td>
                         @endforeach
                         <td>{{$item->poin}}</td>
                     </tr>
