@@ -37,7 +37,7 @@ class PeringkatController extends Controller
     //   ->orderBy('hasils.peringkat', 'asc')
     //   ->get();
 
-    $mahasiswas = Mahasiswa::orderBy('mahasiswas.nim', 'asc')
+    $mahasiswas = Mahasiswa::orderBy('hasils.peringkat', 'asc')
       ->join('hasils', 'hasils.mahasiswa_id', '=', 'mahasiswas.id')
       ->where('hasils.status', 'aktif')
       ->whereBetween('angkatan', [intval(date('Y')) - 3, intval(date('Y')) - 1])
