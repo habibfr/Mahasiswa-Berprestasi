@@ -162,7 +162,7 @@ class KriteriaController extends Controller
       // Validasi data yang diterima dari formulir
       $request->validate([
         'bobot' => 'required|numeric|min:0|max:' . (1 - ($sum_of_bobot)),
-        'atribut' => 'required|in:benefit,cost',
+        'atribut' => 'required|in:Benefit,Cost',
         'nama_kriteria' => 'required|string|max:50',
         'periode' => 'required|integer|min:1000|max:9999',
         // Sesuaikan aturan validasi dengan model dan kebutuhan Anda

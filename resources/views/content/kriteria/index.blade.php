@@ -373,7 +373,7 @@
                                 <div class="row">
                                     <div class="col mb-3">
                                     <label for="bobot1Basic" class="form-label">Bobot</label>
-                                        <input type="number" step="0.1" max="1" min="0.1" id="bobotBasic" name="bobot" class="form-control" placeholder="0.1">
+                                        <input type="number" step="0.01" max="1" min="0" id="bobotBasic" name="bobot" class="form-control" placeholder="0.1">
                                         </div>
                                 </div>
                                 <div class="row">
@@ -383,7 +383,7 @@
                                         <div class="row">
                                             <div class="col mb-3">
                                             <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="atribut" id="exampleRadios1" name="Benefit" value="benefit" checked>
+                                                    <input class="form-check-input" type="radio" name="atribut" id="exampleRadios1" name="Benefit" value="Benefit" checked>
                                                     <label class="form-check-label" for="exampleRadios1">
                                                         Benefit
                                                     </label>
@@ -421,6 +421,7 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     
 <script>
     //ajax
@@ -443,37 +444,74 @@
             // console.log("{{csrf_token()}}");
             
             // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
-            $.ajax({
-                url: "{{route('subkriteria')}}",
-                type: 'POST',
-                contentType: 'application/json',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                },
-                data: JSON.stringify(dataSend),
-                success: function(data) {
-                    tableSubkriteria.clear();
-                    data.datasub.forEach(element => {
-                        tableSubkriteria.row.add([
-                            element.nama_subkriteria,
-                            element.bobot_normalisasi,
-                            `
-                            <div class="inline">
-                            <span class="text-success" id="subupdate_btn" data-bs-toggle="modal" data-bs-target="#modalEditSubKriteria" data-subkriteriaid="${element.id}" data-kriteriaid="${element.kriteria_id}">
-                            <i class="bx bx-edit-alt bx-sm me-2"></i>
-                            </span>
-                            <span class="text-danger" id="subdelete_btn" data-bs-toggle="modal" data-bs-target="#modalHapusSubKriteria" data-subkriteriaid="${element.id}" data-kriteriaid="${element.kriteria_id}">
-                            <i class="bx bx-trash bx-sm me-2"></i>
-                            </span>
-                            </div>
-                            `,
-                        ]).draw(false)
-                    });
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error('ajax error',textStatus, errorThrown);
-                }
+
+            // Assuming you have 'dataSend' defined somewhere in your code
+            // const dataSend = ...
+
+            axios({
+            url: "{{route('subkriteria')}}",
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            },
+            data: dataSend,
+            })
+            .then(response => {
+                // Assuming 'tableSubkriteria' and 'data.datasub' are defined
+                tableSubkriteria.clear();
+                response.data.datasub.forEach(element => {
+                tableSubkriteria.row.add([
+                    element.nama_subkriteria,
+                    element.bobot_normalisasi,
+                    `
+                    <div class="inline">
+                        <span class="text-success" id="subupdate_btn" data-bs-toggle="modal" data-bs-target="#modalEditSubKriteria" data-subkriteriaid="${element.id}" data-kriteriaid="${element.kriteria_id}">
+                        <i class="bx bx-edit-alt bx-sm me-2"></i>
+                        </span>
+                        <span class="text-danger" id="subdelete_btn" data-bs-toggle="modal" data-bs-target="#modalHapusSubKriteria" data-subkriteriaid="${element.id}" data-kriteriaid="${element.kriteria_id}">
+                        <i class="bx bx-trash bx-sm me-2"></i>
+                        </span>
+                    </div>
+                    `,
+                ]).draw(false);
+                });
+            })
+            .catch(error => {
+                console.error('axios error', error);
             });
+
+            // $.ajax({
+            // url: "{{route('subkriteria')}}",
+            //     type: 'POST',
+            //     contentType: 'application/json',
+            //     headers: {
+            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            //     },
+            //     data: JSON.stringify(dataSend),
+            //     success: function(data) {
+            //         tableSubkriteria.clear();
+            //         data.datasub.forEach(element => {
+            //             tableSubkriteria.row.add([
+            //                 element.nama_subkriteria,
+            //                 element.bobot_normalisasi,
+            //                 `
+            //                 <div class="inline">
+            //                 <span class="text-success" id="subupdate_btn" data-bs-toggle="modal" data-bs-target="#modalEditSubKriteria" data-subkriteriaid="${element.id}" data-kriteriaid="${element.kriteria_id}">
+            //                 <i class="bx bx-edit-alt bx-sm me-2"></i>
+            //                 </span>
+            //                 <span class="text-danger" id="subdelete_btn" data-bs-toggle="modal" data-bs-target="#modalHapusSubKriteria" data-subkriteriaid="${element.id}" data-kriteriaid="${element.kriteria_id}">
+            //                 <i class="bx bx-trash bx-sm me-2"></i>
+            //                 </span>
+            //                 </div>
+            //                 `,
+            //             ]).draw(false)
+            //         });
+            //     },
+            //     error: function(jqXHR, textStatus, errorThrown) {
+            //         console.error('ajax error',textStatus, errorThrown);
+            //     }
+            // });
             
                     $('#editsubclose').on('click', function() {
                     // Menutup modal menggunakan JavaScript
@@ -567,32 +605,57 @@
         $(document).on('click', '#subupdate_btn', function() {
                 const dataSend = {
                 _token: "{{ csrf_token() }}",
-                id: $(this).data('subkriteriaid'),
+                id: $(this).data('subkriteriaid')
                 };
+                
+                console.log(dataSend);
 
-                $.ajax({
+                axios({
                 url: "{{route('upsubshow')}}",
-                type: 'POST',
-                contentType: 'application/json',
+                method: 'POST',
                 headers: {
+                    'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                 },
-                data: JSON.stringify(dataSend),
-                success: function(data) {
-                    //kebaca
-                    console.log(JSON.stringify(data))
-                    data.datasub.forEach(element=>{
+                data: dataSend,
+                })
+                .then(response => {
+                    console.log(response.data.datasub)
+                    // kebaca
+                    response.data.datasub.forEach(element=>{
                         document.getElementById('idsubedit').value = element.id
                         document.getElementById('krisubedit').value = element.kriteria_id
                         document.getElementById('name_SubKriteria').value = element.nama_subkriteria
-                        document.getElementById('bobot_normalisasi').value = element.bobot_normalisasi
-                                                
+                        document.getElementById('bobot_normalisasi').value = element.bobot_normalisasi                         
                     })
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error('ajax error',textStatus, errorThrown);
-                }
-            });
+                })
+                .catch(error => {
+                    console.error("axios error", error)
+                })
+                
+            //     $.ajax({
+            //     url: "{{route('upsubshow')}}",
+            //     type: 'POST',
+            //     contentType: 'application/json',
+            //     headers: {
+            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            //     },
+            //     data: JSON.stringify(dataSend),
+            //     success: function(data) {
+            //         //kebaca
+            //         console.log(JSON.stringify(data))
+            //         data.datasub.forEach(element=>{
+            //             document.getElementById('idsubedit').value = element.id
+            //             document.getElementById('krisubedit').value = element.kriteria_id
+            //             document.getElementById('name_SubKriteria').value = element.nama_subkriteria
+            //             document.getElementById('bobot_normalisasi').value = element.bobot_normalisasi
+                                                
+            //         })
+            //     },
+            //     error: function(jqXHR, textStatus, errorThrown) {
+            //         console.error('ajax error',textStatus, errorThrown);
+            //     }
+            // });
         });
     });
 </script>
