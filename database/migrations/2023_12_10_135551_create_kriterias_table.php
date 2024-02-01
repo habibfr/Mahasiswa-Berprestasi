@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('kriterias', function (Blueprint $table) {
             $table->uuid('id');
-            $table->float('bobot');
+            $table->decimal('bobot', 8, 4);
             $table->enum('atribut', ['Benefit', 'Cost']);
             $table->string('nama_kriteria', 50);
             $table->year('periode');

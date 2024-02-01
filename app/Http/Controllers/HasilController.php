@@ -15,10 +15,16 @@ class HasilController extends Controller
      */
     public function index()
     {
-        $hasil = Hasil::leftJoin('mahasiswas', 'mahasiswas.id', '=', 'hasils.mahasiswa_id')
+        // $hasil = Hasil::leftJoin('mahasiswas', 'mahasiswas.id', '=', 'hasils.mahasiswa_id')
+        //     ->where('hasils.status', 'aktif')
+        //     ->orderBy('hasils.peringkat', 'asc')
+        //     ->distinct()
+        //     ->get();
+
+        $hasil = Mahasiswa::orderBy('hasils.peringkat', 'asc')
+            ->join('hasils', 'hasils.mahasiswa_id', '=', 'mahasiswas.id')
             ->where('hasils.status', 'aktif')
-            ->orderBy('hasils.peringkat', 'asc')
-            ->distinct()
+            ->whereBetween('angkatan', [intval(date('Y')) - 3, intval(date('Y')) - 1])
             ->get();
 
         return view('content.homepage.index', ['data' => $hasil]);

@@ -17,7 +17,7 @@ return new class extends Migration
       //     ->references('nim')->on('mahasiswas')->onUpdate('cascade')->onDelete('cascade');
       $table->foreignUuid('mahasiswa_id');
       $table->integer('peringkat');
-      $table->decimal('poin', 8, 4);
+      $table->decimal('poin', 8, 2);
       $table->enum('status', ['aktif', 'tidak aktif']);
       $table->year('periode');
       $table->timestamps();

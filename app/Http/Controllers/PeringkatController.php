@@ -161,7 +161,10 @@ class PeringkatController extends Controller
       foreach ($kriterias->cursor() as $kriteria) {
         $sum_of_kriteria += $kriteria->bobot;
       }
-      $sum_of_kriteria < 1 || $sum_of_kriteria > 1
+      // Konversi nilai ke string menggunakan bcmath
+      $sum_of_kriteria_str = strval($sum_of_kriteria);
+      // $sum_of_kriteria_str < 1 || $sum_of_kriteria > 1
+      $sum_of_kriteria_str != 1
         ? throw new \Exception('Jumlah bobot kriteria harus 1!')
         : $kriterias;
 
@@ -206,7 +209,7 @@ class PeringkatController extends Controller
           }
         }
 
-        $totalScoresByMahasiswa[$mahasiswa->id] = (object) ['poin' => $totalScore];
+        $totalScoresByMahasiswa[$mahasiswa->id] = (object) ['poin' => $totalScore*100];
       }
 
       arsort($totalScoresByMahasiswa);

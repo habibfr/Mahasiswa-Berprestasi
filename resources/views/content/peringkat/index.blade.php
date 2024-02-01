@@ -32,11 +32,16 @@
                     <div class="col offset-2">
                         <div class="float-end">
                             <!-- Tombol "Export" -->
-                            <form action="{{route('generatePeringkatPDF')}}" method="get" class="d-inline-block">
+                            {{-- <form action="{{route('generatePeringkatPDF')}}" method="get" class="d-inline-block">
                                 @csrf
                                 <button class="btn btn-primary align-self-end">
-                                    <i class='bx bx-download me-2'></i>Export</button>
-                            </form>
+                                    <i class='bx bx-download me-2'></i>Unduh PDF</button>
+                            </form> --}}
+                            <button type="button" class="btn btn-primary d-inline-block" data-bs-toggle="modal" data-bs-target="#unduhModal">
+                                <i class='bx bx-download me-2' id="unduhIcon"></i>
+                                Unduh PDF
+                            </button>
+                            @include('content.peringkat.unduh')
                             <!-- Tombol "Post" dengan margin kiri -->
                             <button type="button" class="btn btn-danger d-inline-block ml-2" data-bs-toggle="modal" data-bs-target="#postModal">
                                 <i class='bx bx-upload me-2' id="uploadIcon"></i>

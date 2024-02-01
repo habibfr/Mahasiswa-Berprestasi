@@ -68,7 +68,7 @@
             <form action="{{route('generatePeringkatPDF')}}" method="get" class="d-inline-block">
                 @csrf
                 <button class="btn btn-primary align-self-end">
-                    <i class='bx bx-download me-2'></i>Export</button>
+                    <i class='bx bx-download me-2'></i>Unduh PDF</button>
             </form>
         </div>
         <div class="card mt-3">
