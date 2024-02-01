@@ -131,7 +131,7 @@ class PeringkatController extends Controller
       $minnilais = $nilais->min('nilai');
 
       foreach ($nilais->cursor() as $nilai) {
-        $ratio = $minnilais / $nilai;
+        $ratio = $minnilais / $nilai->nilai;
         array_push(
           $array_of_normalized,
           (object) [
