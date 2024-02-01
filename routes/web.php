@@ -142,6 +142,10 @@ Route::controller(KriteriaController::class)->group(function () {
     Route::get('/kriteria', 'index')
       ->name('kriteria');
 
+    // Route show update kriteria
+    Route::post('/showupkriteria', 'showupkriteria')
+    ->name('showupkriteria');
+
     // Route insert Kriteria
     Route::post('/inkriteria', 'store')
       ->name('inkriteria');

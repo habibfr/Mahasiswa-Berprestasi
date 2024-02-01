@@ -167,7 +167,7 @@
                         <div class="row">
                             <div class="col mb-3" >
                             <label for="bobot1Basic" class="form-label">Bobot_Normalisasi</label>
-                                <input type="number" step="1" max="5" min="1" id="bobot_normalisasi" name="bobot_normalisasi" class="form-control" placeholder="1">
+                                <input type="number" step="1" min="1" id="bobot_normalisasi" name="bobot_normalisasi" class="form-control" placeholder="1">
                             </div>
                         </div>
                     </div>
@@ -201,7 +201,7 @@
                     <div class="row">
                          <div class="col mb-3">
                            <label for="bobot1Basic" class="form-label">Bobot</label>
-                            <input type="number" step="0.1" max="1" min="0.1" id="bobot1Basic" name="bobot" class="form-control" placeholder="0.1">
+                            <input type="number" step="0.01" max="1" min="0" id="bobot1Basic" name="bobot" class="form-control" placeholder="0.1">
                             </div>
                     </div>
                     <div class="row">
@@ -211,7 +211,7 @@
                             <div class="row">
                                 <div class="col mb-3">
                                 <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="atribut" id="exampleRadios1" name="benefit" value="benefit" checked>
+                                        <input class="form-check-input" type="radio" name="atribut" id="exampleRadios1" name="benefit" value="benefit">
                                         <label class="form-check-label" for="exampleRadios1">
                                             Benefit
                                         </label>
@@ -383,13 +383,13 @@
                                         <div class="row">
                                             <div class="col mb-3">
                                             <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="atribut" id="exampleRadios1" name="Benefit" value="Benefit" checked>
+                                                    <input class="form-check-input" type="radio" name="atribut" id="Radios1" name="Benefit" value="Benefit">
                                                     <label class="form-check-label" for="exampleRadios1">
                                                         Benefit
                                                     </label>
                                             </div>
                                             <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="atribut" id="exampleRadios2" value="Cost" name="cost">
+                                                    <input class="form-check-input" type="radio" name="atribut" id="Radios2" value="Cost" name="cost">
                                                     <label class="form-check-label" for="exampleRadios2">
                                                         Cost
                                                     </label>
@@ -564,7 +564,6 @@
                 data: JSON.stringify(dataSend),
                 success: function(data) {
                     //kebaca
-                    console.log(JSON.stringify(data))
                     data.datasub.forEach(element=>{
                         document.getElementById('idsubdel').value = element.id                                 
                     })
@@ -578,27 +577,58 @@
         // button update kriteria 
         document.querySelectorAll('#update_btn').forEach(function(btn) {
             btn.addEventListener('click', function() {
-                // Ambil data dan set ke variabel
-                var row = this.closest('tr'),
-                kolom1 = row.querySelector('td:nth-child(2)')
-                kolom2 = row.querySelector('td:nth-child(3)')
-                kolom3 = row.querySelector('td:nth-child(4)')
-                kolom4 = row.querySelector('td:nth-child(5)')
-                console.log(kolom1);
-                // Dan set ke form update
-                // Contoh: set value
-                document.getElementById('idedit').value = kolom1.textContent;
-                document.getElementById('nameBasic').value = kolom2.textContent;
-                document.getElementById('bobotBasic').value = kolom3.textContent;
-                document.getElementById('periodeBasic').value = kolom4.textContent;
-                // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
+                let row = this.closest('tr')
+                let kode = row.querySelector('td:nth-child(2)')
+                const dataSend = {
+                _token: "{{ csrf_token() }}",
+                id: kode.textContent
+                };
+
+                axios({
+                url: "{{route('showupkriteria')}}",
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+                data: dataSend,
+                })
+                .then(response => {
+                    // kebaca
+                    response.data.data.forEach(element=>{
+                        document.getElementById('idedit').value = element.id
+                        document.getElementById('nameBasic').value = element.nama_kriteria
+                        document.getElementById('bobotBasic').value = element.bobot
+                        if (element.atribut == "Benefit") {
+                            $('#Radios1').prop('checked', true);
+                        } else if (element.atribut == "Cost") {
+                            $('#Radios2').prop('checked', true);
+                        }
+                        document.getElementById('periodeBasic').value = element.periode                         
+                    })
+                })
+                .catch(error => {
+                    console.error("axios error", error)
+                })
+                // // Ambil data dan set ke variabel
+                // console.log(kolom1);
+                // kolom2 = row.querySelector('td:nth-child(3)')
+                // kolom3 = row.querySelector('td:nth-child(4)')
+                // kolom4 = row.querySelector('td:nth-child(5)')
+                // console.log(kolom5);
+                // // Dan set ke form update
+                // // Contoh: set value
+                // document.getElementById('idedit').value = kolom1.textContent;
+                // document.getElementById('nameBasic').value = kolom2.textContent;
+                // document.getElementById('bobotBasic').value = kolom3.textContent;
+                // document.getElementById('periodeBasic').value = kolom4.textContent;
+                // // Set value untuk kolom2, kolom3, kolom4, dan kolom5 sesuai kebutuhan
             });
         });
 
         $(document).on('click', '#addsub_btn', function() {
             document.getElementById('idsub').value = $('#subupdate_btn').data('subkriteriaid');
             document.getElementById('krisub').value = $('#subupdate_btn').data('kriteriaid');
-            console.log(1)
         });
 
         // button update subkriteria 
@@ -608,7 +638,6 @@
                 id: $(this).data('subkriteriaid')
                 };
                 
-                console.log(dataSend);
 
                 axios({
                 url: "{{route('upsubshow')}}",
@@ -620,7 +649,6 @@
                 data: dataSend,
                 })
                 .then(response => {
-                    console.log(response.data.datasub)
                     // kebaca
                     response.data.datasub.forEach(element=>{
                         document.getElementById('idsubedit').value = element.id

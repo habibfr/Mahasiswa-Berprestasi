@@ -31,6 +31,16 @@ class KriteriaController extends Controller
     }
   }
 
+  public function showupkriteria(Request $request)
+  {
+      // Ngambil data kriteria
+      $data = Kriteria::where('id', $request->id)->get();
+
+      // Ngirim data
+      return response()->json(['data' => $data]);
+   
+  }
+
   /**
    * Show the form for creating a new resource.
    */
