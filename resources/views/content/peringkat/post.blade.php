@@ -13,7 +13,7 @@
                     Apakah Anda yakin untuk post mahasiswa yang telah lulus pemeringkatan? 
                     <br>
                     <br>
-                    Jumlah mahasiswa yang lolos pemeringkatan : {{$jumlah_sorting??10}}
+                    Jumlah mahasiswa yang telah diproses : {{$jumlah_sorting??10}} mahasiswa
                 </h5>
             </div>
             <div class="modal-footer">

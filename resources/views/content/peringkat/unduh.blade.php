@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-7" id="staticBackdropLabel">Posting</h1>
+          <h1 class="modal-title fs-7 text-danger text-uppercase fw-bold" id="staticBackdropLabel">warning!</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form action="{{route('generatePeringkatPDF')}}" method="get" class="d-inline-block">
@@ -14,7 +14,7 @@
                     Anda mempunyai proses seleksi yang belum di-simpan atau post. Apakah Anda yakin ingin melanjutkan?
                     <br>
                     <br>
-                    Jumlah mahasiswa yang lolos pemeringkatan : {{$jumlah_sorting}}
+                    Jumlah mahasiswa yang telah diproses : {{$jumlah_sorting}} mahasiswa
                     @else
                     Anda akan mengunduh proses yang telah dijalankan sebelumnya. Apakah Anda yakin ingin melanjutkan?
                     @endisset
@@ -26,7 +26,7 @@
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-outline-danger align-self-end">
                     <i class='bx bx-download me-2' id="unduhIcon"></i>
-                    Unduh PDF
+                    Lanjutkan
                 </button>
             </div>
         </form>
