@@ -22,23 +22,31 @@ class KriteriaController extends Controller
     try {
       // Ngambil data kriteria
       $data = Kriteria::where('periode', date('Y'))->orderBy('periode', 'desc')->get();
+      $total_bobot = Kriteria::where('periode', date('Y'))->orderBy('periode', 'desc')->sum('bobot');
 
       // Ngirim data
-      return view('content.kriteria.index', ['data' => $data, 'judul' => 'Kriteria']);
+      return view('content.kriteria.index', ['data' => $data, 'judul' => 'Kriteria', 'total_bobot' => $total_bobot]);
     } catch (\Exception $e) {
       // Handle the exception and return an error view with a message
       return view('content.kriteria.index')->with('error', 'Error: ' . $e->getMessage());
     }
   }
 
+  public function test(Request $request)
+  {
+    try {
+      redirect($this->index($request))->with('error', 'Error');
+    } catch (\Throwable $th) {
+    }
+  }
+
   public function showupkriteria(Request $request)
   {
-      // Ngambil data kriteria
-      $data = Kriteria::where('id', $request->id)->get();
+    // Ngambil data kriteria
+    $data = Kriteria::where('id', $request->id)->get();
 
-      // Ngirim data
-      return response()->json(['data' => $data]);
-   
+    // Ngirim data
+    return response()->json(['data' => $data]);
   }
 
   /**

@@ -177,6 +177,9 @@ Route::controller(KriteriaController::class)->group(function () {
     // Route Update SubKriteria
     Route::post('/dessubkriteria', 'destroysub')
       ->name('dessubkriteria');
+
+      Route::get('/testkriteria', 'test')
+      ->name('test');
   });
 });
 

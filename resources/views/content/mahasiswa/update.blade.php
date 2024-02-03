@@ -46,9 +46,9 @@
                                     @if ($item->id == $sub->kriteria_id)
                                         @if ((str_replace(' ', '', strtolower($item->nama_kriteria)) != str_replace(' ', '', strtolower($sub->nama_subkriteria))))
                                         <label for="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$sub->id}}_mhs" class="form-label">{{ucwords($sub->nama_subkriteria)}}</label>
-                                        <input step="0.1" type="number" name="{{str_replace(' ', '', strtolower($sub->nama_subkriteria))}}_{{$sub->id}}" id="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$sub->id}}_mhs" class="form-control" value="">
+                                        <input step="0.01" type="number" name="{{str_replace(' ', '', strtolower($sub->nama_subkriteria))}}_{{$sub->id}}" id="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$sub->id}}_mhs" class="form-control" value="">
                                         @else
-                                        <input step="0.1" type="number" name="{{str_replace(' ', '', strtolower($sub->nama_subkriteria))}}_{{$sub->id}}" id="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$sub->id}}_mhs" class="form-control" value="">
+                                        <input step="0.01" type="number" name="{{str_replace(' ', '', strtolower($sub->nama_subkriteria))}}_{{$sub->id}}" id="{{str_replace(' ', '', strtolower($item->nama_kriteria))}}_{{$sub->id}}_mhs" class="form-control" value="">
                                         @endif
                                     @endif
                                 @endforeach

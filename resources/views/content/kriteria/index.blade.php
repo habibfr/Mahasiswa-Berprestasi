@@ -280,6 +280,11 @@
             <div class="table-responsive text-nowrap m-4">
                 <table class="table table-striped" style="width: 100%;">
                     <div>
+                    @if ($total_bobot != 1)
+                        <div class="alert alert-danger text-center fw-bold h4" role="alert">
+                            Jumlah bobot masih berjumlah {{$total_bobot+0}}! Harap tambahkan bobot supaya berjumlah 1!
+                        </div>
+                    @endif
                     <thead>
                         <tr class="table-primary">
                             <th scope="col">No</th>
@@ -298,7 +303,7 @@
                                 <td scope="row">{{ $loop->index + 1 }}</td>
                                 <td style="display:none">{{$data->id}}</td>
                                 <td>{{$data->nama_kriteria}}</td>
-                                <td>{{$data->bobot}}</td>
+                                <td>{{$data->bobot+0}}</td>
                                 <td>{{$data->periode}}</td>
                                 <td>
                                     <div class="inline">

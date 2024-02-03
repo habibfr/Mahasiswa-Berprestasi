@@ -85,9 +85,9 @@
                         <td>{{$item->nim}}</td>
                         <td>{{$item->nama}}</td>
                         @foreach ($kriterias as $kriteria)
-                            <td>{{$item->normalisasi->{$kriteria->nama_kriteria} ?? '-' }}</td>
+                            <td>{{$item->normalisasi->{$kriteria->nama_kriteria}+0 ?? '-' }}</td>
                         @endforeach
-                        <td>{{$item->poin}}</td>
+                        <td>{{number_format($item->poin, 3)+0}}</td>
                     </tr>
                     @endforeach
                     @else
