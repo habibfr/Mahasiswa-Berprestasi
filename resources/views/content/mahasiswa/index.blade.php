@@ -98,36 +98,37 @@
         <script>
             $(document).ready(function() {
 
-                    let table = $('#tabelMahasiswa').DataTable({
-                        processing: true,
-                        serverSide: true,
-                        deferRender: true,
-                        ajax: "{{route('mahasiswa.list')}}",
-                        columns: [
-                            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                            {data: 'nim', name: 'nim'},
-                            {data: 'nama', name: 'nama'},
-                            {data: 'status', name: 'status'},
-                            // Tambahkan kolom dinamis sesuai dengan normalisasi
-                            @foreach($kriterias as $kriteria)
-                                { 
-                                    data: 'normalisasi.{{ $kriteria->nama_kriteria }}', 
-                                    name: 'normalisasi.{{ $kriteria->nama_kriteria }}',
-                                    render: function(data, type, full, meta) {
-                                        return parseFloat(data) || 0;
-                                    }
-                                },
-                            @endforeach
-                            {
-                                data: 'action',
-                                name: 'action',
-                                orderable: true,
-                                searchable: true
-                            }
-                        ]
-                    });
+                let table = $('#tabelMahasiswa').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    deferRender: true,
+                    ajax: "{{route('mahasiswa.list')}}",
+                    columns: [
+                        {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                        {data: 'nim', name: 'nim'},
+                        {data: 'nama', name: 'nama'},
+                        {data: 'status', name: 'status'},
+                        // Tambahkan kolom dinamis sesuai dengan normalisasi
+                        @foreach($kriterias as $kriteria)
+                            { 
+                                data: 'normalisasi.{{ $kriteria->nama_kriteria }}', 
+                                name: 'normalisasi.{{ $kriteria->nama_kriteria }}',
+                                render: function(data, type, full, meta) {
+                                    return parseFloat(data) || 0;
+                                }
+                            },
+                        @endforeach
+                        {
+                            data: 'action',
+                            name: 'action',
+                            orderable: true,
+                            searchable: true
+                        }
+                    ]
+                });
 
-                $(document).on('submit', '#filterForm', function (event) {
+                // Proses Filter Mahasiswa
+                    $(document).on('submit', '#filterForm', function (event) {
                     event.preventDefault();
 
                     let jurusanFilter=$('#jurusanFilter').val();
@@ -185,7 +186,7 @@
                                         data: 'normalisasi.{{ $kriteria->nama_kriteria }}', 
                                         name: 'normalisasi.{{ $kriteria->nama_kriteria }}',
                                         render: function(data, type, full, meta) {
-                                            return data || 0;
+                                            return parseFloat(data) || 0;
                                         }
                                     },
                                 @endforeach
@@ -242,7 +243,7 @@
                                 @if($subkriterias->where('kriteria_id', $kriteria->id)->isNotEmpty())
                                     // {{-- Loop through the subkriterias of the current kriteria --}}
                                     @foreach($subkriterias->where('kriteria_id', $kriteria->id) as $subkriteria)
-                                            $("#{{str_replace(' ', '', strtolower($kriteria->nama_kriteria))}}_{{$subkriteria->id}}_mhs").val(data[mahasiswaId].nilai["{{ $subkriteria->nama_subkriteria }}"]);
+                                            $("#{{str_replace(' ', '', strtolower($kriteria->nama_kriteria))}}_{{$subkriteria->id}}_mhs").val(parseFloat(data[mahasiswaId].nilai["{{ $subkriteria->nama_subkriteria }}"]));
                                     @endforeach
                                 @endif
                             @endforeach
