@@ -104,8 +104,6 @@
                     $('#jurusanFilter').val(0)
                     $('#angkatanFilter').val('')
 
-                    console.log('delete clicked on');
-                    $('#delete-filter-button').display('none')
                     $('#filterForm').submit()
                 })
 
@@ -211,6 +209,10 @@
                             ]
                         });
                     }
+                    
+                    if (jurusanFilter[0] == 0 && angkatanFilter =='') {
+                        $('#delete-filter-button').hide()
+                    } 
                 })
 
 
