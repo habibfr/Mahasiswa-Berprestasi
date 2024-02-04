@@ -46,6 +46,7 @@
                         </div>
                     </div>
                     <button class="btn btn-primary" id="filter-button">Filter</button>
+                    <button class="btn btn-danger" id="delete-filter-button">Hapus</button>
                 </form>
                 
             </div>
@@ -97,6 +98,16 @@
     @push('pricing-script')
         <script>
             $(document).ready(function() {
+                $('#delete-filter-button').hide()
+
+                $('#delete-filter-button').on('click', function(event) {
+                    $('#jurusanFilter').val(0)
+                    $('#angkatanFilter').val('')
+
+                    console.log('delete clicked on');
+                    $('#delete-filter-button').display('none')
+                    $('#filterForm').submit()
+                })
 
                 let table = $('#tabelMahasiswa').DataTable({
                     processing: true,
@@ -144,6 +155,8 @@
                         // Clear and destroy the DataTable
                         table.clear().destroy();
 
+                        $('#delete-filter-button').show()
+
                         // Reinitialize the DataTable with new data
                         table = $('#tabelMahasiswa')
                         .DataTable({
@@ -157,7 +170,6 @@
                                 data: formData,
                                 dataType: 'json',
                                 dataSrc: function (json) {
-                                    console.log('success');
                                     $('div .dataTables_processing div').css({
                                         'display': 'none',
                                     })
@@ -234,6 +246,7 @@
                             _token: "{{ csrf_token() }}", // Tambahkan token CSRF ke data permintaan
                         },
                         success: function(data) {
+                            console.log(data);
 
                             // Update konten modal dengan data yang diterima
                             $('#nim_mhs').val(data[mahasiswaId].nim);

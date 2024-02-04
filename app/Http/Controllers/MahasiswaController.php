@@ -290,16 +290,21 @@ class MahasiswaController extends Controller
       $subkriterias = $this->get_subkriterias();
 
       $request_validate = [];
+      $custom_message = [];
 
       foreach ($kriterias as $kriteria) {
         if ($subkriterias->where('kriteria_id', $kriteria->id)->isNotEmpty()) {
           foreach ($subkriterias->where('kriteria_id', $kriteria->id) as $subkriteria) {
-            $request_validate[str_replace(' ', '_', strtolower($kriteria->nama_kriteria)) . '_' . $subkriteria->id] = 'nullable|numeric';
+            $request_validate[str_replace(' ', '_', strtolower($kriteria->nama_kriteria)) . '_' . $subkriteria->id] = 'nullable|numeric|min:0';
+            $custom_message[str_replace(' ', '_', strtolower($kriteria->nama_kriteria)) . '_' . $subkriteria->id . '.min'] = $kriteria->nama_kriteria . ' tidak dapat kurang dari 0';
+            $custom_message[str_replace(' ', '_', strtolower($kriteria->nama_kriteria)) . '_' . $subkriteria->id . '.numeric'] = $kriteria->nama_kriteria . ' harus berupa angka!';
           }
         }
       }
 
-      $request->validate($request_validate);
+      // dd($request_validate, $custom_message);
+
+      $request->validate($request_validate, $custom_message);
 
       // Ambil data mahasiswa dari database berdasarkan ID
       $mahasiswa = Mahasiswa::find($id);
@@ -330,7 +335,10 @@ class MahasiswaController extends Controller
 
             // Update nilai jika nilai ada, jika tidak buat baru
             if ($nilai) {
-              $nilai->where('subkriteria_id', $subkriteria->id)->update(['nilai' => $request->input($id_input)]);
+              $nilai
+                ->where('subkriteria_id', $subkriteria->id)
+                ->where('mahasiswa_id', $id)
+                ->update(['nilai' => $request->input($id_input)]);
             } else {
               Nilai::create([
                 'mahasiswa_id' => $id,
@@ -348,8 +356,8 @@ class MahasiswaController extends Controller
 
           $normalisasi ?
             Normalisasi::where('kriteria_id', $kriteria->id)
-              ->where('mahasiswa_id', $id)
-              ->update(['nilai' => $sum_of_nilai])
+            ->where('mahasiswa_id', $id)
+            ->update(['nilai' => $sum_of_nilai])
             :
             Normalisasi::create([
               'mahasiswa_id' => $id,

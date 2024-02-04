@@ -32,14 +32,6 @@ class KriteriaController extends Controller
     }
   }
 
-  public function test(Request $request)
-  {
-    try {
-      redirect($this->index($request))->with('error', 'Error');
-    } catch (\Throwable $th) {
-    }
-  }
-
   public function showupkriteria(Request $request)
   {
     // Ngambil data kriteria
@@ -76,6 +68,20 @@ class KriteriaController extends Controller
         'nama_kriteria' => 'required|string|max:50',
         'periode' => 'required|integer|min:1000|max:9999',
         // Sesuaikan aturan validasi dengan model dan kebutuhan Anda
+      ], [
+        'bobot.required' => 'Bobot harus diisi!',
+        'bobot.numeric' => 'Bobot harus diisi dengan angka!',
+        'bobot.min' => 'Bobot tidak dapat kurang dari 0!',
+        'bobot.max' => 'Jumlah seluruh bobot tidak dapat lebih dari 1!',
+        'atribut.required' => 'Atribut harus diisi!',
+        'atribut.in' => 'Atribut harus diisi antara benefit dan cost!',
+        'nama_kriteria.required' => 'Nama kriteria harus diisi!',
+        'nama_kriteria.string' => 'Nama kriteria harus diisi menggunakan string atau huruf!',
+        'nama_kriteria.max' => 'Nama kriteria harus diisi maksimal 50 kata!',
+        'periode.required' => 'Periode harus diisi!',
+        'periode.integer' => 'Periode harus diisi menggunakan angka bulat!',
+        'periode.min' => 'Periode harus diisi minimal tahun 1000!',
+        'periode.max' => 'Periode harus diisi maksimal tahun 9999!',
       ]);
 
       $kriteria = Kriteria::create($request->except(['_token', 'submit']));
@@ -119,6 +125,14 @@ class KriteriaController extends Controller
         'nama_subkriteria' => 'required|string|max:50',
         'bobot_normalisasi' => 'required|numeric|min:1|max:999',
         // Sesuaikan aturan validasi dengan model dan kebutuhan Anda
+      ], [
+        'nama_subkriteria.required' => 'Nama subkriteria harus diisi!',
+        'nama_subkriteria.string' => 'Nama subkriteria harus diisi menggunakan string atau huruf!',
+        'nama_subkriteria.max' => 'Nama subkriteria harus diisi maksimal 50 kata!',
+        'bobot_normalisasi.required' => 'Bobot normalisasi harus diisi!',
+        'bobot_normalisasi.numeric' => 'Bobot normalisasi harus diisi dengan angka!',
+        'bobot_normalisasi.min' => 'Bobot normalisasi minimal 1!',
+        'bobot_normalisasi.max' => 'Jumlah seluruh bobot normalisasi tidak dapat lebih dari 999!',
       ]);
       $nama_subkriteria = $request->input('nama_subkriteria');
       $bobot_normalisasi = $request->input('bobot_normalisasi');
@@ -178,13 +192,30 @@ class KriteriaController extends Controller
       // dd($sum_of_bobot);
 
       // Validasi data yang diterima dari formulir
-      $request->validate([
-        'bobot' => 'required|numeric|min:0|max:' . (1 - ($sum_of_bobot)),
-        'atribut' => 'required|in:Benefit,Cost',
-        'nama_kriteria' => 'required|string|max:50',
-        'periode' => 'required|integer|min:1000|max:9999',
-        // Sesuaikan aturan validasi dengan model dan kebutuhan Anda
-      ]);
+      $request->validate(
+        [
+          'bobot' => 'required|numeric|min:0|max:' . (1 - ($sum_of_bobot)),
+          'atribut' => 'required|in:Benefit,Cost',
+          'nama_kriteria' => 'required|string|max:50',
+          'periode' => 'required|integer|min:1000|max:9999',
+          // Sesuaikan aturan validasi dengan model dan kebutuhan Anda
+        ],
+        [
+          'bobot.required' => 'Bobot harus diisi!',
+          'bobot.numeric' => 'Bobot harus diisi dengan angka!',
+          'bobot.min' => 'Bobot minimal 0!',
+          'bobot.max' => 'Jumlah seluruh bobot tidak dapat lebih dari 1!',
+          'atribut.required' => 'Atribut harus diisi!',
+          'atribut.in' => 'Atribut harus diisi antara benefit dan cost!',
+          'nama_kriteria.required' => 'Nama kriteria harus diisi!',
+          'nama_kriteria.string' => 'Nama kriteria harus diisi menggunakan string atau huruf!',
+          'nama_kriteria.max' => 'Nama kriteria harus diisi maksimal 50 kata!',
+          'periode.required' => 'Periode harus diisi!',
+          'periode.integer' => 'Periode harus diisi menggunakan angka bulat!',
+          'periode.min' => 'Periode harus diisi minimal tahun 1000!',
+          'periode.max' => 'Periode harus diisi maksimal tahun 9999!',
+        ]
+      );
 
       // Ambil data dari formulir
       $bobot = $request->input('bobot');
