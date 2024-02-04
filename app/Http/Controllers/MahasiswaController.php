@@ -36,8 +36,8 @@ class MahasiswaController extends Controller
   {
     $jurusan = $this->get_jurusan();
     $kriterias = $this->get_kriteria();
-    $min_angkatan = Mahasiswa::whereBetween('angkatan', [intval(date('Y'))-3, intval(date('Y'))-1])->min('angkatan');
-    $max_angkatan = Mahasiswa::whereBetween('angkatan', [intval(date('Y'))-3, intval(date('Y'))-1])->max('angkatan');
+    $min_angkatan = Mahasiswa::whereBetween('angkatan', [intval(date('Y')) - 3, intval(date('Y')) - 1])->min('angkatan');
+    $max_angkatan = Mahasiswa::whereBetween('angkatan', [intval(date('Y')) - 3, intval(date('Y')) - 1])->max('angkatan');
     $arrsubkriterias = [];
 
     // ambil subkriteria
@@ -68,14 +68,14 @@ class MahasiswaController extends Controller
       // $hasil = new stdClass;
       // ===================================================
       $mahasiswas = Mahasiswa::orderBy('mahasiswas.nim', 'asc')
-        ->whereBetween('angkatan', [intval(date('Y'))-3, intval(date('Y'))-1])
+        ->whereBetween('angkatan', [intval(date('Y')) - 3, intval(date('Y')) - 1])
         ->get();
-        // ->filter(function ($value, $key) {
-        //   $year = intval(date('Y')) - intval($value->angkatan);
-        //   if ($year > 1 && $year <= 3) {
-        //     return $value;
-        //   }
-        // });
+      // ->filter(function ($value, $key) {
+      //   $year = intval(date('Y')) - intval($value->angkatan);
+      //   if ($year > 1 && $year <= 3) {
+      //     return $value;
+      //   }
+      // });
 
       foreach ($mahasiswas as $mahasiswa) {
         $mahasiswaId = $mahasiswa->id;
@@ -163,14 +163,14 @@ class MahasiswaController extends Controller
       }
 
       $mahasiswas = $data->orderBy('mahasiswas.nim', 'asc')
-        ->whereBetween('angkatan', [intval(date('Y'))-3, intval(date('Y'))-1])
+        ->whereBetween('angkatan', [intval(date('Y')) - 3, intval(date('Y')) - 1])
         ->get();
-        // ->filter(function ($value, $key) {
-        //   $year = intval(date('Y')) - intval($value->angkatan);
-        //   if ($year > 1 && $year <= 3) {
-        //     return $value;
-        //   }
-        // });
+      // ->filter(function ($value, $key) {
+      //   $year = intval(date('Y')) - intval($value->angkatan);
+      //   if ($year > 1 && $year <= 3) {
+      //     return $value;
+      //   }
+      // });
 
       foreach ($mahasiswas as $mahasiswa) {
         $mahasiswaId = $mahasiswa->id;
@@ -321,26 +321,48 @@ class MahasiswaController extends Controller
               continue;
             }
 
-            $nilai = Nilai::leftJoin('subkriterias', 'subkriterias.id', '=', 'nilais.subkriteria_id')
-              ->where('nilais.mahasiswa_id', $id)
-              ->where('subkriterias.nama_subkriteria', $subkriteria->nama_subkriteria)
-              ->update(['nilais.nilai' => $request->input($id_input)]);
+            // Cari data nilai dengan id mahasiswa dan id subkrteria
+            $nilai = Nilai::where('mahasiswa_id', $id)
+              ->whereHas('subkriteria', function ($query) use ($subkriteria) {
+                $query->where('nama_subkriteria', $subkriteria->nama_subkriteria);
+              })
+              ->first();
+
+            // Update nilai jika nilai ada, jika tidak buat baru
+            if ($nilai) {
+              $nilai->where('subkriteria_id', $subkriteria->id)->update(['nilai' => $request->input($id_input)]);
+            } else {
+              Nilai::create([
+                'mahasiswa_id' => $id,
+                'nilai' => $request->input($id_input),
+                'subkriteria_id' => $subkriteria->id,
+              ]);
+            }
 
             $sum_of_nilai += ($request->input($id_input) * $subkriteria->bobot_normalisasi);
-            // var_dump($request->input());
           }
 
-          Normalisasi::where('kriteria_id', $kriteria->id)
+          $normalisasi = Normalisasi::where('kriteria_id', $kriteria->id)
             ->where('mahasiswa_id', $id)
-            ->update(['nilai' => $sum_of_nilai]);
-          // var_dump($sum_of_nilai);
+            ->first();
+
+          $normalisasi ?
+            Normalisasi::where('kriteria_id', $kriteria->id)
+              ->where('mahasiswa_id', $id)
+              ->update(['nilai' => $sum_of_nilai])
+            :
+            Normalisasi::create([
+              'mahasiswa_id' => $id,
+              'nilai' => $sum_of_nilai,
+              'kriteria_id' => $kriteria->id
+            ]);
         }
       }
 
       return redirect()->route('mahasiswa')->with('update_mahasiswa', 'Data mahasiswa berhasil diperbarui');
     } catch (\Throwable $th) {
       //throw $th;
-      return redirect('mahasiswa')->with('error', $th);
+      return redirect('mahasiswa')->with('error', $th->getMessage());
     }
   }
 
