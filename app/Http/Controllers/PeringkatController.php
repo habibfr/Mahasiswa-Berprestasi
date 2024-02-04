@@ -19,23 +19,9 @@ class PeringkatController extends Controller
   public function index()
   {
     $kriterias = Kriteria::where('periode', date('Y'))->get();
+    $total_bobot = $kriterias->sum('bobot');
 
     $hasil = [];
-
-    // $mahasiswas = Mahasiswa::leftJoin('normalisasis', 'normalisasis.mahasiswa_id', '=', 'mahasiswas.id')
-    //   ->leftJoin('hasils', 'hasils.mahasiswa_id', '=', 'mahasiswas.id')
-    //   ->leftJoin('kriterias', 'kriterias.id', '=', 'normalisasis.kriteria_id')
-    //   ->select(
-    //     'mahasiswas.id as mahasiswa_id',
-    //     'mahasiswas.nim',
-    //     'mahasiswas.nama',
-    //     'normalisasis.nilai',
-    //     'kriterias.nama_kriteria',
-    //     'hasils.poin'
-    //   )
-    //   ->where('hasils.status', 'aktif')
-    //   ->orderBy('hasils.peringkat', 'asc')
-    //   ->get();
 
     $mahasiswas = Mahasiswa::orderBy('hasils.peringkat', 'asc')
       ->join('hasils', 'hasils.mahasiswa_id', '=', 'mahasiswas.id')
@@ -72,30 +58,11 @@ class PeringkatController extends Controller
       // =================================
     }
 
-    // dd($hasil);
-
-    // foreach ($mahasiswas as $mahasiswa) {
-    //   $mahasiswaId = $mahasiswa->mahasiswa_id;
-
-    //   if (!isset($hasil[$mahasiswaId])) {
-    //     $hasil[$mahasiswaId] = (object) [
-    //       'id' => $mahasiswaId,
-    //       'nim' => $mahasiswa->nim,
-    //       'nama' => $mahasiswa->nama,
-    //     ];
-    //   }
-
-    //   if (!empty($mahasiswa->nama_kriteria)) {
-    //     $hasil[$mahasiswaId]->{$mahasiswa->nama_kriteria} = $mahasiswa->nilai;
-    //   }
-
-    //   $hasil[$mahasiswaId]->poin = $mahasiswa->poin;
-    // }
-
     return view('content.peringkat.index', [
       'judul' => 'Peringkat',
       'kriterias' => $kriterias,
       'matrix' => $hasil,
+      'total_bobot' => $total_bobot,
       'data_sebelumnya' => true,
     ]);
   }
@@ -209,7 +176,7 @@ class PeringkatController extends Controller
           }
         }
 
-        $totalScoresByMahasiswa[$mahasiswa->id] = (object) ['poin' => $totalScore*100];
+        $totalScoresByMahasiswa[$mahasiswa->id] = (object) ['poin' => $totalScore * 100];
       }
 
       arsort($totalScoresByMahasiswa);
@@ -232,11 +199,6 @@ class PeringkatController extends Controller
           $totalScoresByMahasiswa[$mahasiswaId]->normalisasi = (object) [];
         }
 
-        // foreach ($kriterias->get() as $kriteria) {
-        //   if ($kriteria->id == $mahasiswa->kriteria_id) {
-        //     $totalScoresByMahasiswa[$mahasiswaId]->normalisasi->{$kriteria->nama_kriteria} = $mahasiswa->nilai;
-        //   }
-        // }
         foreach ($kriterias->get() as $kriteria) {
           $totalScoresByMahasiswa[$mahasiswaId]->normalisasi->{$kriteria->nama_kriteria} = Normalisasi::where('mahasiswa_id', $mahasiswaId)
             ->where('kriteria_id', $kriteria->id)

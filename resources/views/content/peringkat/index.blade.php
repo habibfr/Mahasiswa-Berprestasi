@@ -56,11 +56,21 @@
 
         {{-- Table Peringkat --}}
         <!-- Basic Bootstrap Table -->
-        <div class="card mb-5">
-            @isset($data_sebelumnya)
+        <div class="card mb-5">                
             <div class="card-header align-items-center text-center">
-                <h3 class="fw-bold">Peringkat Mahasiswa Sebelumnya</h3>
-            </div>
+            @isset($total_bobot)
+                @if ($total_bobot != 1)
+                    <div class="alert alert-danger text-center" role="alert">
+                        <p class="h5 text-danger fw-bold">
+                            Jumlah bobot masih berjumlah {{$total_bobot+0}}! Harap tambahkan bobot supaya berjumlah 1!
+                        </p>
+                            Jika bobot tidak sama dengan 1 maka proses peringkat tidak dapat dimulai
+                    </div>
+                @endif
+            @endisset
+            @isset($data_sebelumnya)
+                    <h3 class="fw-bold">Peringkat Mahasiswa Sebelumnya</h3>
+                </div>
             @endisset
             <div class="table-responsive text-nowrap">
             <table class="table table-striped table-hover">

@@ -166,7 +166,7 @@
                         </div>
                         <div class="row">
                             <div class="col mb-3" >
-                            <label for="bobot1Basic" class="form-label">Bobot_Normalisasi</label>
+                            <label for="bobot1Basic" class="form-label">Bobot Normalisasi</label>
                                 <input type="number" step="1" min="1" id="bobot_normalisasi" name="bobot_normalisasi" class="form-control" placeholder="1">
                             </div>
                         </div>
@@ -281,8 +281,11 @@
                 <table class="table table-striped" style="width: 100%;">
                     <div>
                     @if ($total_bobot != 1)
-                        <div class="alert alert-danger text-center fw-bold h4" role="alert">
-                            Jumlah bobot masih berjumlah {{$total_bobot+0}}! Harap tambahkan bobot supaya berjumlah 1!
+                        <div class="alert alert-danger text-center" role="alert">
+                            <p class="h5 text-danger fw-bold">
+                                Jumlah bobot masih berjumlah {{$total_bobot+0}}! Harap tambahkan bobot supaya berjumlah 1!
+                            </p>
+                                Jika bobot tidak sama dengan 1 maka proses peringkat tidak dapat dimulai
                         </div>
                     @endif
                     <thead>
@@ -370,39 +373,40 @@
                                     <div class="col mb-3" style="display: none;">
                                         <input type="text" id="idedit" class="form-control" name="id" placeholder="Enter Name">
                                     </div>
+                                </div>
                                 <div class="row">
                                     <div class="col mb-3">
                                         <label for="nameBasic" class="form-label">Nama Kriteria</label>
                                         <input type="text" id="nameBasic" class="form-control" name="nama_kriteria" placeholder="Enter Name">
                                     </div>
+                                </div>
                                 <div class="row">
                                     <div class="col mb-3">
-                                    <label for="bobot1Basic" class="form-label">Bobot</label>
+                                        <label for="bobot1Basic" class="form-label">Bobot</label>
                                         <input type="number" step="0.01" max="1" min="0" id="bobotBasic" name="bobot" class="form-control" placeholder="0.1">
-                                        </div>
+                                    </div>
                                 </div>
                                 <div class="row">
-                                            <div class="col">
-                                                <label for="tipeBasic" class="form-label">Tipe</label>
-                                            </div>
-                                        <div class="row">
-                                            <div class="col mb-3">
+                                    <div class="col">
+                                        <label for="tipeBasic" class="form-label">Tipe</label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col mb-3">
                                             <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="atribut" id="Radios1" name="Benefit" value="Benefit">
-                                                    <label class="form-check-label" for="exampleRadios1">
-                                                        Benefit
-                                                    </label>
+                                                <input class="form-check-input" type="radio" name="atribut" id="Radios1" name="Benefit" value="Benefit">
+                                                <label class="form-check-label" for="Radios1">
+                                                    Benefit
+                                                </label>
                                             </div>
                                             <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="atribut" id="Radios2" value="Cost" name="cost">
-                                                    <label class="form-check-label" for="exampleRadios2">
-                                                        Cost
-                                                    </label>
-                                            </div>
-                                                    
+                                                <input class="form-check-input" type="radio" name="atribut" id="Radios2" value="Cost" name="cost">
+                                                <label class="form-check-label" for="Radios2">
+                                                    Cost
+                                                </label>
+                                            </div>       
                                         </div>
-                                </div>
-                                            
+                                    </div>
+                                </div>  
 
                                 <div class="row">
                                     <div class="col mb-3">
@@ -468,7 +472,7 @@
                 response.data.datasub.forEach(element => {
                 tableSubkriteria.row.add([
                     element.nama_subkriteria,
-                    element.bobot_normalisasi,
+                    parseFloat(element.bobot_normalisasi),
                     `
                     <div class="inline">
                         <span class="text-success" id="subupdate_btn" data-bs-toggle="modal" data-bs-target="#modalEditSubKriteria" data-subkriteriaid="${element.id}" data-kriteriaid="${element.kriteria_id}">
@@ -603,7 +607,7 @@
                     response.data.data.forEach(element=>{
                         document.getElementById('idedit').value = element.id
                         document.getElementById('nameBasic').value = element.nama_kriteria
-                        document.getElementById('bobotBasic').value = element.bobot
+                        document.getElementById('bobotBasic').value =parseFloat(element.bobot)
                         if (element.atribut == "Benefit") {
                             $('#Radios1').prop('checked', true);
                         } else if (element.atribut == "Cost") {
@@ -659,7 +663,7 @@
                         document.getElementById('idsubedit').value = element.id
                         document.getElementById('krisubedit').value = element.kriteria_id
                         document.getElementById('name_SubKriteria').value = element.nama_subkriteria
-                        document.getElementById('bobot_normalisasi').value = element.bobot_normalisasi                         
+                        document.getElementById('bobot_normalisasi').value = parseFloat(element.bobot_normalisasi)
                     })
                 })
                 .catch(error => {
